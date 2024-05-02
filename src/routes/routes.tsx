@@ -3,7 +3,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 const routes = createBrowserRouter([
   {
-    path: "/",
+    path: "/registro",
     element: <Registro />,
     errorElement: <h1>Error 404</h1>,
   },
