@@ -1,11 +1,24 @@
+import { InicioSesion } from "pages/InicioSesion/InicioSesion";
 import { Registro } from "pages/Registro/Registro";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 
 const routes = createBrowserRouter([
   {
+    path: "/",
+    element: <Navigate to="/inicio-sesion" />,
+    errorElement: <h1>Error 404</h1>,
+  },
+  {
     path: "/registro",
     element: <Registro />,
-    errorElement: <h1>Error 404</h1>,
+  },
+  {
+    path: "/inicio-sesion",
+    element: <InicioSesion />,
   },
 ]);
 

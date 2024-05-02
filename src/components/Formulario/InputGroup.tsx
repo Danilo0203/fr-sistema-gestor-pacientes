@@ -1,36 +1,15 @@
+import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { Icon } from "@iconify/react";
+import { DatosRegisroProp } from "types/index";
 import { v4 as uuid } from "uuid";
-export const InputGroup = () => {
-  const datosRegistro = [
-    {
-      nombre: "nombre",
-      icon: "mdi:user",
-      type: "text",
-    },
-    {
-      usuario: "usuario",
-      icon: "mdi:user",
-      type: "text",
-    },
-    {
-      correo: "correo",
-      icon: "ic:baseline-email",
-      type: "text",
-    },
-    {
-      contraseña: "contraseña",
-      icon: "uis:padlock",
-      type: "password",
-    },
-  ];
+export const InputGroup = ({ datosRegistro }: DatosRegisroProp) => {
   const capitalize = (t: string) => {
     return t[0].toUpperCase() + t.substr(1);
   };
-
   const datos = datosRegistro.map((dato) => {
     const [key, item, type] = Object.entries(dato);
+
     return (
       <div className="flex flex-col gap-2" key={uuid()}>
         <Label htmlFor={key[1]}>{capitalize(key[1])}</Label>

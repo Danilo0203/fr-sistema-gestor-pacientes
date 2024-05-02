@@ -10,3 +10,9 @@ export interface LabelProps
 
 export interface BotonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+
+export interface DatosRegisroProp {
+  datosRegistro: Array<{
+    [key: string]: string;
+  }>;
+}

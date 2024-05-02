@@ -3,9 +3,9 @@ import { BotonRelleno } from "components/ui/Botones/BotonRelleno";
 
 export const BotonGroup = () => {
   return (
-    <div className="flex items-center gap-5 pt-4">
-      <BotonRelleno />
+    <div className="flex w-full items-center gap-5 self-center pt-4">
       <Boton />
+      <BotonRelleno />
     </div>
   );
 };
