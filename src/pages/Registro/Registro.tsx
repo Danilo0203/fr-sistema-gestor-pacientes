@@ -5,7 +5,7 @@ export const Registro = () => {
   return (
     <section className="flex flex-grow bg-azulClaro">
       <FormRegistro />
-      <Logo />
+      <Logo size={12} />
     </section>
   );
 };

@@ -5,7 +5,7 @@ export const InicioSesion = () => {
   return (
     <section className="flex flex-grow bg-azulClaro">
       <FormInicioSesion />
-      <Logo />
+      <Logo size={12} />
     </section>
   );
 };
