@@ -16,3 +16,15 @@ export interface DatosRegisroProp {
     [key: string]: string;
   }>;
 }
+
+export type FormInicioSesionType = {
+  nombre: string;
+  contraseña: string;
+};
+
+export type FormRegistroType = {
+  nombre: string;
+  usuario: string;
+  correo: string;
+  contraseña: string;
+};
