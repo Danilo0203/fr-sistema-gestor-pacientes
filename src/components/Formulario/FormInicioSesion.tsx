@@ -7,7 +7,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { forwardRef, useImperativeHandle, useRef } from "react";
 import { FormInicioSesionType } from "types/index";
-import { loginRequest, profileRequest } from "helpers/api/auth";
+import { login } from "helpers/api/auth";
 import { useAuthStore } from "../../store/auth";
 
 export const FormInicioSesion = forwardRef(() => {
@@ -35,15 +35,11 @@ export const FormInicioSesion = forwardRef(() => {
     nombre,
     contraseña,
   }) => {
-    const resLogin = await loginRequest(nombre, contraseña);
-    setToken(resLogin.data.access_token);
-
-    const {
-      data: {
-        data: [profile],
-      },
-    } = await profileRequest();
-    setProfile(profile);
+    const resLogin = await login(nombre, contraseña);
+    if (resLogin) {
+      setToken(resLogin.access_token);
+      setProfile(resLogin.usuario);
+    }
   };
 
   return (

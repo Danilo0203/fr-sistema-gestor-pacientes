@@ -10,7 +10,7 @@ import Tooltip from "@mui/material/Tooltip";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/auth";
-import { logoutRequest } from "helpers/api/auth";
+import { logout } from "helpers/api/auth";
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -27,12 +27,10 @@ export const Header = () => {
   };
 
   const handleCerrarSesion = async () => {
-    const resLogout = await logoutRequest();
-    if (resLogout.statusText !== "OK") {
-      alert("No se pudo cerrar la sesión");
-      return;
-    }
-    resLogout.status === 200 && clearSesion();
+    const resLogout = await logout();
+
+    if (resLogout && resLogout.status === 200) clearSesion();
+    
     navigate("/");
   };
 
