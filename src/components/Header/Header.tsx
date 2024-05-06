@@ -21,7 +21,6 @@ export const Header = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const handleCerrarSesion = async () => {
-    clearSesion();
     navigate("/");
   };
 

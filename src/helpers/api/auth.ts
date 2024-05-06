@@ -1,18 +1,38 @@
-import axios from "../libs/axios";
+import api from "../libs/axios";
 
-// Peticiones de autenticacion
-export const loginRequest = async (usuario: string, password: string) => {
-  return axios.post("/auth/login", {
+// PETICIONES DE AUTENTICACIÓN
+
+// Login
+export const login = async (usuario: string, password: string) => {
+  const data = {
     usuario,
     password,
-  });
+  };
+
+  try {
+    const login = await api.post("/auth/login", data);
+    return login.data;
+  } catch (error) {
+    console.error("Error al iniciar sesión: ", error);
+  }
 };
 
-export const logoutRequest = async () => {
-  return axios.get("/auth/logout");
+// Logout
+export const logout = async () => {
+  try {
+    const logout = await api.get("/auth/logout");
+    return logout;
+  } catch (error) {
+    console.error("Error al cerrar sesión: ", error);
+  }
 };
 
-// Peticion para tabla de usuarios
-export const profileRequest = async () => {
-  return axios.get("/usuarios");
+// Register
+export const register = async (req: unknown) => {
+  try {
+    const register = await api.post("/auth/register", req);
+    return register.data;
+  } catch (error) {
+    console.error("Error al registrar usuario: ", error);
+  }
 };
