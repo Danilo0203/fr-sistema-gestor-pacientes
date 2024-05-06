@@ -40,7 +40,7 @@ export const FormRegistro = forwardRef(() => {
   };
   console.log(errors);
   return (
-    <article className="flex w-1/2 flex-col justify-between rounded-r-[72px] bg-blanco py-10 shadow-2xl">
+    <article className="flex w-1/2 flex-col justify-between rounded-r-[72px] bg-blanco py-5 shadow-2xl">
       <TituloBienvenida descripcion="Crea una cuenta para iniciar sesión" />
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -48,7 +48,7 @@ export const FormRegistro = forwardRef(() => {
       >
         <div className="flex flex-grow flex-col justify-center">
           <div className="flex flex-grow flex-col justify-evenly">
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1">
               <Label htmlFor="nombre">Nombre</Label>
               <Input
                 id="nombre"
@@ -58,7 +58,7 @@ export const FormRegistro = forwardRef(() => {
                 aria-invalid={errors.nombre ? "true" : "false"}
                 ref={nombreRef}
               >
-                <Icon icon="mdi:user" className="size-5 text-azulFuerte" />
+                <Icon icon="mdi:user" className="size-4 text-azulFuerte" />
               </Input>
               {errors.nombre?.type === "required" && (
                 <p
@@ -70,7 +70,7 @@ export const FormRegistro = forwardRef(() => {
               )}
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1">
               <Label htmlFor="contraseña">Usuario</Label>
               <Input
                 id="contraseña"
@@ -79,7 +79,7 @@ export const FormRegistro = forwardRef(() => {
                 {...restUsuario}
                 ref={usuarioRef}
               >
-                <Icon icon="mdi:user" className="size-5 text-azulFuerte" />
+                <Icon icon="mdi:user" className="size-4 text-azulFuerte" />
               </Input>
               {errors.usuario?.type === "required" && (
                 <p
@@ -91,7 +91,7 @@ export const FormRegistro = forwardRef(() => {
               )}
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1">
               <Label htmlFor="contraseña">Correo</Label>
               <Input
                 id="contraseña"
@@ -100,7 +100,7 @@ export const FormRegistro = forwardRef(() => {
                 {...restCorreo}
                 ref={correoRef}
               >
-                <Icon icon="mdi:email" className="size-5 text-azulFuerte" />
+                <Icon icon="mdi:email" className="size-4 text-azulFuerte" />
               </Input>
               {errors.correo?.type === "required" && (
                 <p
@@ -112,7 +112,7 @@ export const FormRegistro = forwardRef(() => {
               )}
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1">
               <Label htmlFor="contraseña">Contraseña</Label>
               <Input
                 id="contraseña"
@@ -121,7 +121,7 @@ export const FormRegistro = forwardRef(() => {
                 {...restContrasena}
                 ref={contrasenaRef}
               >
-                <Icon icon="uis:padlock" className="size-5 text-azulFuerte" />
+                <Icon icon="uis:padlock" className="size-4 text-azulFuerte" />
               </Input>
               {errors.contraseña?.type === "required" && (
                 <p

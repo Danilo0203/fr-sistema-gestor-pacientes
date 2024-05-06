@@ -1,5 +1,4 @@
 import { TituloBienvenida } from "components/ui/TituloBienvenida";
-import { Link } from "react-router-dom";
 import { Boton } from "components/ui/Botones/Boton";
 import { Label } from "components/ui/Label";
 import { Input } from "components/ui/Input";
@@ -102,12 +101,6 @@ export const FormInicioSesion = forwardRef(() => {
 
         <div className="flex w-1/2 flex-col gap-12 self-center">
           <Boton type="submit" />
-          <small className="self-center text-sm font-medium text-azulFuerte">
-            ¿No tiene una cuenta?{" "}
-            <Link to="/registro" className="text-naranja">
-              Crear cuenta
-            </Link>
-          </small>
         </div>
       </form>
     </article>

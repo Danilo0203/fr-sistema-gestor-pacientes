@@ -6,7 +6,7 @@ export const BotonRelleno = (props: BotonProps) => {
   return (
     <button
       {...props}
-      className="w-full rounded-full bg-azulFuerte py-3 text-xl font-semibold text-blanco"
+      className="w-full rounded-full bg-azulFuerte py-2 text-lg font-semibold text-blanco"
       onClick={() => navigate("/registro")}
     >
       Crear cuenta

@@ -3,9 +3,9 @@ import { Logo } from "components/Logo/Logo";
 
 export const InicioSesion = () => {
   return (
-    <section className="flex flex-grow bg-azulClaro">
+    <section className="flex min-h-dvh flex-grow bg-azulClaro">
       <FormInicioSesion />
-      <Logo size={12} />
+      <Logo size={10} />
     </section>
   );
 };
