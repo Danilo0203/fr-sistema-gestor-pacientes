@@ -15,12 +15,18 @@ import {
   BreadcrumbItem,
 } from "@nextui-org/react";
 import { useAuthStore } from "../../store/auth";
+import { capitalizar } from "../../utils/capitalizarStrings";
 
 export const Header = () => {
   const clearSesion = useAuthStore((state) => state.setClearToken);
+  const nombre = useAuthStore((state) => state.profile);
+  const nombreUsuario = nombre?.nombre;
+  const rolUsuario = capitalizar(nombre?.rol?.nombre);
+
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const handleCerrarSesion = async () => {
+    clearSesion();
     navigate("/");
   };
 
@@ -93,7 +99,7 @@ export const Header = () => {
       </NavbarBrand>
 
       <NavbarContent as="div" justify="end">
-        <b>Nombre</b>
+        <b>{nombreUsuario}</b>
         <Dropdown placement="bottom-end">
           <DropdownTrigger>
             <Avatar
@@ -108,7 +114,7 @@ export const Header = () => {
           </DropdownTrigger>
           <DropdownMenu aria-label="Profile Actions" variant="flat">
             <DropdownItem key="profile" className="gap-2">
-              <p className="font-semibold">Administrador</p>
+              <p className="font-semibold">{rolUsuario}</p>
             </DropdownItem>
             <DropdownItem key="perfil" startContent={<Icon icon="mdi:user" />}>
               <span>Perfil</span>

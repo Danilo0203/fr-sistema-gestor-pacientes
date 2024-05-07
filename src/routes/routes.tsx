@@ -11,6 +11,8 @@ import { Layout } from "pages/Panel/Layout";
 import { Direcciones } from "pages/Panel/Direcciones";
 import { Pacientes } from "pages/Panel/Pacientes/Pacientes";
 import { Usuarios } from "pages/Panel/Usuarios/Usuarios";
+import { TablaUsuarios } from "pages/Panel/Usuarios/TablaUsuarios";
+import { ModalEditarUsuarios } from "pages/Panel/Usuarios/Modal";
 
 const routes = createBrowserRouter([
   {
@@ -37,8 +39,15 @@ const routes = createBrowserRouter([
             children: [
               {
                 path: "tabla",
-                element: <h1>Usuarios</h1>,
+                element: <TablaUsuarios />,
+                children: [
+                  {
+                    path: "editar/:id",
+                    element: <ModalEditarUsuarios />,
+                  },
+                ],
               },
+
               {
                 path: "rol",
                 element: <h1>Rol</h1>,
