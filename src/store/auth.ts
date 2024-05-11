@@ -21,8 +21,7 @@ export const useAuthStore = create(
       logged: false,
       setToken: (token: string) => set({ token, logged: true }),
       setProfile: (profile: string) => set({ profile }),
-      setClearToken: () =>
-        set((state) => ({ ...state, token: "", logged: false })),
+      setClearToken: () => set((state) => ({ ...state, token: "", logged: false, profile: ""})),
     }),
 
     { name: "auth" },

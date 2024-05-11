@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import api from "../libs/axios";
 
 // PETICIONES DE AUTENTICACIÓN
@@ -8,12 +9,14 @@ export const login = async (usuario: string, password: string) => {
     usuario,
     password,
   };
-
   try {
     const login = await api.post("/auth/login", data);
     return login.data;
   } catch (error) {
-    console.error("Error al iniciar sesión: ", error);
+    // console.error("Error al iniciar sesión: ", error);
+    if (error.message === "Network Error") {
+      toast.error("Error de conexión con la Base de Datos");
+    }
   }
 };
 
