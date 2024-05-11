@@ -13,6 +13,7 @@ import { Pacientes } from "pages/Panel/Pacientes/Pacientes";
 import { Usuarios } from "pages/Panel/Usuarios/Usuarios";
 import { TablaUsuarios } from "pages/Panel/Usuarios/TablaUsuarios";
 import { ModalEditarUsuarios } from "pages/Panel/Usuarios/Modal";
+import { Panel } from "pages/Panel/Panel";
 
 const routes = createBrowserRouter([
   {
@@ -30,7 +31,7 @@ const routes = createBrowserRouter([
           },
           {
             path: "panel",
-            element: <h1>Panel</h1>,
+            element: <Panel />,
           },
 
           {
