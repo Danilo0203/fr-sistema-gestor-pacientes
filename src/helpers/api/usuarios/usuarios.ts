@@ -27,21 +27,38 @@ export const getUsuario = async (id: string) => {
   try {
     const usuario = await api.get(`/usuarios/${id}`);
 
-    return usuario.data.data;
+    return usuario.data;
   } catch (error) {
     console.error("Error al obtener el usuario: ", error);
   }
 };
 
 // Actualizar usuario
-export const updateUsuario = async (id: string, req: unknown) => {
+export const updateUsuario = async (id, req) => {
   try {
-    const usuario = await api.patch(`/usuarios/${id}`, req);
-    return usuario.data;
+      const usuarioDatos = await api.get(`/usuarios/${id}`);
+      const usuarioData = usuarioDatos.data.data;  // Asumiendo que los datos vienen en esta estructura
+
+      // Crear objeto con solo los datos que cambiaron
+      const cambios = {};
+      Object.keys(req).forEach(key => {
+          if (req[key] !== usuarioData[key]) {
+              cambios[key] = req[key];
+          }
+      });
+
+      // Verificar si hay cambios antes de hacer la llamada a la API
+      if (Object.keys(cambios).length > 0) {
+          const usuarioActualizado = await api.patch(`/usuarios/${id}`, cambios);
+          return usuarioActualizado.data.data;
+      } else {
+          return usuarioData;  // o manejar según sea necesario
+      }
   } catch (error) {
-    console.error("Error al actualizar el usuario: ", error);
+      console.error("Error al actualizar el usuario: ", error);
   }
 };
+
 
 // Eliminar usuario
 export const deleteUsuario = async (id: string) => {
