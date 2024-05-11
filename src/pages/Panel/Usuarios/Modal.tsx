@@ -6,6 +6,10 @@ import {
   ModalFooter,
   Button,
   Tooltip,
+  Select,
+  SelectItem,
+  Divider,
+  useDisclosure,
 } from "@nextui-org/react";
 import { useModalStore } from "../../../store/modal";
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -13,43 +17,57 @@ import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { getUsuario } from "helpers/api/usuarios/usuarios";
 import { useUsuarioStore } from "../../../store/usuarios";
 import { useForm } from "react-hook-form";
+import { useRolStore } from "../../../store/usuarios/roles";
+import { deleteUsuario, updateUsuario } from "helpers/api/usuarios/usuarios";
+import { getUsuarioById } from "../../../utils/getUsuarioById";
+import { ModalProps, UserData } from "types/index";
 
-export const ModalEditarUsuarios = ({ idUser }: { idUser?: string }) => {
+export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
   const isOpen = useModalStore((state) => state.isOpen);
   const onOpen = useModalStore((state) => state.onOpen);
   const onOpenChange = useModalStore((state) => state.onOpenChange);
-  const usuarioID = useUsuarioStore((state) => state.usuarioId);
-  const setUsuarioID = useUsuarioStore((state) => state.setUsuarioId);
+  const usuarios = useUsuarioStore((state) => state.data);
+  const roles = useRolStore((state) => state.data);
+  const getRoles = useRolStore((state) => state.execute);
+
+  const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const params = useParams();
-  const { setValue, register } = useForm();
+
+  useEffect(() => {
+    getRoles();
+  }, [getRoles]);
 
   const handleEdit = () => {
     navigate(`/usuarios/tabla/editar/${idUser}`);
   };
 
-  const getUsuarioId = async (id: string) => {
-    const usuarios = await getUsuario(id);
-    setUsuarioID(usuarios);
-  };
-
   const { id } = params;
-  useEffect(() => {
-    if (!id) return;
-    getUsuarioId(id);
-  }, [id]);
+
+  const usuarioID: UserData = getUsuarioById(id, usuarios)[0];
 
   useEffect(() => {
     setValue("usuario", usuarioID.usuario);
     setValue("nombre", usuarioID.nombre);
-    setValue("correo", usuarioID.email);
+    setValue("email", usuarioID.email);
   }, [usuarioID.usuario, usuarioID.nombre, usuarioID.email]);
+
   const handleClose = () => {
     navigate("/usuarios/tabla");
   };
+
+  const actualizar = async (data: UserData) => {
+    await updateUsuario(usuarioID.id, data);
+    updateTable();
+  };
+
+  const onSubmit = (data: UserData) => {
+    actualizar(data);
+    navigate("/usuarios/tabla");
+  };
+
   return (
     <>
       <button onClick={handleEdit}>
@@ -63,17 +81,21 @@ export const ModalEditarUsuarios = ({ idUser }: { idUser?: string }) => {
           </span>
         </Tooltip>
       </button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Editar Usuario
-              </ModalHeader>
-              <ModalBody>
-                <form className="flex flex-col gap-8">
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="mt-4 flex flex-col gap-8"
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1 text-azulFuerte">
+                  Editar Usuario
+                </ModalHeader>
+                <Divider />
+                <ModalBody>
                   <div className="flex flex-col gap-3">
-                    <Label>Usuario</Label>
+                    <Label id="usuario">Usuario</Label>
                     <Input
                       placeholder="Editar usuario"
                       {...register("usuario")}
@@ -86,7 +108,7 @@ export const ModalEditarUsuarios = ({ idUser }: { idUser?: string }) => {
                     </Input>
                   </div>
                   <div className="flex flex-col gap-3">
-                    <Label>Nombre</Label>
+                    <Label id="nombre">Nombre</Label>
                     <Input placeholder="Editar nombre" {...register("nombre")}>
                       <Icon
                         icon="mdi:account"
@@ -96,8 +118,8 @@ export const ModalEditarUsuarios = ({ idUser }: { idUser?: string }) => {
                     </Input>
                   </div>
                   <div className="flex flex-col gap-3">
-                    <Label>Correo</Label>
-                    <Input placeholder="Editar correo" {...register("correo")}>
+                    <Label id="email">Correo</Label>
+                    <Input placeholder="Editar correo" {...register("email")}>
                       <Icon
                         icon="mdi:account"
                         width={20}
@@ -105,21 +127,95 @@ export const ModalEditarUsuarios = ({ idUser }: { idUser?: string }) => {
                       />
                     </Input>
                   </div>
-                </form>
+                  <div className="flex flex-col gap-3">
+                    <Label id="rol_id">Rol</Label>
+                    <Select
+                      items={roles}
+                      placeholder="Seleccione un rol"
+                      defaultSelectedKeys={[usuarioID.rolID]}
+                      size="lg"
+                      {...register("rol_id")}
+                    >
+                      {(rol) => (
+                        <SelectItem key={rol.id}>{rol.nombre}</SelectItem>
+                      )}
+                    </Select>
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    color="danger"
+                    variant="light"
+                    onPress={onClose}
+                    onClick={handleClose}
+                  >
+                    Cerrar
+                  </Button>
+                  <Button color="primary" type="submit" onPress={onClose}>
+                    Editar
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </form>
+      </Modal>
+    </>
+  );
+};
+
+export const ModalEliminarUsuarios = ({ idUser, updateTable }: ModalProps) => {
+  const usuarios = useUsuarioStore((state) => state.data);
+  const handleDelete = async () => {
+    await deleteUsuario(idUser);
+    updateTable();
+  };
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const usuarioID: UserData = getUsuarioById(idUser, usuarios)[0];
+
+  return (
+    <>
+      <button>
+        <Tooltip content="Eliminar" color="danger">
+          <span className="cursor-pointer text-lg text-azulFuerte active:opacity-50">
+            <Icon
+              icon="mdi:delete"
+              width={25}
+              className="text-red-600"
+              onClick={onOpen}
+            />
+          </span>
+        </Tooltip>
+      </button>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Eliminar Usuario
+              </ModalHeader>
+              <ModalBody>
+                <h2>Desea eliminar el usuario {usuarioID.nombre} </h2>
+                <h3> Usuario 1 </h3>
+                <div className="flex gap-3">
+                  <Button
+                    color="danger"
+                    variant="light"
+                    onPress={onClose}
+                    className="flex-grow"
+                  >
+                    Cerrar
+                  </Button>
+                  <Button
+                    color="primary"
+                    onPress={onClose}
+                    onClick={handleDelete}
+                    className="flex-grow"
+                  >
+                    Eliminar
+                  </Button>
+                </div>
               </ModalBody>
-              <ModalFooter>
-                <Button
-                  color="danger"
-                  variant="light"
-                  onPress={onClose}
-                  onClick={handleClose}
-                >
-                  Close
-                </Button>
-                <Button type="submit" color="primary" onPress={onClose}>
-                  Action
-                </Button>
-              </ModalFooter>
             </>
           )}
         </ModalContent>
