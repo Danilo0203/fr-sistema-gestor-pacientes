@@ -28,3 +28,16 @@ export type FormRegistroType = {
   correo: string;
   contraseña: string;
 };
+
+export type UserData = {
+  id: string;
+  usuario: string;
+  nombre: string;
+  email: string;
+  rol_id: string;
+};
+
+export interface ModalProps {
+  idUser: string;
+  updateTable: () => void;
+}
