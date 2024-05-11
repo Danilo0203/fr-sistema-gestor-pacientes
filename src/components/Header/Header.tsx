@@ -39,10 +39,10 @@ export const Header = () => {
           </BreadcrumbItem>
 
           {/* USUARIOS */}
-          {pathname === "/usuarios/tabla" && (
+          {pathname.includes("usuarios/tabla") && (
             <BreadcrumbItem>Usuarios</BreadcrumbItem>
           )}
-          {pathname === "/usuarios/rol" && (
+          {pathname.includes("rol") && (
             <BreadcrumbItem>
               <Breadcrumbs size="lg">
                 <BreadcrumbItem onPress={() => navigate("/usuarios/tabla")}>
@@ -54,10 +54,10 @@ export const Header = () => {
           )}
 
           {/* PACIENTES */}
-          {pathname === "/pacientes/tabla" && (
+          {pathname.includes("pacientes/tabla") && (
             <BreadcrumbItem>Pacientes</BreadcrumbItem>
           )}
-          {pathname === "/pacientes/profesion" && (
+          {pathname.includes("/pacientes/profesion") && (
             <BreadcrumbItem>
               <Breadcrumbs size="lg">
                 <BreadcrumbItem onPress={() => navigate("/pacientes/tabla")}>
@@ -67,7 +67,7 @@ export const Header = () => {
               </Breadcrumbs>
             </BreadcrumbItem>
           )}
-          {pathname === "/pacientes/genero" && (
+          {pathname.includes("/pacientes/genero") && (
             <BreadcrumbItem>
               <Breadcrumbs size="lg">
                 <BreadcrumbItem onPress={() => navigate("/pacientes/tabla")}>
@@ -79,7 +79,7 @@ export const Header = () => {
           )}
 
           {/* Direcciones */}
-          {pathname === "/direcciones/municipio" && (
+          {pathname.includes("/direcciones/municipio") && (
             <BreadcrumbItem>
               <Breadcrumbs size="lg">
                 <BreadcrumbItem>Direcciones</BreadcrumbItem>
@@ -87,7 +87,7 @@ export const Header = () => {
               </Breadcrumbs>
             </BreadcrumbItem>
           )}
-          {pathname === "/direcciones/departamento" && (
+          {pathname.includes("/direcciones/departamento") && (
             <BreadcrumbItem>
               <Breadcrumbs size="lg">
                 <BreadcrumbItem>Direcciones</BreadcrumbItem>
