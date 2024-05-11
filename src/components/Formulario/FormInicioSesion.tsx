@@ -8,6 +8,7 @@ import { forwardRef, useImperativeHandle, useRef } from "react";
 import { FormInicioSesionType } from "types/index";
 import { login } from "helpers/api/auth";
 import { useAuthStore } from "../../store/auth";
+import { toast, Toaster } from "sonner";
 
 export const FormInicioSesion = forwardRef(() => {
   const setToken = useAuthStore((state) => state.setToken);
@@ -30,19 +31,29 @@ export const FormInicioSesion = forwardRef(() => {
   useImperativeHandle(ref, () => nombreRef.current);
   useImperativeHandle(refContrasena, () => contrasenaRef.current);
 
-  const onSubmit: SubmitHandler<FormInicioSesionType> = async ({
+  const fetchData = async (nombre, contraseña) => {
+    const resLogin = await login(nombre, contraseña);
+    return resLogin;
+  };
+
+  const onSubmit: SubmitHandler<FormInicioSesionType> = ({
     nombre,
     contraseña,
   }) => {
-    const resLogin = await login(nombre, contraseña);
-    if (resLogin) {
-      setToken(resLogin.access_token);
-      setProfile(resLogin.usuario);
-    }
+    const callFunction = fetchData(nombre, contraseña);
+    toast.promise(callFunction, {
+      loading: "Iniciando sesión....",
+      success: (data) => {
+        setToken(data.access_token);
+        setProfile(data.usuario);
+        return data.message;
+      },
+      error: "Usuario o contraseña incorrectos",
+    });
   };
-
   return (
     <article className="flex w-1/2 flex-col rounded-r-[72px] bg-blanco py-10 shadow-2xl">
+      <Toaster richColors />
       <TituloBienvenida descripcion="Ingrese a su cuenta para continuar" />
 
       <form
