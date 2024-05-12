@@ -37,7 +37,14 @@ export type UserData = {
   rol_id: string;
 };
 
+export type RolData = {
+  id: string;
+  nombre: string;
+  descripcion: string;
+};
+
 export interface ModalProps {
-  idUser: string;
-  updateTable: () => void;
+  idUser?: string;
+  idRol?: string;
+  updateTable?: () => void;
 }

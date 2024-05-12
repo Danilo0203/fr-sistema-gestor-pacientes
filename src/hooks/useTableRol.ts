@@ -1,32 +1,32 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useUsuarioStore } from "../store/usuarios";
+import { useRolStore } from "../store/usuarios/roles";
 import { SortDescriptor } from "@nextui-org/react";
 
-export const useTableUser = (usuarios) => {
-  const getUsuarios = useUsuarioStore((state) => state.execute);
-  const loading = useUsuarioStore((state) => state.loading);
+export const useTableRol = (roles) => {
+  const getRoles = useRolStore((state) => state.execute);
+  const loading = useRolStore((state) => state.loading);
   const [value, setValue] = useState(0);
   const [pagina, setPagina] = useState(1);
   const [filterValue, setFilterValue] = useState("");
   const [filasPorPagina, setRowsPerPage] = useState(5);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: "nombre",
+    column: "rol",
     direction: "ascending",
   });
-  
-  // Funcion para filtrar usuarios por nombre
+
+  // Funcion para filtrar roles por nombre
   const filtrarUsuarioPorNombre = useMemo(() => {
-    let filtrarUsuarios = [...usuarios];
+    let filtrarUsuarios = [...roles];
     filtrarUsuarios = filtrarUsuarios.filter((user) =>
       user.nombre.toLowerCase().includes(filterValue.toLowerCase()),
     );
     return filtrarUsuarios;
-  }, [usuarios, filterValue]);
+  }, [roles, filterValue]);
 
-  // Funcion para obtener usuarios
+  // Funcion para obtener roles
   useEffect(() => {
-    getUsuarios();
-  }, [getUsuarios]);
+    getRoles();
+  }, [getRoles]);
 
   // Funcion para esperar la respuesta de la API
   useEffect(() => {
@@ -34,10 +34,10 @@ export const useTableUser = (usuarios) => {
       setValue((v) => (v >= 100 ? 100 : v + 10));
     }, 100);
     return () => clearInterval(interval);
-  }, [usuarios]);
+  }, [roles]);
 
   // Estado de carga
-  const loadingState = loading || usuarios?.length === 0 ? "loading" : "idle";
+  const loadingState = loading || roles?.length === 0 ? "loading" : "idle";
 
   // Calcular el número de páginas total
   const paginas = Math.ceil(filtrarUsuarioPorNombre?.length / filasPorPagina);
@@ -61,7 +61,7 @@ export const useTableUser = (usuarios) => {
     });
   }, [sortDescriptor, items]);
 
-  // Tipo de dato de los usuarios
+  // Tipo de dato de los roles
   type User = (typeof items)[0];
 
   // Funcion para cambiar el número de filas por página
@@ -73,7 +73,7 @@ export const useTableUser = (usuarios) => {
     [],
   );
 
-  // Funcion para buscar usuarios por nombre
+  // Funcion para buscar roles por nombre
   const onSearchChange = useCallback((value?: string) => {
     if (value) {
       setFilterValue(value);
@@ -91,7 +91,7 @@ export const useTableUser = (usuarios) => {
 
   return {
     value,
-    getUsuarios,
+    getRoles,
     pagina,
     setPagina,
     sortDescriptor,

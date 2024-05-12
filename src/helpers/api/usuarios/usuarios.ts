@@ -36,29 +36,28 @@ export const getUsuario = async (id: string) => {
 // Actualizar usuario
 export const updateUsuario = async (id, req) => {
   try {
-      const usuarioDatos = await api.get(`/usuarios/${id}`);
-      const usuarioData = usuarioDatos.data.data;  // Asumiendo que los datos vienen en esta estructura
+    const usuarioDatos = await api.get(`/usuarios/${id}`);
+    const usuarioData = usuarioDatos.data.data; // Asumiendo que los datos vienen en esta estructura
 
-      // Crear objeto con solo los datos que cambiaron
-      const cambios = {};
-      Object.keys(req).forEach(key => {
-          if (req[key] !== usuarioData[key]) {
-              cambios[key] = req[key];
-          }
-      });
-
-      // Verificar si hay cambios antes de hacer la llamada a la API
-      if (Object.keys(cambios).length > 0) {
-          const usuarioActualizado = await api.patch(`/usuarios/${id}`, cambios);
-          return usuarioActualizado.data.data;
-      } else {
-          return usuarioData;  // o manejar según sea necesario
+    // Crear objeto con solo los datos que cambiaron si password es null no se envia
+    const cambios = {};
+    Object.keys(req).forEach((key) => {
+      if (req[key] !== usuarioData[key] && key !== "password") {
+        cambios[key] = req[key];
       }
+    });
+
+    // Verificar si hay cambios antes de hacer la llamada a la API
+    if (Object.keys(cambios).length > 0) {
+      const usuarioActualizado = await api.patch(`/usuarios/${id}`, cambios);
+      return usuarioActualizado.data.data;
+    } else {
+      return usuarioData; // o manejar según sea necesario
+    }
   } catch (error) {
-      console.error("Error al actualizar el usuario: ", error);
+    console.error("Error al actualizar el usuario: ", error);
   }
 };
-
 
 // Eliminar usuario
 export const deleteUsuario = async (id: string) => {

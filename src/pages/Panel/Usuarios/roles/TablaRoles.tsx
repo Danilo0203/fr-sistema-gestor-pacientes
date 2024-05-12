@@ -11,20 +11,19 @@ import {
   SelectItem,
   Input,
 } from "@nextui-org/react";
-import { useCallback, useMemo } from "react";
-import { capitalizar } from "../../../utils/capitalizarStrings";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { ModalEditarUsuarios, ModalEliminarUsuarios } from "./Modal";
+// import { capitalizar } from "../../../../utils/capitalizarStrings";
 import { columns } from "./dataTable/data";
-import { useTableUser } from "hooks/useTableUser";
-import { useUsuarioStore } from "../../../store/usuarios";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { ModalEditarRoles, ModalEliminarRoles } from "./Modal";
+import { useCallback, useMemo } from "react";
+import { useTableRol } from "hooks/useTableRol";
+import { useRolStore } from "../../../../store/usuarios/roles";
 
-export const TablaUsuarios = () => {
-  const usuarios = useUsuarioStore((state) => state.data);
-
+export const TablaRoles = () => {
+  const roles = useRolStore((state) => state.data);
   const {
     value,
-    getUsuarios,
+    getRoles,
     pagina,
     setPagina,
     sortDescriptor,
@@ -36,14 +35,12 @@ export const TablaUsuarios = () => {
     onRowsPerPageChange,
     onSearchChange,
     onClear,
-  } = useTableUser(usuarios);
+  } = useTableRol(roles);
 
-  interface User {
+  interface Rol {
     id: string;
-    usuario: string;
-    nombre: string;
-    email: string;
     rol: string;
+    descripcion: string;
   }
   interface Column {
     key: string;
@@ -51,41 +48,33 @@ export const TablaUsuarios = () => {
     sortable?: boolean;
   }
 
-  const renderCell = useCallback(
-    (user: User, columnKey: Column) => {
-      const cellValue = user[columnKey];
+  const renderCell = useCallback((rol: Rol, columnKey: Column) => {
+    const cellValue = rol[columnKey];
 
-      switch (columnKey) {
-        // case "id":
-        //   let elementos: JSX.Element[] = [];
-        //   for (let i = 0; i < usuarios.length; i++) {
-        //     // Crear una etiqueta <p> para cada número de usuario y nombre
-        //     elementos.push(<p key={i}>{i + 1}</p>);
-        //   }
-        //   return elementos;
+    switch (columnKey) {
+      // case "id":
+      //   let elementos: JSX.Element[] = [];
+      //   for (let i = 0; i < usuarios.length; i++) {
+      //     // Crear una etiqueta <p> para cada número de usuario y nombre
+      //     elementos.push(<p key={i}>{i + 1}</p>);
+      //   }
+      //   return elementos;
 
-        case "usuario":
-          return <p> {user.usuario} </p>;
-        case "nombre":
-          return <p> {user.nombre} </p>;
-        case "rol":
-          return <p> {capitalizar(user.rol)} </p>;
-        case "acciones":
-          return (
-            <div className="relative flex items-center gap-3">
-              <ModalEditarUsuarios idUser={user.id} updateTable={getUsuarios} />
-              <ModalEliminarUsuarios
-                idUser={user.id}
-                updateTable={getUsuarios}
-              />
-            </div>
-          );
-        default:
-          return cellValue;
-      }
-    },
-    [getUsuarios],
-  );
+      case "rol":
+        return <p> {rol.nombre} </p>;
+      case "descripcion":
+        return <p> {rol.descripcion} </p>;
+      case "acciones":
+        return (
+          <div className="relative flex items-center gap-3">
+            <ModalEditarRoles idRol={rol.id} updateTable={getRoles} />
+            <ModalEliminarRoles idRol={rol.id} updateTable={getRoles} />
+          </div>
+        );
+      default:
+        return cellValue;
+    }
+  }, []);
 
   const topContent = useMemo(() => {
     return (
@@ -93,13 +82,13 @@ export const TablaUsuarios = () => {
         <div className="flex items-center justify-between">
           <div className="flex w-full flex-col gap-3">
             <Input
-              label="Buscar por nombre de usuario"
+              label="Buscar por rol"
               isClearable
               classNames={{
                 base: "w-full sm:max-w-[44%]",
                 inputWrapper: "border-1",
               }}
-              placeholder="usuario..."
+              placeholder="rol..."
               size="md"
               value={filterValue}
               variant="bordered"
@@ -110,9 +99,7 @@ export const TablaUsuarios = () => {
               startContent={<Icon icon="mdi:account-search" width={20} />}
             />
 
-            <span className="text-small">
-              Total de usuarios {usuarios.length}
-            </span>
+            <span className="text-small">Total de usuarios {roles.length}</span>
           </div>
 
           <Select
@@ -133,17 +120,11 @@ export const TablaUsuarios = () => {
         </div>
       </div>
     );
-  }, [
-    onRowsPerPageChange,
-    usuarios.length,
-    onClear,
-    filterValue,
-    onSearchChange,
-  ]);
+  }, [onRowsPerPageChange, roles.length, onClear, filterValue, onSearchChange]);
 
   return (
     <Table
-      aria-label="Tabla de usuarios"
+      aria-label="Tabla de roles"
       isStriped
       onSortChange={setSortDescriptor}
       sortDescriptor={sortDescriptor}
@@ -176,7 +157,7 @@ export const TablaUsuarios = () => {
       </TableHeader>
       <TableBody
         items={ordenarItems ?? []}
-        emptyContent={`No se encontraron el usuario ingresado ${filterValue}`}
+        emptyContent={`No se encontro el rol ${filterValue}`}
         loadingContent={
           <CircularProgress
             label="Cargando..."

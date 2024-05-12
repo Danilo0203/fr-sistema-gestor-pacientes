@@ -11,9 +11,11 @@ import { Layout } from "pages/Panel/Layout";
 import { Direcciones } from "pages/Panel/Direcciones";
 import { Pacientes } from "pages/Panel/Pacientes/Pacientes";
 import { Usuarios } from "pages/Panel/Usuarios/Usuarios";
-import { TablaUsuarios } from "pages/Panel/Usuarios/TablaUsuarios";
-import { ModalEditarUsuarios } from "pages/Panel/Usuarios/Modal";
+import { TablaUsuarios } from "pages/Panel/Usuarios/usuarios/TablaUsuarios";
+import { ModalEditarUsuarios } from "pages/Panel/Usuarios/usuarios/Modal";
 import { Panel } from "pages/Panel/Panel";
+import { TablaRoles } from "pages/Panel/Usuarios/roles/TablaRoles";
+import { ModalEditarRoles } from "pages/Panel/Usuarios/roles/Modal";
 
 const routes = createBrowserRouter([
   {
@@ -51,7 +53,13 @@ const routes = createBrowserRouter([
 
               {
                 path: "rol",
-                element: <h1>Rol</h1>,
+                element: <TablaRoles />,
+                children: [
+                  {
+                    path: "editar/:id",
+                    element: <ModalEditarRoles />,
+                  },
+                ],
               },
             ],
           },

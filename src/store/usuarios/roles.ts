@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import api from "../../helpers/libs/axios";
 
-type UsuariosStoreProps = {
+type RolesStoreProps = {
   loading: boolean;
   success: boolean;
   error: boolean;
@@ -18,7 +18,7 @@ const initialState = {
   errorData: null,
 };
 
-export const useRolStore = create<UsuariosStoreProps>()((set) => ({
+export const useRolStore = create<RolesStoreProps>()((set) => ({
   ...initialState,
   execute: async () => {
     set({ ...initialState, loading: true });
@@ -31,6 +31,7 @@ export const useRolStore = create<UsuariosStoreProps>()((set) => ({
           return {
             id: roles.id,
             nombre: roles.nombre,
+            descripcion: roles.descripcion,
           };
         }),
       });

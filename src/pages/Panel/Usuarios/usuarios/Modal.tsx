@@ -11,19 +11,18 @@ import {
   Divider,
   useDisclosure,
 } from "@nextui-org/react";
-import { useModalStore } from "../../../store/modal";
+import { useModalStore } from "../../../../store/modal";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { useUsuarioStore } from "../../../store/usuarios";
+import { useUsuarioStore } from "../../../../store/usuarios";
 import { useForm } from "react-hook-form";
-import { useRolStore } from "../../../store/usuarios/roles";
+import { useRolStore } from "../../../../store/usuarios/roles";
 import { deleteUsuario, updateUsuario } from "helpers/api/usuarios/usuarios";
-import { getUsuarioById } from "../../../utils/getUsuarioById";
+import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, UserData } from "types/index";
-import { Backdrop } from "@mui/material";
 
 export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
   const isOpen = useModalStore((state) => state.isOpen);
@@ -237,8 +236,14 @@ export const ModalEliminarUsuarios = ({ idUser, updateTable }: ModalProps) => {
                 Eliminar Usuario
               </ModalHeader>
               <ModalBody>
-                <h2>Desea eliminar el usuario {usuarioID.nombre} </h2>
-                <h3> Usuario 1 </h3>
+                <div className="flex w-full flex-col items-center gap-2 py-4">
+                  <h2 className="text-xl font-medium">
+                    ¿Desea eliminar el usuario?
+                  </h2>
+                  <h3 className="text-2xl font-bold text-red-600">
+                    {usuarioID.usuario}
+                  </h3>
+                </div>
                 <div className="flex gap-3">
                   <Button
                     color="danger"
