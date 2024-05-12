@@ -11,19 +11,18 @@ import {
   SelectItem,
   Input,
 } from "@nextui-org/react";
-// import { capitalizar } from "../../../../utils/capitalizarStrings";
-import { columns } from "./dataTable/data";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { ModalEditarRoles, ModalEliminarRoles } from "./Modal";
 import { useCallback, useMemo } from "react";
-import { useTableRol } from "hooks/useTableRol";
-import { useRolStore } from "../../../../store/usuarios/roles";
+import { columns } from "./dataTable/data";
+import { ModalEditarDepartamento, ModalEliminarDepartamento } from "./Modal";
+import { useTableDepartamento } from "hooks/useTableDepartamentos";
+import { useDepartamentoStore } from "../../../../store/direcciones/departamentos";
 
-export const TablaRoles = () => {
-  const roles = useRolStore((state) => state.data);
+export const TablaDepartamentos = () => {
+  const departamentos = useDepartamentoStore((state) => state.data);
   const {
     value,
-    getRoles,
+    getDepartamentos,
     pagina,
     setPagina,
     sortDescriptor,
@@ -35,46 +34,45 @@ export const TablaRoles = () => {
     onRowsPerPageChange,
     onSearchChange,
     onClear,
-  } = useTableRol(roles);
+  } = useTableDepartamento(departamentos);
 
-  interface Rol {
+  interface Departamento {
     id: string;
-    rol: string;
-    descripcion: string;
+    departamento: string;
   }
+
   interface Column {
     key: string;
     label: string;
     sortable?: boolean;
   }
 
-  const renderCell = useCallback((rol: Rol, columnKey: Column) => {
-    const cellValue = rol[columnKey];
+  const renderCell = useCallback(
+    (departamento: Departamento, columnKey: Column) => {
+      const cellValue = departamento[columnKey];
 
-    switch (columnKey) {
-      // case "id":
-      //   let elementos: JSX.Element[] = [];
-      //   for (let i = 0; i < usuarios.length; i++) {
-      //     // Crear una etiqueta <p> para cada número de usuario y nombre
-      //     elementos.push(<p key={i}>{i + 1}</p>);
-      //   }
-      //   return elementos;
-
-      case "rol":
-        return <p> {rol.nombre} </p>;
-      case "descripcion":
-        return <p> {rol.descripcion} </p>;
-      case "acciones":
-        return (
-          <div className="relative flex items-center gap-3">
-            <ModalEditarRoles idRol={rol.id} updateTable={getRoles} />
-            <ModalEliminarRoles idRol={rol.id} updateTable={getRoles} />
-          </div>
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+      switch (columnKey) {
+        case "departamento":
+          return <p>{departamento.nombre}</p>;
+        case "acciones":
+          return (
+            <div className="relative flex items-center gap-3">
+              <ModalEditarDepartamento
+                idDepartamento={departamento.id}
+                updateTable={getDepartamentos}
+              />
+              <ModalEliminarDepartamento
+                idDepartamento={departamento.id}
+                updateTable={getDepartamentos}
+              />
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [],
+  );
 
   const topContent = useMemo(() => {
     return (
@@ -99,7 +97,9 @@ export const TablaRoles = () => {
               startContent={<Icon icon="mdi:account-search" width={20} />}
             />
 
-            <span className="text-small">Total de usuarios {roles.length}</span>
+            <span className="text-small">
+              Total de departamentos {departamentos.length}
+            </span>
           </div>
 
           <Select
@@ -120,11 +120,17 @@ export const TablaRoles = () => {
         </div>
       </div>
     );
-  }, [onRowsPerPageChange, roles.length, onClear, filterValue, onSearchChange]);
+  }, [
+    onRowsPerPageChange,
+    departamentos.length,
+    onClear,
+    filterValue,
+    onSearchChange,
+  ]);
 
   return (
     <Table
-      aria-label="Tabla de roles"
+      aria-label="Tabla de departamentos"
       isStriped
       onSortChange={setSortDescriptor}
       sortDescriptor={sortDescriptor}

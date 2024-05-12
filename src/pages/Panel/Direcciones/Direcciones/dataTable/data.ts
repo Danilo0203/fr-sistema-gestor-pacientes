@@ -5,23 +5,18 @@ export const columns = [
     sortable: true,
   },
   {
-    key: "usuario",
-    label: "Usuario",
-    sortable: true,
-  },
-  {
     key: "nombre",
-    label: "Nombre",
+    label: "Dirección",
     sortable: true,
   },
   {
-    key: "email",
-    label: "Correo",
+    key: "municipio",
+    label: "Municipio",
     sortable: true,
   },
   {
-    key: "rol",
-    label: "Rol",
+    key: "departamento",
+    label: "Departamento",
     sortable: true,
   },
   {

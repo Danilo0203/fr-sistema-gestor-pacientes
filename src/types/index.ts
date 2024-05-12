@@ -43,8 +43,33 @@ export type RolData = {
   descripcion: string;
 };
 
+export type DireccionData = {
+  id: string;
+  nombre: string;
+  municipio: string;
+  municipioID: string;
+  direccion: string;
+};
+
+export type MunicipioData = {
+  id: string;
+  nombre: string;
+  departamento: string;
+  departamentoID: string;
+  municipio: string;
+};
+
+export type DepartamentoData = {
+  id: string;
+  nombre: string;
+  departamento: string;
+};
+
 export interface ModalProps {
   idUser?: string;
   idRol?: string;
+  idDireccion?: string;
+  idMunicipio?: string;
+  idDepartamento?: string;
   updateTable?: () => void;
 }

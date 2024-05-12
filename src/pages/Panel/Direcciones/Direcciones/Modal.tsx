@@ -6,6 +6,8 @@ import {
   ModalFooter,
   Button,
   Tooltip,
+  Select,
+  SelectItem,
   Divider,
   useDisclosure,
 } from "@nextui-org/react";
@@ -13,49 +15,62 @@ import { useModalStore } from "../../../../store/modal";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useRolStore } from "../../../../store/usuarios/roles";
-import { deleteUsuario } from "helpers/api/usuarios/usuarios";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDireccionStore } from "../../../../store/direcciones/direcciones";
+import { useMunicipioStore } from "../../../../store/direcciones/municipios";
+import {
+  deleteDireccion,
+  updateDireccion,
+} from "helpers/api/direccion/direcciones";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
-import { ModalProps, RolData } from "types/index";
-import { updateRol } from "helpers/api/usuarios/roles";
+import { ModalProps, DireccionData } from "types/index";
 
-export const ModalEditarRoles = ({ idRol, updateTable }: ModalProps) => {
+export const ModalEditarDireccion = ({
+  idDireccion,
+  updateTable,
+}: ModalProps) => {
   const isOpen = useModalStore((state) => state.isOpen);
   const onOpen = useModalStore((state) => state.onOpen);
   const onOpenChange = useModalStore((state) => state.onOpenChange);
-  const roles = useRolStore((state) => state.data);
+  const direcciones = useDireccionStore((state) => state.data);
+  const municipios = useMunicipioStore((state) => state.data);
+  const getMunicipios = useMunicipioStore((state) => state.execute);
+
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const params = useParams();
 
+  useEffect(() => {
+    getMunicipios();
+  }, [getMunicipios]);
+
   const handleEdit = () => {
-    navigate(`/usuarios/rol/editar/${idRol}`);
+    navigate(`/direcciones/tabla/editar/${idDireccion}`);
   };
 
   const { id } = params;
 
-  const rolID: RolData = getUsuarioById(id, roles)[0];
+  const direccionID: DireccionData = getUsuarioById(id, direcciones)[0];
 
   useEffect(() => {
-    setValue("nombre", rolID.nombre);
-    setValue("descripcion", rolID.descripcion);
-  }, [rolID.nombre, rolID.descripcion]);
+    setValue("nombre", direccionID.nombre);
+    setValue("municipio", direccionID.municipio);
+  }, [direccionID.nombre, direccionID.municipio]);
 
   const handleClose = () => {
-    navigate("/usuarios/rol");
+    navigate("/direcciones/tabla");
   };
 
-  const actualizar = async (data: RolData) => {
-    await updateRol(rolID.id, data);
+  const actualizar = async (data: DireccionData) => {
+    await updateDireccion(direccionID.id, data);
     updateTable();
   };
 
-  const onSubmit = (data: RolData) => {
+  const onSubmit = (data: DireccionData) => {
     actualizar(data);
-    navigate("/usuarios/rol");
+    navigate("/direcciones/tabla");
   };
 
   return (
@@ -86,34 +101,41 @@ export const ModalEditarRoles = ({ idRol, updateTable }: ModalProps) => {
             {(onClose) => (
               <>
                 <ModalHeader className="flex flex-col gap-1 text-azulFuerte">
-                  Editar Rol
+                  Editar Dirección
                 </ModalHeader>
                 <Divider />
                 <ModalBody>
                   <div className="flex flex-col gap-8">
-                    <div className="flex flex-col gap-1">
-                      <Label id="nombre">Rol</Label>
-                      <Input placeholder="Editar Rol" {...register("nombre")}>
-                        <Icon
-                          icon="mdi:account"
-                          width={20}
-                          className="text-azulFuerte"
-                        />
-                      </Input>
+                    <div className="flex gap-8">
+                      <div className="flex flex-col gap-1">
+                        <Label id="nombre">Nombre</Label>
+                        <Input
+                          placeholder="Editar nombre"
+                          {...register("nombre")}
+                        >
+                          <Icon
+                            icon="mdi:account"
+                            width={20}
+                            className="text-azulFuerte"
+                          />
+                        </Input>
+                      </div>
                     </div>
-
                     <div className="flex flex-col gap-1">
-                      <Label id="email">Descripción</Label>
-                      <Input
-                        placeholder="Editar descripción"
-                        {...register("descripcion")}
+                      <Label id="municipio_id">Municipio</Label>
+                      <Select
+                        items={municipios}
+                        placeholder="Seleccione un municipio"
+                        defaultSelectedKeys={[direccionID.municipioID]}
+                        size="lg"
+                        {...register("municipio_id")}
                       >
-                        <Icon
-                          icon="mdi:account"
-                          width={20}
-                          className="text-azulFuerte"
-                        />
-                      </Input>
+                        {(municipio) => (
+                          <SelectItem key={municipio.id}>
+                            {municipio.nombre}
+                          </SelectItem>
+                        )}
+                      </Select>
                     </div>
                   </div>
                 </ModalBody>
@@ -139,14 +161,20 @@ export const ModalEditarRoles = ({ idRol, updateTable }: ModalProps) => {
   );
 };
 
-export const ModalEliminarRoles = ({ idRol, updateTable }: ModalProps) => {
-  const roles = useRolStore((state) => state.data);
+export const ModalEliminarDireccion = ({
+  idDireccion,
+  updateTable,
+}: ModalProps) => {
+  const direcciones = useDireccionStore((state) => state.data);
   const handleDelete = async () => {
-    await deleteUsuario(idRol);
+    await deleteDireccion(idDireccion);
     updateTable();
   };
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const rolID: RolData = getUsuarioById(idRol, roles)[0];
+  const direccionID: DireccionData = getUsuarioById(
+    idDireccion,
+    direcciones,
+  )[0];
 
   return (
     <>
@@ -167,15 +195,15 @@ export const ModalEliminarRoles = ({ idRol, updateTable }: ModalProps) => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Eliminar Rol
+                Eliminar Dirección
               </ModalHeader>
               <ModalBody>
                 <div className="flex w-full flex-col items-center gap-2 py-4">
                   <h2 className="text-xl font-medium">
-                    ¿Desea eliminar el rol?
+                    ¿Desea eliminar la dirección:
                   </h2>
                   <h3 className="text-2xl font-bold text-red-600">
-                    {rolID.nombre}
+                    {direccionID.nombre}, {direccionID.municipio} ?
                   </h3>
                 </div>
                 <div className="flex gap-3">

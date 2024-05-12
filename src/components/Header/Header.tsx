@@ -81,10 +81,15 @@ export const Header = () => {
           )}
 
           {/* Direcciones */}
+          {pathname.includes("direcciones/tabla") && (
+            <BreadcrumbItem>Direcciones</BreadcrumbItem>
+          )}
           {pathname.includes("/direcciones/municipio") && (
             <BreadcrumbItem>
               <Breadcrumbs size="lg">
-                <BreadcrumbItem>Direcciones</BreadcrumbItem>
+                <BreadcrumbItem onPress={() => navigate("/direcciones/tabla")}>
+                  Direcciones
+                </BreadcrumbItem>
                 <BreadcrumbItem>Municipio</BreadcrumbItem>
               </Breadcrumbs>
             </BreadcrumbItem>
@@ -92,7 +97,9 @@ export const Header = () => {
           {pathname.includes("/direcciones/departamento") && (
             <BreadcrumbItem>
               <Breadcrumbs size="lg">
-                <BreadcrumbItem>Direcciones</BreadcrumbItem>
+                <BreadcrumbItem onPress={() => navigate("/direcciones/tabla")}>
+                  Direcciones
+                </BreadcrumbItem>
                 <BreadcrumbItem>Departamento</BreadcrumbItem>
               </Breadcrumbs>
             </BreadcrumbItem>

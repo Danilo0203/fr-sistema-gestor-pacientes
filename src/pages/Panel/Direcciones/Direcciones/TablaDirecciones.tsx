@@ -11,19 +11,19 @@ import {
   SelectItem,
   Input,
 } from "@nextui-org/react";
-// import { capitalizar } from "../../../../utils/capitalizarStrings";
 import { columns } from "./dataTable/data";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { ModalEditarRoles, ModalEliminarRoles } from "./Modal";
+import { ModalEditarDireccion, ModalEliminarDireccion } from "./Modal";
 import { useCallback, useMemo } from "react";
-import { useTableRol } from "hooks/useTableRol";
-import { useRolStore } from "../../../../store/usuarios/roles";
+import { useTableDirecciones } from "hooks/useTableDirecciones";
+import { useDireccionStore } from "../../../../store/direcciones/direcciones";
 
-export const TablaRoles = () => {
-  const roles = useRolStore((state) => state.data);
+export const TablaDirecciones = () => {
+  const direcciones = useDireccionStore((state) => state.data);
+
   const {
     value,
-    getRoles,
+    getDirecciones,
     pagina,
     setPagina,
     sortDescriptor,
@@ -35,40 +35,41 @@ export const TablaRoles = () => {
     onRowsPerPageChange,
     onSearchChange,
     onClear,
-  } = useTableRol(roles);
+  } = useTableDirecciones(direcciones);
 
-  interface Rol {
+  interface Direccion {
     id: string;
-    rol: string;
-    descripcion: string;
+    nombre: string;
+    municipio: string;
+    departamento: string;
   }
+
   interface Column {
     key: string;
     label: string;
     sortable?: boolean;
   }
 
-  const renderCell = useCallback((rol: Rol, columnKey: Column) => {
-    const cellValue = rol[columnKey];
-
+  const renderCell = useCallback((direccion: Direccion, columnKey: Column) => {
+    const cellValue = direccion[columnKey];
     switch (columnKey) {
-      // case "id":
-      //   let elementos: JSX.Element[] = [];
-      //   for (let i = 0; i < usuarios.length; i++) {
-      //     // Crear una etiqueta <p> para cada número de usuario y nombre
-      //     elementos.push(<p key={i}>{i + 1}</p>);
-      //   }
-      //   return elementos;
-
-      case "rol":
-        return <p> {rol.nombre} </p>;
-      case "descripcion":
-        return <p> {rol.descripcion} </p>;
+      case "nombre":
+        return <p>{direccion.nombre}</p>;
+      case "municipio":
+        return <p>{direccion.municipio}</p>;
+      case "departamento":
+        return <p>{direccion.departamento}</p>;
       case "acciones":
         return (
           <div className="relative flex items-center gap-3">
-            <ModalEditarRoles idRol={rol.id} updateTable={getRoles} />
-            <ModalEliminarRoles idRol={rol.id} updateTable={getRoles} />
+            <ModalEditarDireccion
+              idDireccion={direccion.id}
+              updateTable={getDirecciones}
+            />
+            <ModalEliminarDireccion
+              idDireccion={direccion.id}
+              updateTable={getDirecciones}
+            />
           </div>
         );
       default:
@@ -82,13 +83,13 @@ export const TablaRoles = () => {
         <div className="flex items-center justify-between">
           <div className="flex w-full flex-col gap-3">
             <Input
-              label="Buscar por rol"
+              label="Buscar por dirección: "
               isClearable
               classNames={{
                 base: "w-full sm:max-w-[44%]",
                 inputWrapper: "border-1",
               }}
-              placeholder="rol..."
+              placeholder="dirección..."
               size="md"
               value={filterValue}
               variant="bordered"
@@ -99,7 +100,9 @@ export const TablaRoles = () => {
               startContent={<Icon icon="mdi:account-search" width={20} />}
             />
 
-            <span className="text-small">Total de usuarios {roles.length}</span>
+            <span className="text-small">
+              Total de direcciones: {direcciones.length}
+            </span>
           </div>
 
           <Select
@@ -120,11 +123,17 @@ export const TablaRoles = () => {
         </div>
       </div>
     );
-  }, [onRowsPerPageChange, roles.length, onClear, filterValue, onSearchChange]);
+  }, [
+    onRowsPerPageChange,
+    direcciones.length,
+    onClear,
+    filterValue,
+    onSearchChange,
+  ]);
 
   return (
     <Table
-      aria-label="Tabla de roles"
+      aria-label="Tabla de direcciones"
       isStriped
       onSortChange={setSortDescriptor}
       sortDescriptor={sortDescriptor}
@@ -157,7 +166,7 @@ export const TablaRoles = () => {
       </TableHeader>
       <TableBody
         items={ordenarItems ?? []}
-        emptyContent={`No se encontró el rol ${filterValue}`}
+        emptyContent={`No se encontraron direcciones con el nombre: ${filterValue}`}
         loadingContent={
           <CircularProgress
             label="Cargando..."

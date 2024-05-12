@@ -125,7 +125,7 @@ export const Sidbar = () => {
         {/* Direcciones */}
         <li>
           <NavLink
-            to="/direcciones/municipio"
+            to="/direcciones/tabla"
             className="flex items-center gap-2 rounded-md py-1 pl-2 text-blanco "
             onClick={() => setOpenDireccion(!openDireccion)}
           >
@@ -143,6 +143,17 @@ export const Sidbar = () => {
           </NavLink>
           {openDireccion && (
             <ul className="my-1 flex flex-col gap-1 pl-3">
+              <li>
+                <NavLink
+                  to="/direcciones/tabla"
+                  className={({ isActive }) =>
+                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
+                  }
+                >
+                  <Icon icon="mdi:map-marker" width={25} />
+                  <span>Direcciones</span>
+                </NavLink>
+              </li>
               <li>
                 <NavLink
                   to="/direcciones/municipio"
