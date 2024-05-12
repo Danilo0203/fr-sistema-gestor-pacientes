@@ -16,16 +16,18 @@ import {
 } from "@nextui-org/react";
 import { useAuthStore } from "../../store/auth";
 import { capitalizar } from "../../utils/capitalizarStrings";
+import { logout } from "helpers/api/auth";
 
 export const Header = () => {
   const clearSesion = useAuthStore((state) => state.setClearToken);
   const nombre = useAuthStore((state) => state.profile);
   const nombreUsuario = nombre?.nombre;
-  const rolUsuario = capitalizar(nombre?.rol?.nombre);
+  const rolUsuario = capitalizar(nombre.rol.nombre);
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const handleCerrarSesion = async () => {
+    await logout();
     clearSesion();
     navigate("/");
   };

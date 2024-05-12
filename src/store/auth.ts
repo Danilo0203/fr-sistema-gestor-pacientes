@@ -1,3 +1,4 @@
+import { logout } from "helpers/api/auth";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -21,7 +22,8 @@ export const useAuthStore = create(
       logged: false,
       setToken: (token: string) => set({ token, logged: true }),
       setProfile: (profile: string) => set({ profile }),
-      setClearToken: () => set((state) => ({ ...state, token: "", logged: false, profile: ""})),
+      setClearToken: () =>
+        set((state) => ({ ...state, token: "", logged: false, profile: "" })),
     }),
 
     { name: "auth" },

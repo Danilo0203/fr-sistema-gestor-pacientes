@@ -35,7 +35,7 @@ export const useRolStore = create<UsuariosStoreProps>()((set) => ({
         }),
       });
     } catch (err) {
-      console.error("Error al obtener los usuarios: ", err);
+      console.error("Error al obtener los roles: ", err);
       set({ ...initialState, error: true, errorData: err.message });
     }
   },

@@ -23,6 +23,7 @@ import { useRolStore } from "../../../store/usuarios/roles";
 import { deleteUsuario, updateUsuario } from "helpers/api/usuarios/usuarios";
 import { getUsuarioById } from "../../../utils/getUsuarioById";
 import { ModalProps, UserData } from "types/index";
+import { Backdrop } from "@mui/material";
 
 export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
   const isOpen = useModalStore((state) => state.isOpen);
@@ -81,7 +82,13 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
           </span>
         </Tooltip>
       </button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        classNames={{ backdrop: "bg-black/10 blur-[1px]" }}
+        size="2xl"
+      >
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="mt-4 flex flex-col gap-8"
@@ -94,52 +101,87 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
                 </ModalHeader>
                 <Divider />
                 <ModalBody>
-                  <div className="flex flex-col gap-3">
-                    <Label id="usuario">Usuario</Label>
-                    <Input
-                      placeholder="Editar usuario"
-                      {...register("usuario")}
-                    >
-                      <Icon
-                        icon="mdi:account"
-                        width={20}
-                        className="text-azulFuerte"
-                      />
-                    </Input>
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <Label id="nombre">Nombre</Label>
-                    <Input placeholder="Editar nombre" {...register("nombre")}>
-                      <Icon
-                        icon="mdi:account"
-                        width={20}
-                        className="text-azulFuerte"
-                      />
-                    </Input>
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <Label id="email">Correo</Label>
-                    <Input placeholder="Editar correo" {...register("email")}>
-                      <Icon
-                        icon="mdi:account"
-                        width={20}
-                        className="text-azulFuerte"
-                      />
-                    </Input>
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <Label id="rol_id">Rol</Label>
-                    <Select
-                      items={roles}
-                      placeholder="Seleccione un rol"
-                      defaultSelectedKeys={[usuarioID.rolID]}
-                      size="lg"
-                      {...register("rol_id")}
-                    >
-                      {(rol) => (
-                        <SelectItem key={rol.id}>{rol.nombre}</SelectItem>
-                      )}
-                    </Select>
+                  <div className="flex flex-col gap-8">
+                    <div className="flex gap-8">
+                      <div className="flex flex-col gap-1">
+                        <Label id="usuario">Usuario</Label>
+                        <Input
+                          placeholder="Editar usuario"
+                          {...register("usuario")}
+                        >
+                          <Icon
+                            icon="mdi:account"
+                            width={20}
+                            className="text-azulFuerte"
+                          />
+                        </Input>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <Label id="nombre">Nombre</Label>
+                        <Input
+                          placeholder="Editar nombre"
+                          {...register("nombre")}
+                        >
+                          <Icon
+                            icon="mdi:account"
+                            width={20}
+                            className="text-azulFuerte"
+                          />
+                        </Input>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <Label id="email">Correo</Label>
+                      <Input placeholder="Editar correo" {...register("email")}>
+                        <Icon
+                          icon="mdi:account"
+                          width={20}
+                          className="text-azulFuerte"
+                        />
+                      </Input>
+                    </div>
+                    <div className="flex gap-8">
+                      <div className="flex flex-col gap-1">
+                        <Label id="password">Contraseña</Label>
+                        <Input
+                          placeholder="Editar contraseña"
+                          {...register("password")}
+                        >
+                          <Icon
+                            icon="mdi:lock"
+                            width={20}
+                            className="text-azulFuerte"
+                          />
+                        </Input>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <Label id="passwordConfirm">Confirmar Contraseña</Label>
+                        <Input
+                          placeholder="Editar contraseña"
+                          {...register("passwordConfirm")}
+                        >
+                          <Icon
+                            icon="mdi:lock"
+                            width={20}
+                            className="text-azulFuerte"
+                          />
+                        </Input>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <Label id="rol_id">Rol</Label>
+                      <Select
+                        items={roles}
+                        placeholder="Seleccione un rol"
+                        defaultSelectedKeys={[usuarioID.rolID]}
+                        size="lg"
+                        {...register("rol_id")}
+                      >
+                        {(rol) => (
+                          <SelectItem key={rol.id}>{rol.nombre}</SelectItem>
+                        )}
+                      </Select>
+                    </div>
                   </div>
                 </ModalBody>
                 <ModalFooter>

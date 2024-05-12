@@ -17,12 +17,14 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { ModalEditarUsuarios, ModalEliminarUsuarios } from "./Modal";
 import { columns } from "./dataTable/data";
 import { useTableUser } from "hooks/useTableUser";
+import { useUsuarioStore } from "../../../store/usuarios";
 
 export const TablaUsuarios = () => {
+  const usuarios = useUsuarioStore((state) => state.data);
+
   const {
     value,
     getUsuarios,
-    usuarios,
     pagina,
     setPagina,
     sortDescriptor,
@@ -34,7 +36,7 @@ export const TablaUsuarios = () => {
     onRowsPerPageChange,
     onSearchChange,
     onClear,
-  } = useTableUser();
+  } = useTableUser(usuarios);
 
   interface User {
     id: string;
@@ -49,35 +51,41 @@ export const TablaUsuarios = () => {
     sortable?: boolean;
   }
 
-  const renderCell = useCallback((user: User, columnKey: Column) => {
-    const cellValue = user[columnKey];
+  const renderCell = useCallback(
+    (user: User, columnKey: Column) => {
+      const cellValue = user[columnKey];
 
-    switch (columnKey) {
-      // case "id":
-      //   let elementos: JSX.Element[] = [];
-      //   for (let i = 0; i < usuarios.length; i++) {
-      //     // Crear una etiqueta <p> para cada número de usuario y nombre
-      //     elementos.push(<p key={i}>{i + 1}</p>);
-      //   }
-      //   return elementos;
+      switch (columnKey) {
+        // case "id":
+        //   let elementos: JSX.Element[] = [];
+        //   for (let i = 0; i < usuarios.length; i++) {
+        //     // Crear una etiqueta <p> para cada número de usuario y nombre
+        //     elementos.push(<p key={i}>{i + 1}</p>);
+        //   }
+        //   return elementos;
 
-      case "usuario":
-        return <p> {user.usuario} </p>;
-      case "nombre":
-        return <p> {user.nombre} </p>;
-      case "rol":
-        return <p> {capitalizar(user.rol)} </p>;
-      case "acciones":
-        return (
-          <div className="relative flex items-center gap-3">
-            <ModalEditarUsuarios idUser={user.id} updateTable={getUsuarios} />
-            <ModalEliminarUsuarios idUser={user.id} updateTable={getUsuarios} />
-          </div>
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+        case "usuario":
+          return <p> {user.usuario} </p>;
+        case "nombre":
+          return <p> {user.nombre} </p>;
+        case "rol":
+          return <p> {capitalizar(user.rol)} </p>;
+        case "acciones":
+          return (
+            <div className="relative flex items-center gap-3">
+              <ModalEditarUsuarios idUser={user.id} updateTable={getUsuarios} />
+              <ModalEliminarUsuarios
+                idUser={user.id}
+                updateTable={getUsuarios}
+              />
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [getUsuarios],
+  );
 
   const topContent = useMemo(() => {
     return (
@@ -136,6 +144,9 @@ export const TablaUsuarios = () => {
   return (
     <Table
       aria-label="Tabla de usuarios"
+      isStriped
+      onSortChange={setSortDescriptor}
+      sortDescriptor={sortDescriptor}
       topContent={topContent}
       bottomContent={
         paginas > 0 ? (
@@ -151,9 +162,6 @@ export const TablaUsuarios = () => {
           </div>
         ) : null
       }
-      isStriped
-      sortDescriptor={sortDescriptor}
-      onSortChange={setSortDescriptor}
     >
       <TableHeader columns={columns}>
         {(column) => (

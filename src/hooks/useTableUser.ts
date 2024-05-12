@@ -2,16 +2,15 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useUsuarioStore } from "../store/usuarios";
 import { SortDescriptor } from "@nextui-org/react";
 
-export const useTableUser = () => {
+export const useTableUser = (usuarios) => {
   const getUsuarios = useUsuarioStore((state) => state.execute);
-  const usuarios = useUsuarioStore((state) => state.data);
   const loading = useUsuarioStore((state) => state.loading);
   const [value, setValue] = useState(0);
   const [pagina, setPagina] = useState(1);
   const [filterValue, setFilterValue] = useState("");
   const [filasPorPagina, setRowsPerPage] = useState(5);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: "rol",
+    column: "nombre",
     direction: "ascending",
   });
 
@@ -93,7 +92,6 @@ export const useTableUser = () => {
   return {
     value,
     getUsuarios,
-    usuarios,
     pagina,
     setPagina,
     sortDescriptor,

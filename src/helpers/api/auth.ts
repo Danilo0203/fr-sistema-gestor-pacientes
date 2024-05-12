@@ -13,9 +13,8 @@ export const login = async (usuario: string, password: string) => {
     const login = await api.post("/auth/login", data);
     return login.data;
   } catch (error) {
-    // console.error("Error al iniciar sesión: ", error);
     if (error.message === "Network Error") {
-      toast.error("Error de conexión con la Base de Datos");
+      toast.error("Error de conexión con el servidor");
     }
   }
 };
