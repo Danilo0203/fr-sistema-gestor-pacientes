@@ -43,6 +43,7 @@ export type RolData = {
   descripcion: string;
 };
 
+// DIRECCIONES
 export type DireccionData = {
   id: string;
   nombre: string;
@@ -65,11 +66,48 @@ export type DepartamentoData = {
   departamento: string;
 };
 
+// PACIENTES
+export type PacienteData = {
+  id: string;
+  nombre: string;
+  apellido: string;
+  fecha_nacimiento: string;
+  direccion: string;
+  direccionID: string;
+  municipio: string;
+  municipioID: string;
+  genero: string;
+  generoID: string;
+  estadoCivil: string;
+  estadoCivilID: string;
+  profesion: string;
+  profesionID: string;
+};
+
+export type ProfesionData = {
+  id: string;
+  nombre: string;
+};
+
+export type EstadoCivilData = {
+  id: string;
+  nombre: string;
+};
+
+export type GeneroData = {
+  id: string;
+  nombre: string;
+};
+
 export interface ModalProps {
   idUser?: string;
   idRol?: string;
   idDireccion?: string;
   idMunicipio?: string;
   idDepartamento?: string;
+  idProfesion?: string;
+  idEstadoCivil?: string;
+  idGenero?: string;
+  idPaciente?: string;
   updateTable?: () => void;
 }

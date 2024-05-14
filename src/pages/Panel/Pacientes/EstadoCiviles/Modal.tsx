@@ -6,8 +6,6 @@ import {
   ModalFooter,
   Button,
   Tooltip,
-  Select,
-  SelectItem,
   Divider,
   useDisclosure,
 } from "@nextui-org/react";
@@ -18,59 +16,50 @@ import { Label } from "components/ui/Label";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { useMunicipioStore } from "../../../../store/direcciones/municipios";
-import { useDepartamentoStore } from "../../../../store/direcciones/departamentos";
+import { useEstadoCivilStore } from "../../../../store/pacientes/estadoCivil";
 import {
-  updateMunicipio,
-  deleteMunicipio,
-} from "helpers/api/direccion/municipios";
+  updateEstadoCivil,
+  deleteEstadoCivil,
+} from "helpers/api/pacientes/estado-civil";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
-import { ModalProps, MunicipioData } from "types/index";
+import { ModalProps, EstadoCivilData } from "types/index";
 
-export const ModalEditarMunicipio = ({
-  idMunicipio,
+export const ModalEditarEstadoCivil = ({
+  idEstadoCivil,
   updateTable,
 }: ModalProps) => {
   const isOpen = useModalStore((state) => state.isOpen);
   const onOpen = useModalStore((state) => state.onOpen);
   const onOpenChange = useModalStore((state) => state.onOpenChange);
-  const municipios = useMunicipioStore((state) => state.data);
-  const departamentos = useDepartamentoStore((state) => state.data);
-  const getDepartamentos = useDepartamentoStore((state) => state.execute);
-
+  const estadoCiviles = useEstadoCivilStore((state) => state.data);
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const params = useParams();
 
-  useEffect(() => {
-    getDepartamentos();
-  }, [getDepartamentos]);
-
   const handleEdit = () => {
-    navigate(`/direcciones/municipio/editar/${idMunicipio}`);
+    navigate(`/pacientes/estado-civil/editar/${idEstadoCivil}`);
   };
 
   const { id } = params;
 
-  const municipioID: MunicipioData = getUsuarioById(id, municipios)[0];
+  const estadoCivilID: EstadoCivilData = getUsuarioById(id, estadoCiviles)[0];
 
   useEffect(() => {
-    setValue("nombre", municipioID.nombre);
-    setValue("departamento", municipioID.departamento);
-  }, [municipioID.nombre, municipioID.departamento]);
+    setValue("nombre", estadoCivilID.nombre);
+  }, [estadoCivilID.nombre, setValue]);
 
   const handleClose = () => {
-    navigate("/direcciones/municipio");
+    navigate("/pacientes/estado-civil");
   };
 
-  const actualizar = async (data: MunicipioData) => {
-    await updateMunicipio(municipioID.id, data);
+  const actualizar = async (data: EstadoCivilData) => {
+    await updateEstadoCivil(estadoCivilID.id, data);
     updateTable();
   };
 
-  const onSubmit = (data: MunicipioData) => {
+  const onSubmit = (data: EstadoCivilData) => {
     actualizar(data);
-    navigate("/direcciones/municipio");
+    navigate("/pacientes/estado-civil");
   };
 
   return (
@@ -101,13 +90,13 @@ export const ModalEditarMunicipio = ({
             {(onClose) => (
               <>
                 <ModalHeader className="flex flex-col gap-1 text-azulFuerte">
-                  Editar Municipio
+                  Editar Estado Civil
                 </ModalHeader>
                 <Divider />
                 <ModalBody>
                   <div className="flex flex-col gap-8">
                     <div className="flex gap-8">
-                      <div className="flex flex-col gap-1 w-1/2">
+                      <div className="flex flex-col gap-1">
                         <Label id="nombre">Nombre</Label>
                         <Input
                           placeholder="Editar nombre"
@@ -119,22 +108,6 @@ export const ModalEditarMunicipio = ({
                             className="text-azulFuerte"
                           />
                         </Input>
-                      </div>
-                      <div className="flex flex-col gap-1 w-1/2">
-                        <Label id="departamento_id">Departamento</Label>
-                        <Select
-                          items={departamentos}
-                          placeholder="Seleccione un departamento"
-                          defaultSelectedKeys={[municipioID.departamentoID]}
-                          size="lg"
-                          {...register("departamento_id")}
-                        >
-                          {(departamento) => (
-                            <SelectItem key={departamento.id}>
-                              {departamento.nombre}
-                            </SelectItem>
-                          )}
-                        </Select>
                       </div>
                     </div>
                   </div>
@@ -161,17 +134,20 @@ export const ModalEditarMunicipio = ({
   );
 };
 
-export const ModalEliminarMunicipio = ({
-  idMunicipio,
+export const ModalEliminarEstadoCivil = ({
+  idEstadoCivil,
   updateTable,
 }: ModalProps) => {
-  const municipios = useMunicipioStore((state) => state.data);
+  const estadoCiviles = useEstadoCivilStore((state) => state.data);
   const handleDelete = async () => {
-    await deleteMunicipio(idMunicipio);
+    await deleteEstadoCivil(idEstadoCivil);
     updateTable();
   };
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const municipioID: MunicipioData = getUsuarioById(idMunicipio, municipios)[0];
+  const estadoCivilID: EstadoCivilData = getUsuarioById(
+    idEstadoCivil,
+    estadoCiviles,
+  )[0];
 
   return (
     <>
@@ -192,15 +168,15 @@ export const ModalEliminarMunicipio = ({
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Eliminar Municipio
+                Eliminar Estado Civil
               </ModalHeader>
               <ModalBody>
                 <div className="flex w-full flex-col items-center gap-2 py-4">
                   <h2 className="text-xl font-medium">
-                    ¿Desea eliminar el municipio:
+                    ¿Desea eliminar el Estado Civil:
                   </h2>
                   <h3 className="text-2xl font-bold text-red-600">
-                    {municipioID.nombre}, {municipioID.departamento} ?
+                    {estadoCivilID.nombre} ?
                   </h3>
                 </div>
                 <div className="flex gap-3">

@@ -52,7 +52,7 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
     setValue("usuario", usuarioID.usuario);
     setValue("nombre", usuarioID.nombre);
     setValue("email", usuarioID.email);
-  }, [usuarioID.usuario, usuarioID.nombre, usuarioID.email]);
+  }, [usuarioID.usuario, usuarioID.nombre, usuarioID.email, setValue]);
 
   const handleClose = () => {
     navigate("/usuarios/tabla");

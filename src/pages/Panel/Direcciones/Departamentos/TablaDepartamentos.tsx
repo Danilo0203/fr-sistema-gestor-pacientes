@@ -80,13 +80,13 @@ export const TablaDepartamentos = () => {
         <div className="flex items-center justify-between">
           <div className="flex w-full flex-col gap-3">
             <Input
-              label="Buscar por rol"
+              label="Buscar por departamento:"
               isClearable
               classNames={{
                 base: "w-full sm:max-w-[44%]",
                 inputWrapper: "border-1",
               }}
-              placeholder="rol..."
+              placeholder="departamento..."
               size="md"
               value={filterValue}
               variant="bordered"
@@ -163,7 +163,7 @@ export const TablaDepartamentos = () => {
       </TableHeader>
       <TableBody
         items={ordenarItems ?? []}
-        emptyContent={`No se encontró el rol ${filterValue}`}
+        emptyContent={`No se encontró el departamento ${filterValue}`}
         loadingContent={
           <CircularProgress
             label="Cargando..."

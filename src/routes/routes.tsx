@@ -22,6 +22,14 @@ import { TablaMunicipios } from "pages/Panel/Direcciones/Municipios/TablaMunicip
 import { ModalEditarMunicipio } from "pages/Panel/Direcciones/Municipios/Modal";
 import { TablaDepartamentos } from "pages/Panel/Direcciones/Departamentos/TablaDepartamentos";
 import { ModalEditarDepartamento } from "pages/Panel/Direcciones/Departamentos/Modal";
+import { TablaEstadoCiviles } from "pages/Panel/Pacientes/EstadoCiviles/TablaEstadosCiviles";
+import { ModalEditarEstadoCivil } from "pages/Panel/Pacientes/EstadoCiviles/Modal";
+import { TablaGeneros } from "pages/Panel/Pacientes/Generos/TablaGeneros";
+import { ModalEditarGenero } from "pages/Panel/Pacientes/Generos/Modal";
+import { TablaProfesiones } from "pages/Panel/Pacientes/Profesiones/TablaProfesiones";
+import { ModalEditarProfesion } from "pages/Panel/Pacientes/Profesiones/Modal";
+import { TablaPacientes } from "pages/Panel/Pacientes/Pacientes/TablaPacientes";
+import { ModalEditarPaciente } from "pages/Panel/Pacientes/Pacientes/Modal";
 
 const routes = createBrowserRouter([
   {
@@ -75,15 +83,43 @@ const routes = createBrowserRouter([
             children: [
               {
                 path: "tabla",
-                element: <h1>Pacientes</h1>,
+                element: <TablaPacientes />,
+                children: [
+                  {
+                    path: "editar/:id",
+                    element: <ModalEditarPaciente />,
+                  },
+                ],
               },
               {
                 path: "profesion",
-                element: <h1>Profesion</h1>,
+                element: <TablaProfesiones />,
+                children: [
+                  {
+                    path: "editar/:id",
+                    element: <ModalEditarProfesion />,
+                  },
+                ],
+              },
+              {
+                path: "estado-civil",
+                element: <TablaEstadoCiviles />,
+                children: [
+                  {
+                    path: "editar/:id",
+                    element: <ModalEditarEstadoCivil />,
+                  },
+                ],
               },
               {
                 path: "genero",
-                element: <h1>Genero</h1>,
+                element: <TablaGeneros />,
+                children: [
+                  {
+                    path: "editar/:id",
+                    element: <ModalEditarGenero />,
+                  },
+                ],
               },
             ],
           },

@@ -163,7 +163,7 @@ export const TablaMunicipios = () => {
       </TableHeader>
       <TableBody
         items={ordenarItems ?? []}
-        emptyContent={`No se encontraron direcciones con el nombre: ${filterValue}`}
+        emptyContent={`No se encontraron municipios con el nombre: ${filterValue}`}
         loadingContent={
           <CircularProgress
             label="Cargando..."

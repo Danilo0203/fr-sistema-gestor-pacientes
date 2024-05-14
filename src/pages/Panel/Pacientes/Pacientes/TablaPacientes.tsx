@@ -11,19 +11,18 @@ import {
   SelectItem,
   Input,
 } from "@nextui-org/react";
-import { columns } from "./dataTable/data";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { ModalEditarDireccion, ModalEliminarDireccion } from "./Modal";
 import { useCallback, useMemo } from "react";
-import { useTableDirecciones } from "hooks/useTableDirecciones";
-import { useDireccionStore } from "../../../../store/direcciones/direcciones";
+import { columns } from "./dataTable/data";
+import { ModalEditarPaciente, ModalEliminarPaciente } from "./Modal";
+import { useTablePacientes } from "hooks/useTablePacientes";
+import { usePacienteStore } from "../../../../store/pacientes/pacientes";
 
-export const TablaDirecciones = () => {
-  const direcciones = useDireccionStore((state) => state.data);
-
+export const TablaPacientes = () => {
+  const pacientes = usePacienteStore((state) => state.data);
   const {
     value,
-    getDirecciones,
+    getPacientes,
     pagina,
     setPagina,
     sortDescriptor,
@@ -35,13 +34,15 @@ export const TablaDirecciones = () => {
     onRowsPerPageChange,
     onSearchChange,
     onClear,
-  } = useTableDirecciones(direcciones);
+  } = useTablePacientes(pacientes);
 
-  interface Direccion {
+  interface Paciente {
     id: string;
     nombre: string;
+    apellido: string;
+    fecha_nacimiento: string;
+    direccion: string;
     municipio: string;
-    departamento: string;
   }
 
   interface Column {
@@ -51,25 +52,42 @@ export const TablaDirecciones = () => {
   }
 
   const renderCell = useCallback(
-    (direccion: Direccion, columnKey: Column) => {
-      const cellValue = direccion[columnKey];
+    (paciente: Paciente, columnKey: Column) => {
+      const cellValue = paciente[columnKey];
+
+      // Mostrar la edad del paciente en lugar de la fecha de nacimiento
+      const fechaNacimiento = new Date(paciente.fecha_nacimiento);
+      const hoy = new Date();
+
+      let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+      const mes = hoy.getMonth() - fechaNacimiento.getMonth();
+      if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+        edad--;
+      }
+
       switch (columnKey) {
         case "nombre":
-          return <p>{direccion.nombre}</p>;
-        case "municipio":
-          return <p>{direccion.municipio}</p>;
-        case "departamento":
-          return <p>{direccion.departamento}</p>;
+          return <p>{paciente.nombre}</p>;
+        case "apellido":
+          return <p>{paciente.apellido}</p>;
+        case "fechaNacimiento":
+          return <p>{edad} años</p>;
+        case "direccion":
+          return (
+            <p>
+              {paciente.direccion}, {paciente.municipio}
+            </p>
+          );
         case "acciones":
           return (
             <div className="relative flex items-center gap-3">
-              <ModalEditarDireccion
-                idDireccion={direccion.id}
-                updateTable={getDirecciones}
+              <ModalEditarPaciente
+                idPaciente={paciente.id}
+                updateTable={getPacientes}
               />
-              <ModalEliminarDireccion
-                idDireccion={direccion.id}
-                updateTable={getDirecciones}
+              <ModalEliminarPaciente
+                idPaciente={paciente.id}
+                updateTable={getPacientes}
               />
             </div>
           );
@@ -77,7 +95,7 @@ export const TablaDirecciones = () => {
           return cellValue;
       }
     },
-    [getDirecciones],
+    [getPacientes],
   );
 
   const topContent = useMemo(() => {
@@ -86,13 +104,13 @@ export const TablaDirecciones = () => {
         <div className="flex items-center justify-between">
           <div className="flex w-full flex-col gap-3">
             <Input
-              label="Buscar por dirección: "
+              label="Buscar por paciente:"
               isClearable
               classNames={{
                 base: "w-full sm:max-w-[44%]",
                 inputWrapper: "border-1",
               }}
-              placeholder="dirección..."
+              placeholder="paciente..."
               size="md"
               value={filterValue}
               variant="bordered"
@@ -104,7 +122,7 @@ export const TablaDirecciones = () => {
             />
 
             <span className="text-small">
-              Total de direcciones: {direcciones.length}
+              Total de pacientes: {pacientes.length}
             </span>
           </div>
 
@@ -128,7 +146,7 @@ export const TablaDirecciones = () => {
     );
   }, [
     onRowsPerPageChange,
-    direcciones.length,
+    pacientes.length,
     onClear,
     filterValue,
     onSearchChange,
@@ -136,7 +154,7 @@ export const TablaDirecciones = () => {
 
   return (
     <Table
-      aria-label="Tabla de direcciones"
+      aria-label="Tabla de pacientes"
       isStriped
       onSortChange={setSortDescriptor}
       sortDescriptor={sortDescriptor}
@@ -169,7 +187,7 @@ export const TablaDirecciones = () => {
       </TableHeader>
       <TableBody
         items={ordenarItems ?? []}
-        emptyContent={`No se encontraron direcciones con el nombre: ${filterValue}`}
+        emptyContent={`No se encontró el paciente: ${filterValue}`}
         loadingContent={
           <CircularProgress
             label="Cargando..."

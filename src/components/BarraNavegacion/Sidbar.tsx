@@ -75,7 +75,7 @@ export const Sidbar = () => {
           >
             <div className="flex w-full items-center justify-between pr-1">
               <div className="flex items-center gap-2">
-                <Icon icon="mdi:user" width={25} />
+                <Icon icon="mdi:account" width={25} /> {/* Modified icon */}
                 <span>Pacientes</span>
               </div>
               {openPacientes ? (
@@ -106,6 +106,16 @@ export const Sidbar = () => {
                   }
                 >
                   <Icon icon="mdi:work" width={25} /> <span>Profesion</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/pacientes/estado-civil"
+                  className={({ isActive }) =>
+                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
+                  }
+                >
+                  <Icon icon="mdi:heart" width={25} /> <span>Estado Civil</span>
                 </NavLink>
               </li>
               <li>

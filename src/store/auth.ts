@@ -1,16 +1,22 @@
-import { logout } from "helpers/api/auth";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+type Profile = {
+  nombre: string;
+  rol: {
+    nombre: string;
+  };
+};
+
 type State = {
   token: string;
-  profile: string;
+  profile: Profile;
   logged: boolean;
 };
 
 type Actions = {
   setToken: (token: string) => void;
-  setProfile: (token: string) => void;
+  setProfile: (profile: Profile) => void;
   setClearToken: () => void;
 };
 
@@ -18,12 +24,19 @@ export const useAuthStore = create(
   persist<State & Actions>(
     (set) => ({
       token: "",
-      profile: "",
+      profile: { nombre: "", rol: { nombre: "" } },
       logged: false,
+
       setToken: (token: string) => set({ token, logged: true }),
-      setProfile: (profile: string) => set({ profile }),
+
+      setProfile: (profile: Profile) => set({ profile }),
+
       setClearToken: () =>
-        set((state) => ({ ...state, token: "", logged: false, profile: "" })),
+        set({
+          token: "",
+          profile: { nombre: "", rol: { nombre: "" } },
+          logged: false,
+        }),
     }),
 
     { name: "auth" },

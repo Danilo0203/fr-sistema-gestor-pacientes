@@ -11,19 +11,18 @@ import {
   SelectItem,
   Input,
 } from "@nextui-org/react";
-import { columns } from "./dataTable/data";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { ModalEditarDireccion, ModalEliminarDireccion } from "./Modal";
 import { useCallback, useMemo } from "react";
-import { useTableDirecciones } from "hooks/useTableDirecciones";
-import { useDireccionStore } from "../../../../store/direcciones/direcciones";
+import { columns } from "./dataTable/data";
+import { ModalEditarProfesion, ModalEliminarProfesion } from "./Modal";
+import { useTableProfesiones } from "hooks/useTableProfesiones";
+import { useProfesionStore } from "../../../../store/pacientes/profesiones";
 
-export const TablaDirecciones = () => {
-  const direcciones = useDireccionStore((state) => state.data);
-
+export const TablaProfesiones = () => {
+  const profesiones = useProfesionStore((state) => state.data);
   const {
     value,
-    getDirecciones,
+    getProfesiones,
     pagina,
     setPagina,
     sortDescriptor,
@@ -35,13 +34,11 @@ export const TablaDirecciones = () => {
     onRowsPerPageChange,
     onSearchChange,
     onClear,
-  } = useTableDirecciones(direcciones);
+  } = useTableProfesiones(profesiones);
 
-  interface Direccion {
+  interface Profesion {
     id: string;
     nombre: string;
-    municipio: string;
-    departamento: string;
   }
 
   interface Column {
@@ -51,25 +48,22 @@ export const TablaDirecciones = () => {
   }
 
   const renderCell = useCallback(
-    (direccion: Direccion, columnKey: Column) => {
-      const cellValue = direccion[columnKey];
+    (profesion: Profesion, columnKey: Column) => {
+      const cellValue = profesion[columnKey];
+
       switch (columnKey) {
-        case "nombre":
-          return <p>{direccion.nombre}</p>;
-        case "municipio":
-          return <p>{direccion.municipio}</p>;
-        case "departamento":
-          return <p>{direccion.departamento}</p>;
+        case "profesion":
+          return <p>{profesion.nombre}</p>;
         case "acciones":
           return (
             <div className="relative flex items-center gap-3">
-              <ModalEditarDireccion
-                idDireccion={direccion.id}
-                updateTable={getDirecciones}
+              <ModalEditarProfesion
+                idProfesion={profesion.id}
+                updateTable={getProfesiones}
               />
-              <ModalEliminarDireccion
-                idDireccion={direccion.id}
-                updateTable={getDirecciones}
+              <ModalEliminarProfesion
+                idProfesion={profesion.id}
+                updateTable={getProfesiones}
               />
             </div>
           );
@@ -77,7 +71,7 @@ export const TablaDirecciones = () => {
           return cellValue;
       }
     },
-    [getDirecciones],
+    [getProfesiones],
   );
 
   const topContent = useMemo(() => {
@@ -86,13 +80,13 @@ export const TablaDirecciones = () => {
         <div className="flex items-center justify-between">
           <div className="flex w-full flex-col gap-3">
             <Input
-              label="Buscar por dirección: "
+              label="Buscar por profesión:"
               isClearable
               classNames={{
                 base: "w-full sm:max-w-[44%]",
                 inputWrapper: "border-1",
               }}
-              placeholder="dirección..."
+              placeholder="profesión..."
               size="md"
               value={filterValue}
               variant="bordered"
@@ -104,7 +98,7 @@ export const TablaDirecciones = () => {
             />
 
             <span className="text-small">
-              Total de direcciones: {direcciones.length}
+              Total de profesiones: {profesiones.length}
             </span>
           </div>
 
@@ -128,7 +122,7 @@ export const TablaDirecciones = () => {
     );
   }, [
     onRowsPerPageChange,
-    direcciones.length,
+    profesiones.length,
     onClear,
     filterValue,
     onSearchChange,
@@ -136,7 +130,7 @@ export const TablaDirecciones = () => {
 
   return (
     <Table
-      aria-label="Tabla de direcciones"
+      aria-label="Tabla de profesiones"
       isStriped
       onSortChange={setSortDescriptor}
       sortDescriptor={sortDescriptor}
@@ -169,7 +163,7 @@ export const TablaDirecciones = () => {
       </TableHeader>
       <TableBody
         items={ordenarItems ?? []}
-        emptyContent={`No se encontraron direcciones con el nombre: ${filterValue}`}
+        emptyContent={`No se encontró la profesión: ${filterValue}`}
         loadingContent={
           <CircularProgress
             label="Cargando..."

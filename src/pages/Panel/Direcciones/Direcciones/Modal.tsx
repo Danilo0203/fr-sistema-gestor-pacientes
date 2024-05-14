@@ -57,7 +57,7 @@ export const ModalEditarDireccion = ({
   useEffect(() => {
     setValue("nombre", direccionID.nombre);
     setValue("municipio", direccionID.municipio);
-  }, [direccionID.nombre, direccionID.municipio]);
+  }, [direccionID.nombre, direccionID.municipio, setValue]);
 
   const handleClose = () => {
     navigate("/direcciones/tabla");
@@ -107,7 +107,7 @@ export const ModalEditarDireccion = ({
                 <ModalBody>
                   <div className="flex flex-col gap-8">
                     <div className="flex gap-8">
-                      <div className="flex flex-col gap-1">
+                      <div className="flex flex-col gap-1 w-1/2">
                         <Label id="nombre">Nombre</Label>
                         <Input
                           placeholder="Editar nombre"
@@ -120,22 +120,22 @@ export const ModalEditarDireccion = ({
                           />
                         </Input>
                       </div>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <Label id="municipio_id">Municipio</Label>
-                      <Select
-                        items={municipios}
-                        placeholder="Seleccione un municipio"
-                        defaultSelectedKeys={[direccionID.municipioID]}
-                        size="lg"
-                        {...register("municipio_id")}
-                      >
-                        {(municipio) => (
-                          <SelectItem key={municipio.id}>
-                            {municipio.nombre}
-                          </SelectItem>
-                        )}
-                      </Select>
+                      <div className="flex flex-col gap-1 w-1/2">
+                        <Label id="municipio_id">Municipio</Label>
+                        <Select
+                          items={municipios}
+                          placeholder="Seleccione un municipio"
+                          defaultSelectedKeys={[direccionID.municipioID]}
+                          size="lg"
+                          {...register("municipio_id")}
+                        >
+                          {(municipio) => (
+                            <SelectItem key={municipio.id}>
+                              {municipio.nombre}
+                            </SelectItem>
+                          )}
+                        </Select>
+                      </div>
                     </div>
                   </div>
                 </ModalBody>

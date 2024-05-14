@@ -20,9 +20,9 @@ import { logout } from "helpers/api/auth";
 
 export const Header = () => {
   const clearSesion = useAuthStore((state) => state.setClearToken);
-  const nombre = useAuthStore((state) => state.profile);
-  const nombreUsuario = nombre?.nombre;
-  const rolUsuario = capitalizar(nombre.rol.nombre);
+  const profile = useAuthStore((state) => state.profile);
+  const nombreUsuario = profile?.nombre;
+  const rolUsuario = capitalizar(profile.rol.nombre);
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -66,6 +66,16 @@ export const Header = () => {
                   Pacientes
                 </BreadcrumbItem>
                 <BreadcrumbItem>Profesión</BreadcrumbItem>
+              </Breadcrumbs>
+            </BreadcrumbItem>
+          )}
+          {pathname.includes("/pacientes/estado-civil") && (
+            <BreadcrumbItem>
+              <Breadcrumbs size="lg">
+                <BreadcrumbItem onPress={() => navigate("/pacientes/tabla")}>
+                  Pacientes
+                </BreadcrumbItem>
+                <BreadcrumbItem>Estado Civil</BreadcrumbItem>
               </Breadcrumbs>
             </BreadcrumbItem>
           )}

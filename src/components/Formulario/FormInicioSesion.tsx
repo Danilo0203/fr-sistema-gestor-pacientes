@@ -31,7 +31,7 @@ export const FormInicioSesion = forwardRef(() => {
   useImperativeHandle(ref, () => nombreRef.current);
   useImperativeHandle(refContrasena, () => contrasenaRef.current);
 
-  const fetchData = async (nombre, contraseña) => {
+  const fetchData = async (nombre: string, contraseña: string) => {
     const resLogin = await login(nombre, contraseña);
     return resLogin;
   };
