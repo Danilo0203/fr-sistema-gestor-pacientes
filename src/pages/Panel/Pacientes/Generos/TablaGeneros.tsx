@@ -163,7 +163,11 @@ export const TablaGeneros = () => {
       </TableHeader>
       <TableBody
         items={ordenarItems ?? []}
-        emptyContent={`No se encontró el género: ${filterValue}`}
+        emptyContent={
+          ordenarItems.length > 0
+            ? `No se encontró el género: ${filterValue}`
+            : "No se encontraron géneros registrados"
+        }
         loadingContent={
           <CircularProgress
             label="Cargando..."

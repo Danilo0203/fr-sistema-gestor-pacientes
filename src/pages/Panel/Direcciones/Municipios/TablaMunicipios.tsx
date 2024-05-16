@@ -16,7 +16,11 @@ import { useCallback, useMemo } from "react";
 import { columns } from "./dataTable/data";
 import { useTableMunicipios } from "hooks/useTableMunicipios";
 import { useMunicipioStore } from "../../../../store/direcciones/municipios";
-import { ModalEditarMunicipio, ModalEliminarMunicipio } from "./Modal";
+import {
+  ModalAgregarMunicipio,
+  ModalEditarMunicipio,
+  ModalEliminarMunicipio,
+} from "./Modal";
 
 export const TablaMunicipios = () => {
   const municipios = useMunicipioStore((state) => state.data);
@@ -101,22 +105,24 @@ export const TablaMunicipios = () => {
               Total de municipios: {municipios.length}
             </span>
           </div>
-
-          <Select
-            label="Filas por página"
-            className="max-w-xs"
-            onChange={onRowsPerPageChange}
-          >
-            <SelectItem key="5" value="5">
-              5
-            </SelectItem>
-            <SelectItem key="10" value="10">
-              10
-            </SelectItem>
-            <SelectItem key="15" value="15">
-              15
-            </SelectItem>
-          </Select>
+          <div className="flex w-1/5 flex-col items-end justify-center gap-2">
+            <ModalAgregarMunicipio updateTable={getMunicipios} />
+            <Select
+              label="Filas por página"
+              className="max-w-xs"
+              onChange={onRowsPerPageChange}
+            >
+              <SelectItem key="5" value="5">
+                5
+              </SelectItem>
+              <SelectItem key="10" value="10">
+                10
+              </SelectItem>
+              <SelectItem key="15" value="15">
+                15
+              </SelectItem>
+            </Select>
+          </div>
         </div>
       </div>
     );
@@ -163,7 +169,11 @@ export const TablaMunicipios = () => {
       </TableHeader>
       <TableBody
         items={ordenarItems ?? []}
-        emptyContent={`No se encontraron municipios con el nombre: ${filterValue}`}
+        emptyContent={
+          ordenarItems.length > 0
+            ? `No se encontraron municipios con el nombre: ${filterValue}`
+            : "No hay municipios registrados"
+        }
         loadingContent={
           <CircularProgress
             label="Cargando..."

@@ -37,7 +37,7 @@ export const useTableRol = (roles) => {
   }, [roles]);
 
   // Estado de carga
-  const loadingState = loading || roles?.length === 0 ? "loading" : "idle";
+  const loadingState = loading ? "loading" : "idle";
 
   // Calcular el número de páginas total
   const paginas = Math.ceil(filtrarUsuarioPorNombre?.length / filasPorPagina);

@@ -37,8 +37,7 @@ export const useTableDirecciones = (direcciones) => {
   }, [direcciones]);
 
   // Estado de carga
-  const loadingState =
-    loading || direcciones?.length === 0 ? "loading" : "idle";
+  const loadingState = loading ? "loading" : "idle";
 
   // Calcular el número de páginas total
   const paginas = Math.ceil(filtrarDireccionPorNombre?.length / filasPorPagina);

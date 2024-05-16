@@ -14,7 +14,11 @@ import {
 import { capitalizar } from "../../../../utils/capitalizarStrings";
 import { columns } from "./dataTable/data";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { ModalEditarUsuarios, ModalEliminarUsuarios } from "./Modal";
+import {
+  ModalAgregarUsuarios,
+  ModalEditarUsuarios,
+  ModalEliminarUsuarios,
+} from "./Modal";
 import { useCallback, useMemo } from "react";
 import { useTableUser } from "hooks/useTableUser";
 import { useUsuarioStore } from "../../../../store/usuarios";
@@ -108,22 +112,25 @@ export const TablaUsuarios = () => {
               Total de usuarios {usuarios.length}
             </span>
           </div>
+          <div className="flex w-1/5 flex-col items-end justify-center gap-2">
+            <ModalAgregarUsuarios updateTable={getUsuarios} />
 
-          <Select
-            label="Filas por página"
-            className="max-w-xs"
-            onChange={onRowsPerPageChange}
-          >
-            <SelectItem key="5" value="5">
-              5
-            </SelectItem>
-            <SelectItem key="10" value="10">
-              10
-            </SelectItem>
-            <SelectItem key="15" value="15">
-              15
-            </SelectItem>
-          </Select>
+            <Select
+              label="Filas por página"
+              className="max-w-xs"
+              onChange={onRowsPerPageChange}
+            >
+              <SelectItem key="5" value="5">
+                5
+              </SelectItem>
+              <SelectItem key="10" value="10">
+                10
+              </SelectItem>
+              <SelectItem key="15" value="15">
+                15
+              </SelectItem>
+            </Select>
+          </div>
         </div>
       </div>
     );
@@ -170,7 +177,11 @@ export const TablaUsuarios = () => {
       </TableHeader>
       <TableBody
         items={ordenarItems ?? []}
-        emptyContent={`No se encontraron el usuario ingresado ${filterValue}`}
+        emptyContent={
+          ordenarItems.length > 0
+            ? `No se encontraron el usuario ingresado ${filterValue}`
+            : "No se encontraron usuarios registrados"
+        }
         loadingContent={
           <CircularProgress
             label="Cargando..."

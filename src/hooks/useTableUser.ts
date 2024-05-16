@@ -13,7 +13,7 @@ export const useTableUser = (usuarios) => {
     column: "nombre",
     direction: "ascending",
   });
-  
+
   // Funcion para filtrar usuarios por nombre
   const filtrarUsuarioPorNombre = useMemo(() => {
     let filtrarUsuarios = [...usuarios];
@@ -37,7 +37,7 @@ export const useTableUser = (usuarios) => {
   }, [usuarios]);
 
   // Estado de carga
-  const loadingState = loading || usuarios?.length === 0 ? "loading" : "idle";
+  const loadingState = loading ? "loading" : "idle";
 
   // Calcular el número de páginas total
   const paginas = Math.ceil(filtrarUsuarioPorNombre?.length / filasPorPagina);

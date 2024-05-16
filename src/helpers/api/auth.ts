@@ -30,7 +30,7 @@ export const logout = async () => {
 };
 
 // Register
-export const register = async (req: unknown) => {
+export const registerUser = async (req: unknown) => {
   try {
     const register = await api.post("/auth/register", req);
     return register.data;

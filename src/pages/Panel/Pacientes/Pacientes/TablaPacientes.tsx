@@ -14,7 +14,11 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useCallback, useMemo } from "react";
 import { columns } from "./dataTable/data";
-import { ModalEditarPaciente, ModalEliminarPaciente } from "./Modal";
+import {
+  ModalAgregarPaciente,
+  ModalEditarPaciente,
+  ModalEliminarPaciente,
+} from "./Modal";
 import { useTablePacientes } from "hooks/useTablePacientes";
 import { usePacienteStore } from "../../../../store/pacientes/pacientes";
 
@@ -126,21 +130,25 @@ export const TablaPacientes = () => {
             </span>
           </div>
 
-          <Select
-            label="Filas por página"
-            className="max-w-xs"
-            onChange={onRowsPerPageChange}
-          >
-            <SelectItem key="5" value="5">
-              5
-            </SelectItem>
-            <SelectItem key="10" value="10">
-              10
-            </SelectItem>
-            <SelectItem key="15" value="15">
-              15
-            </SelectItem>
-          </Select>
+          <div className="flex w-1/5 flex-col items-end justify-center gap-2">
+            <ModalAgregarPaciente updateTable={getPacientes} />
+            <Select
+              label="Filas por página"
+              className="max-w-xs"
+              onChange={onRowsPerPageChange}
+              size="sm"
+            >
+              <SelectItem key="5" value="5">
+                5
+              </SelectItem>
+              <SelectItem key="10" value="10">
+                10
+              </SelectItem>
+              <SelectItem key="15" value="15">
+                15
+              </SelectItem>
+            </Select>
+          </div>
         </div>
       </div>
     );
@@ -150,6 +158,7 @@ export const TablaPacientes = () => {
     onClear,
     filterValue,
     onSearchChange,
+    getPacientes,
   ]);
 
   return (
@@ -187,7 +196,11 @@ export const TablaPacientes = () => {
       </TableHeader>
       <TableBody
         items={ordenarItems ?? []}
-        emptyContent={`No se encontró el paciente: ${filterValue}`}
+        emptyContent={
+          ordenarItems.length > 0
+            ? `No se encontró el paciente: ${filterValue}`
+            : "No hay pacientes registrados"
+        }
         loadingContent={
           <CircularProgress
             label="Cargando..."

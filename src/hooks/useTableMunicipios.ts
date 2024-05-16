@@ -37,7 +37,7 @@ export const useTableMunicipios = (municipios) => {
   }, [municipios]);
 
   // Estado de carga
-  const loadingState = loading || municipios?.length === 0 ? "loading" : "idle";
+  const loadingState = loading ? "loading" : "idle";
 
   // Calcular el número de páginas total
   const paginas = Math.ceil(filtrarMunicipioPorNombre?.length / filasPorPagina);

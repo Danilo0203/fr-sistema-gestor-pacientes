@@ -37,8 +37,7 @@ export const useTableProfesiones = (profesiones) => {
   }, [profesiones]);
 
   // Estado de carga
-  const loadingState =
-    loading || profesiones?.length === 0 ? "loading" : "idle";
+  const loadingState = loading ? "loading" : "idle";
 
   // Calcular el número de páginas total
   const paginas = Math.ceil(filtrarProfesionPorNombre?.length / filasPorPagina);

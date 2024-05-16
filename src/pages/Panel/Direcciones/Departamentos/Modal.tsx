@@ -9,7 +9,7 @@ import {
   Divider,
   useDisclosure,
 } from "@nextui-org/react";
-import { useModalStore } from "../../../../store/modal";
+
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
@@ -28,9 +28,7 @@ export const ModalEditarDepartamento = ({
   idDepartamento,
   updateTable,
 }: ModalProps) => {
-  const isOpen = useModalStore((state) => state.isOpen);
-  const onOpen = useModalStore((state) => state.onOpen);
-  const onOpenChange = useModalStore((state) => state.onOpenChange);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const departamentos = useDepartamentoStore((state) => state.data);
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
