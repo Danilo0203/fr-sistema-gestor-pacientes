@@ -10,33 +10,37 @@ import {
   SelectItem,
   Divider,
   useDisclosure,
+  DatePicker,
+  DateValue,
 } from "@nextui-org/react";
-import { useModalStore } from "../../../../store/modal";
+
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { usePacienteStore } from "../../../../store/pacientes/pacientes";
 import { useProfesionStore } from "../../../../store/pacientes/profesiones";
 import { useEstadoCivilStore } from "../../../../store/pacientes/estadoCivil";
 import { useGeneroStore } from "../../../../store/pacientes/generos";
-import { useDireccionStore } from "../../../../store/direcciones/direcciones";
+
 import {
   deletePaciente,
   updatePaciente,
 } from "helpers/api/pacientes/pacientes";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, PacienteData } from "types/index";
+import { getLocalTimeZone, today } from "@internationalized/date";
+import { useDepartamentoStore } from "../../../../store/direcciones/departamentos";
+import { useDireccionStore } from "../../../../store/direcciones/direcciones";
+import { useMunicipioStore } from "../../../../store/direcciones/municipios";
 
 export const ModalEditarPaciente = ({
   idPaciente,
   updateTable,
 }: ModalProps) => {
-  const isOpen = useModalStore((state) => state.isOpen);
-  const onOpen = useModalStore((state) => state.onOpen);
-  const onOpenChange = useModalStore((state) => state.onOpenChange);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const pacientes = usePacienteStore((state) => state.data);
   const direcciones = useDireccionStore((state) => state.data);
   const profesiones = useProfesionStore((state) => state.data);
@@ -294,7 +298,12 @@ export const ModalEliminarPaciente = ({
           </span>
         </Tooltip>
       </button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        placement="top-center"
+      >
         <ModalContent>
           {(onClose) => (
             <>
@@ -329,6 +338,98 @@ export const ModalEliminarPaciente = ({
                   </Button>
                 </div>
               </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
+export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const defaultDate = today(getLocalTimeZone());
+  const [value, setValue] = useState<DateValue>(defaultDate);
+  const dataDepartamentos = useDepartamentoStore((state) => state.data);
+  const getDepartamentos = useDepartamentoStore((state) => state.execute);
+  const dataMunicipios = useMunicipioStore((state) => state.data);
+  const getMunicipios = useDireccionStore((state) => state.execute);
+  useEffect(() => {
+    getDepartamentos();
+    getMunicipios();
+  }, [getDepartamentos, getMunicipios]);
+
+  console.log(dataMunicipios);
+
+  return (
+    <>
+      <Button
+        onPress={onOpen}
+        className="bg-azulFuerte text-white"
+        startContent={<Icon icon="mdi:user-add" width={20} />}
+      >
+        Agregar Paciente
+      </Button>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        placement="top-center"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Argegar Paciente
+              </ModalHeader>
+              <Divider />
+              <ModalBody className="mt-4">
+                <Label>Nombres</Label>
+                <Input autoFocus placeholder="Ingrese el nombre" type="text" />
+                <Label>Apellidos</Label>
+                <Input placeholder="Ingrese los apellidos" type="text" />
+                <Label>Direccion</Label>
+                <Input placeholder="Ingrese la dirección" type="text" />
+
+                <Label>Municipio</Label>
+                <Select
+                  items={dataMunicipios}
+                  placeholder="Seleccione un departamento"
+                  variant="underlined"
+                  size="lg"
+                >
+                  {(muni) => (
+                    <SelectItem key={muni.id}>{muni.nombre}</SelectItem>
+                  )}
+                </Select>
+
+                <Label>Departamento</Label>
+                <Select
+                  items={dataDepartamentos}
+                  placeholder="Seleccione un departamento"
+                  variant="underlined"
+                  size="lg"
+                >
+                  {(depto) => (
+                    <SelectItem key={depto.id}>{depto.nombre}</SelectItem>
+                  )}
+                </Select>
+                <Label>Fecha de Nacimiento</Label>
+                <DatePicker
+                  variant="underlined"
+                  showMonthAndYearPickers
+                  value={value}
+                  onChange={setValue}
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="flat" onPress={onClose}>
+                  Cerrar
+                </Button>
+                <Button color="primary" onPress={onClose}>
+                  Agregar
+                </Button>
+              </ModalFooter>
             </>
           )}
         </ModalContent>

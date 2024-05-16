@@ -11,7 +11,7 @@ import {
   Divider,
   useDisclosure,
 } from "@nextui-org/react";
-import { useModalStore } from "../../../../store/modal";
+
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
@@ -23,6 +23,7 @@ import { useDepartamentoStore } from "../../../../store/direcciones/departamento
 import {
   updateMunicipio,
   deleteMunicipio,
+  createMunicipio,
 } from "helpers/api/direccion/municipios";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, MunicipioData } from "types/index";
@@ -31,9 +32,7 @@ export const ModalEditarMunicipio = ({
   idMunicipio,
   updateTable,
 }: ModalProps) => {
-  const isOpen = useModalStore((state) => state.isOpen);
-  const onOpen = useModalStore((state) => state.onOpen);
-  const onOpenChange = useModalStore((state) => state.onOpenChange);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const municipios = useMunicipioStore((state) => state.data);
   const departamentos = useDepartamentoStore((state) => state.data);
   const getDepartamentos = useDepartamentoStore((state) => state.execute);
@@ -107,7 +106,7 @@ export const ModalEditarMunicipio = ({
                 <ModalBody>
                   <div className="flex flex-col gap-8">
                     <div className="flex gap-8">
-                      <div className="flex flex-col gap-1 w-1/2">
+                      <div className="flex w-1/2 flex-col gap-1">
                         <Label id="nombre">Nombre</Label>
                         <Input
                           placeholder="Editar nombre"
@@ -120,7 +119,7 @@ export const ModalEditarMunicipio = ({
                           />
                         </Input>
                       </div>
-                      <div className="flex flex-col gap-1 w-1/2">
+                      <div className="flex w-1/2 flex-col gap-1">
                         <Label id="departamento_id">Departamento</Label>
                         <Select
                           items={departamentos}
@@ -225,6 +224,86 @@ export const ModalEliminarMunicipio = ({
             </>
           )}
         </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
+export const ModalAgregarMunicipio = ({ updateTable }: ModalProps) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const dataDepartamentos = useDepartamentoStore((state) => state.data);
+  const getDepartamentos = useDepartamentoStore((state) => state.execute);
+  const { register, handleSubmit } = useForm();
+
+  useEffect(() => {
+    getDepartamentos();
+  }, [getDepartamentos]);
+
+  const agregarMunicipio = async (data) => {
+    await createMunicipio(data);
+    updateTable();
+  };
+
+  const onSubmit = (data) => {
+    agregarMunicipio(data);
+  };
+
+  return (
+    <>
+      <Button
+        onPress={onOpen}
+        className="bg-azulFuerte text-white"
+        startContent={<Icon icon="mdi:map-marker-plus" width={20} />}
+      >
+        Agregar Municipio
+      </Button>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        placement="top-center"
+      >
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Argegar Municipio
+                </ModalHeader>
+                <Divider />
+                <ModalBody className="mt-4">
+                  <Label>Nombre Municipio</Label>
+                  <Input
+                    autoFocus
+                    placeholder="Ingrese el municipio"
+                    type="text"
+                    {...register("nombre")}
+                  />
+                  <Label>Departamento</Label>
+                  <Select
+                    items={dataDepartamentos}
+                    placeholder="Seleccione un departamento"
+                    variant="underlined"
+                    size="lg"
+                    {...register("departamento_id")}
+                  >
+                    {(depto) => (
+                      <SelectItem key={depto.id}>{depto.nombre}</SelectItem>
+                    )}
+                  </Select>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="flat" onPress={onClose}>
+                    Cerrar
+                  </Button>
+                  <Button color="primary" type="submit" onPress={onClose}>
+                    Agregar
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </form>
       </Modal>
     </>
   );

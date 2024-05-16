@@ -37,7 +37,7 @@ export const useTableGeneros = (generos) => {
   }, [generos]);
 
   // Estado de carga
-  const loadingState = loading || generos?.length === 0 ? "loading" : "idle";
+  const loadingState = loading ? "loading" : "idle";
 
   // Calcular el número de páginas total
   const paginas = Math.ceil(filtrarGeneroPorNombre?.length / filasPorPagina);

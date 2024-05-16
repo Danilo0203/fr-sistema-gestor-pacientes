@@ -37,8 +37,7 @@ export const useTableEstadoCiviles = (estadoCiviles) => {
   }, [estadoCiviles]);
 
   // Estado de carga
-  const loadingState =
-    loading || estadoCiviles?.length === 0 ? "loading" : "idle";
+  const loadingState = loading ? "loading" : "idle";
 
   // Calcular el número de páginas total
   const paginas = Math.ceil(

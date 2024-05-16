@@ -9,7 +9,7 @@ import {
   Divider,
   useDisclosure,
 } from "@nextui-org/react";
-import { useModalStore } from "../../../../store/modal";
+
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
@@ -17,15 +17,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useRolStore } from "../../../../store/usuarios/roles";
-import { deleteUsuario } from "helpers/api/usuarios/usuarios";
+
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, RolData } from "types/index";
-import { updateRol } from "helpers/api/usuarios/roles";
+import { createRol, deleteRol, updateRol } from "helpers/api/usuarios/roles";
 
 export const ModalEditarRoles = ({ idRol, updateTable }: ModalProps) => {
-  const isOpen = useModalStore((state) => state.isOpen);
-  const onOpen = useModalStore((state) => state.onOpen);
-  const onOpenChange = useModalStore((state) => state.onOpenChange);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const roles = useRolStore((state) => state.data);
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
@@ -140,12 +138,12 @@ export const ModalEditarRoles = ({ idRol, updateTable }: ModalProps) => {
 };
 
 export const ModalEliminarRoles = ({ idRol, updateTable }: ModalProps) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const roles = useRolStore((state) => state.data);
   const handleDelete = async () => {
-    await deleteUsuario(idRol);
+    await deleteRol(idRol);
     updateTable();
   };
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const rolID: RolData = getUsuarioById(idRol, roles)[0];
 
   return (
@@ -200,6 +198,73 @@ export const ModalEliminarRoles = ({ idRol, updateTable }: ModalProps) => {
             </>
           )}
         </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
+export const ModalAñadirRoles = ({ updateTable }: ModalProps) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const { register, handleSubmit } = useForm();
+
+  const añadirRol = async (data) => {
+    await createRol(data);
+    updateTable();
+  };
+  const onSubmit = (data) => {
+    añadirRol(data);
+  };
+  return (
+    <>
+      <Button
+        onPress={onOpen}
+        className="bg-azulFuerte text-white"
+        startContent={<Icon icon="mdi:user-add" width={20} />}
+      >
+        Agregar Rol
+      </Button>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        placement="top-center"
+      >
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Argegar Rol
+                </ModalHeader>
+                <Divider />
+                <ModalBody className="mt-4">
+                  <Label>Rol</Label>
+                  <Input
+                    autoFocus
+                    placeholder="Ingrese el rol"
+                    type="text"
+                    {...register("nombre")}
+                  />
+                  <Label>Descripcion</Label>
+                  <Input
+                    placeholder="Ingrese la descripcion"
+                    type="text"
+                    {...register("descripcion")}
+                  />
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="flat" onPress={onClose}>
+                    Cerrar
+                  </Button>
+                  <Button color="primary" type="submit" onPress={onClose}>
+                    Agregar
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </form>
       </Modal>
     </>
   );

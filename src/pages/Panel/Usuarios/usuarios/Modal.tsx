@@ -11,7 +11,7 @@ import {
   Divider,
   useDisclosure,
 } from "@nextui-org/react";
-import { useModalStore } from "../../../../store/modal";
+
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
@@ -23,11 +23,10 @@ import { useRolStore } from "../../../../store/usuarios/roles";
 import { deleteUsuario, updateUsuario } from "helpers/api/usuarios/usuarios";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, UserData } from "types/index";
+import { registerUser } from "helpers/api/auth";
 
 export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
-  const isOpen = useModalStore((state) => state.isOpen);
-  const onOpen = useModalStore((state) => state.onOpen);
-  const onOpenChange = useModalStore((state) => state.onOpenChange);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const usuarios = useUsuarioStore((state) => state.data);
   const roles = useRolStore((state) => state.data);
   const getRoles = useRolStore((state) => state.execute);
@@ -85,7 +84,7 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         isDismissable={false}
-        classNames={{ backdrop: "bg-black/10 blur-[1px]" }}
+        placement="top-center"
         size="2xl"
       >
         <form
@@ -228,7 +227,12 @@ export const ModalEliminarUsuarios = ({ idUser, updateTable }: ModalProps) => {
           </span>
         </Tooltip>
       </button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        placement="top-center"
+      >
         <ModalContent>
           {(onClose) => (
             <>
@@ -266,6 +270,116 @@ export const ModalEliminarUsuarios = ({ idUser, updateTable }: ModalProps) => {
             </>
           )}
         </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
+export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const roles = useRolStore((state) => state.data);
+  const getRoles = useRolStore((state) => state.execute);
+  const { register, handleSubmit } = useForm();
+  useEffect(() => {
+    getRoles();
+  }, [getRoles]);
+
+  const añadirUsuario = async (data: UserData) => {
+    await registerUser(data);
+    updateTable();
+  };
+  const onSubmit = (data: UserData) => {
+    añadirUsuario(data);
+  };
+  return (
+    <>
+      <Button
+        onPress={onOpen}
+        className="bg-azulFuerte text-white"
+        startContent={<Icon icon="mdi:user-add" width={20} />}
+      >
+        Agregar Usuario
+      </Button>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        placement="top-center"
+      >
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Argegar Usuario
+                </ModalHeader>
+                <Divider />
+                <ModalBody className="mt-4">
+                  <Label>Usuario</Label>
+                  <Input
+                    autoFocus
+                    placeholder="Ingrese el usuario"
+                    type="text"
+                    {...register("usuario")}
+                  />
+                  <Label>Nombre</Label>
+                  <Input
+                    placeholder="Ingrese el nombre"
+                    type="text"
+                    {...register("nombre")}
+                  />
+                  <Label>Correo</Label>
+                  <Input
+                    placeholder="Ingrese el correo"
+                    type="email"
+                    {...register("email")}
+                  />
+                  <Label id="password">Contraseña</Label>
+                  <Input
+                    placeholder="Contraseña"
+                    type="password"
+                    {...register("password")}
+                  >
+                    <Icon
+                      icon="mdi:lock"
+                      width={20}
+                      className="text-azulFuerte"
+                    />
+                  </Input>
+
+                  <Label id="passwordConfirm">Confirmar Contraseña</Label>
+                  <Input placeholder="Confirmar contraseña" type="password">
+                    <Icon
+                      icon="mdi:lock"
+                      width={20}
+                      className="text-azulFuerte"
+                    />
+                  </Input>
+
+                  <Label id="rol_id">Rol</Label>
+                  <Select
+                    items={roles}
+                    placeholder="Seleccione un rol"
+                    size="lg"
+                    {...register("rol_id")}
+                  >
+                    {(rol) => (
+                      <SelectItem key={rol.id}>{rol.nombre}</SelectItem>
+                    )}
+                  </Select>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="flat" onPress={onClose}>
+                    Cerrar
+                  </Button>
+                  <Button color="primary" type="submit" onPress={onClose}>
+                    Agregar
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </form>
       </Modal>
     </>
   );

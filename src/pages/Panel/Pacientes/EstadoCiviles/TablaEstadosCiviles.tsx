@@ -163,7 +163,11 @@ export const TablaEstadoCiviles = () => {
       </TableHeader>
       <TableBody
         items={ordenarItems ?? []}
-        emptyContent={`No se encontró el estado civil ${filterValue}`}
+        emptyContent={
+          ordenarItems.length > 0
+            ? `No se encontró el estado civil ${filterValue}`
+            : "No hay estados civiles registrados"
+        }
         loadingContent={
           <CircularProgress
             label="Cargando..."

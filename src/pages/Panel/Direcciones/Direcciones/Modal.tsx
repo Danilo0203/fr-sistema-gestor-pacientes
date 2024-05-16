@@ -11,7 +11,7 @@ import {
   Divider,
   useDisclosure,
 } from "@nextui-org/react";
-import { useModalStore } from "../../../../store/modal";
+
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
@@ -31,9 +31,7 @@ export const ModalEditarDireccion = ({
   idDireccion,
   updateTable,
 }: ModalProps) => {
-  const isOpen = useModalStore((state) => state.isOpen);
-  const onOpen = useModalStore((state) => state.onOpen);
-  const onOpenChange = useModalStore((state) => state.onOpenChange);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const direcciones = useDireccionStore((state) => state.data);
   const municipios = useMunicipioStore((state) => state.data);
   const getMunicipios = useMunicipioStore((state) => state.execute);
@@ -107,7 +105,7 @@ export const ModalEditarDireccion = ({
                 <ModalBody>
                   <div className="flex flex-col gap-8">
                     <div className="flex gap-8">
-                      <div className="flex flex-col gap-1 w-1/2">
+                      <div className="flex w-1/2 flex-col gap-1">
                         <Label id="nombre">Nombre</Label>
                         <Input
                           placeholder="Editar nombre"
@@ -120,7 +118,7 @@ export const ModalEditarDireccion = ({
                           />
                         </Input>
                       </div>
-                      <div className="flex flex-col gap-1 w-1/2">
+                      <div className="flex w-1/2 flex-col gap-1">
                         <Label id="municipio_id">Municipio</Label>
                         <Select
                           items={municipios}

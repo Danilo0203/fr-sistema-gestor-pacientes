@@ -163,7 +163,11 @@ export const TablaProfesiones = () => {
       </TableHeader>
       <TableBody
         items={ordenarItems ?? []}
-        emptyContent={`No se encontró la profesión: ${filterValue}`}
+        emptyContent={
+          ordenarItems.length > 0
+            ? `No se encontró la profesión: ${filterValue}`
+            : "No se encontraron profesiones resgitradas"
+        }
         loadingContent={
           <CircularProgress
             label="Cargando..."

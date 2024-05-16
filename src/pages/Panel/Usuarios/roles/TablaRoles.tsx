@@ -14,7 +14,11 @@ import {
 // import { capitalizar } from "../../../../utils/capitalizarStrings";
 import { columns } from "./dataTable/data";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { ModalEditarRoles, ModalEliminarRoles } from "./Modal";
+import {
+  ModalAñadirRoles,
+  ModalEditarRoles,
+  ModalEliminarRoles,
+} from "./Modal";
 import { useCallback, useMemo } from "react";
 import { useTableRol } from "hooks/useTableRol";
 import { useRolStore } from "../../../../store/usuarios/roles";
@@ -101,22 +105,24 @@ export const TablaRoles = () => {
 
             <span className="text-small">Total de usuarios {roles.length}</span>
           </div>
-
-          <Select
-            label="Filas por página"
-            className="max-w-xs"
-            onChange={onRowsPerPageChange}
-          >
-            <SelectItem key="5" value="5">
-              5
-            </SelectItem>
-            <SelectItem key="10" value="10">
-              10
-            </SelectItem>
-            <SelectItem key="15" value="15">
-              15
-            </SelectItem>
-          </Select>
+          <div className="flex w-1/5 flex-col items-end justify-center gap-2">
+            <ModalAñadirRoles updateTable={getRoles} />
+            <Select
+              label="Filas por página"
+              className="max-w-xs"
+              onChange={onRowsPerPageChange}
+            >
+              <SelectItem key="5" value="5">
+                5
+              </SelectItem>
+              <SelectItem key="10" value="10">
+                10
+              </SelectItem>
+              <SelectItem key="15" value="15">
+                15
+              </SelectItem>
+            </Select>
+          </div>
         </div>
       </div>
     );
@@ -157,7 +163,11 @@ export const TablaRoles = () => {
       </TableHeader>
       <TableBody
         items={ordenarItems ?? []}
-        emptyContent={`No se encontró el rol ${filterValue}`}
+        emptyContent={
+          ordenarItems.length > 0
+            ? `No se encontró el rol ${filterValue}`
+            : "No hay roles registrados"
+        }
         loadingContent={
           <CircularProgress
             label="Cargando..."

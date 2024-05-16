@@ -169,7 +169,11 @@ export const TablaDirecciones = () => {
       </TableHeader>
       <TableBody
         items={ordenarItems ?? []}
-        emptyContent={`No se encontraron direcciones con el nombre: ${filterValue}`}
+        emptyContent={
+          ordenarItems.length > 0
+            ? `No se encontraron direcciones con el nombre: ${filterValue}`
+            : "No hay direcciones registradas"
+        }
         loadingContent={
           <CircularProgress
             label="Cargando..."

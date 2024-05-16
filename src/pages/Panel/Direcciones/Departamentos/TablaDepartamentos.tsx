@@ -163,7 +163,11 @@ export const TablaDepartamentos = () => {
       </TableHeader>
       <TableBody
         items={ordenarItems ?? []}
-        emptyContent={`No se encontró el departamento ${filterValue}`}
+        emptyContent={
+          ordenarItems.length > 0
+            ? `No se encontró el departamento: ${filterValue}`
+            : "No hay departamentos registrados"
+        }
         loadingContent={
           <CircularProgress
             label="Cargando..."

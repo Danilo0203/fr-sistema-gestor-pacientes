@@ -37,7 +37,7 @@ export const useTablePacientes = (pacientes) => {
   }, [pacientes]);
 
   // Estado de carga
-  const loadingState = loading || pacientes?.length === 0 ? "loading" : "idle";
+  const loadingState = loading ? "loading" : "idle";
 
   // Calcular el número de páginas total
   const paginas = Math.ceil(filtrarPacientePorNombre?.length / filasPorPagina);
