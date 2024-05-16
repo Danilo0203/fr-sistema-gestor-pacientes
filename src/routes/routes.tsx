@@ -30,6 +30,12 @@ import { TablaProfesiones } from "pages/Panel/Pacientes/Profesiones/TablaProfesi
 import { ModalEditarProfesion } from "pages/Panel/Pacientes/Profesiones/Modal";
 import { TablaPacientes } from "pages/Panel/Pacientes/Pacientes/TablaPacientes";
 import { ModalEditarPaciente } from "pages/Panel/Pacientes/Pacientes/Modal";
+import { DatosMedicos } from "pages/Panel/DatosMedicos/DatosMedicos";
+import { TablaDatosMedicos } from "pages/Panel/DatosMedicos/DatosMedicos/TablaDatosMedicos";
+import { ModalEditarDatoMedico } from "pages/Panel/DatosMedicos/DatosMedicos/Modal";
+import { Recetas } from "pages/Panel/Recetas/Recetas";
+import { TablaRecetas } from "pages/Panel/Recetas/Recetas/TablaRecetas";
+import { ModalEditarReceta } from "pages/Panel/Recetas/Recetas/Modal";
 
 const routes = createBrowserRouter([
   {
@@ -157,6 +163,40 @@ const routes = createBrowserRouter([
                   {
                     path: "editar/:id",
                     element: <ModalEditarDepartamento />,
+                  },
+                ],
+              },
+            ],
+          },
+
+          {
+            path: "datos-medicos",
+            element: <DatosMedicos />,
+            children: [
+              {
+                path: "tabla",
+                element: <TablaDatosMedicos />,
+                children: [
+                  {
+                    path: "editar/:id",
+                    element: <ModalEditarDatoMedico />,
+                  },
+                ],
+              },
+            ],
+          },
+
+          {
+            path: "recetas-medicas",
+            element: <Recetas />,
+            children: [
+              {
+                path: "tabla",
+                element: <TablaRecetas />,
+                children: [
+                  {
+                    path: "editar/:id",
+                    element: <ModalEditarReceta />,
                   },
                 ],
               },

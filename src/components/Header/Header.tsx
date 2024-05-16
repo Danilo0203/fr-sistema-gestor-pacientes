@@ -114,6 +114,40 @@ export const Header = () => {
               </Breadcrumbs>
             </BreadcrumbItem>
           )}
+
+          {/* Datos medicos */}
+          {pathname.includes("datos-medicos/tabla") && (
+            <BreadcrumbItem>Datos Médicos</BreadcrumbItem>
+          )}
+          {pathname.includes("/datos-medicos/paciente") && (
+            <BreadcrumbItem>
+              <Breadcrumbs size="lg">
+                <BreadcrumbItem
+                  onPress={() => navigate("/datos-medicos/tabla")}
+                >
+                  Datos Médicos
+                </BreadcrumbItem>
+                <BreadcrumbItem>Pacientes</BreadcrumbItem>
+              </Breadcrumbs>
+            </BreadcrumbItem>
+          )}
+
+          {/* Recetas medicas */}
+          {pathname.includes("recetas-medicas/tabla") && (
+            <BreadcrumbItem>Recetas Médicas</BreadcrumbItem>
+          )}
+          {pathname.includes("/recetas-medicas/paciente") && (
+            <BreadcrumbItem>
+              <Breadcrumbs size="lg">
+                <BreadcrumbItem
+                  onPress={() => navigate("/recetas-medicas/tabla")}
+                >
+                  Recetas Médicas
+                </BreadcrumbItem>
+                <BreadcrumbItem>Pacientes</BreadcrumbItem>
+              </Breadcrumbs>
+            </BreadcrumbItem>
+          )}
         </Breadcrumbs>
       </NavbarBrand>
 

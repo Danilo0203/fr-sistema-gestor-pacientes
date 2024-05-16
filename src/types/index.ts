@@ -99,6 +99,40 @@ export type GeneroData = {
   nombre: string;
 };
 
+// DATOS MEDICOS
+export type DatosMedicosData = {
+  id: string;
+  nombre: string;
+};
+
+export type DatosMedicosPacienteData = {
+  id: string;
+  fecha: string;
+  datoMedico: string;
+  datoMedicoID: string;
+  paciente: string;
+  pacienteID: string;
+  valor: string;
+};
+
+// RECETAS MEDICAS
+export type RecetasData = {
+  id: string;
+  fecha: string;
+  usuario: string;
+  usuarioID: string;
+};
+
+export type RecetasPacienteData = {
+  id: string;
+  recetaFecha: string;
+  recetaID: string;
+  pacienteNombre: string;
+  pacienteApellido: string;
+  pacienteID: string;
+  descripcion: string;
+};
+
 export interface ModalProps {
   idUser?: string;
   idRol?: string;
@@ -109,5 +143,7 @@ export interface ModalProps {
   idEstadoCivil?: string;
   idGenero?: string;
   idPaciente?: string;
+  idDatoMedico?: string;
+  idReceta?: string;
   updateTable?: () => void;
 }

@@ -6,6 +6,8 @@ export const Sidbar = () => {
   const [openUsuarios, setOpenUsuarios] = useState(false);
   const [openPacientes, setOpenPacientes] = useState(false);
   const [openDireccion, setOpenDireccion] = useState(false);
+  const [openDatosMedicos, setOpenDatosMedicos] = useState(false);
+  const [openRecetas, setOpenRecetas] = useState(false);
 
   return (
     <nav className="mt-3">
@@ -184,6 +186,100 @@ export const Sidbar = () => {
                 >
                   <Icon icon="mdi:map-marker" width={25} />
                   <span>Departamento</span>
+                </NavLink>
+              </li>
+            </ul>
+          )}
+        </li>
+
+        {/* Datos medicos */}
+        <li>
+          <NavLink
+            to="/datos-medicos/tabla"
+            className="flex items-center gap-2 rounded-md py-1 pl-2 text-blanco "
+            onClick={() => setOpenDatosMedicos(!openDatosMedicos)}
+          >
+            <div className="flex w-full items-center justify-between pr-1">
+              <div className="flex items-center gap-2">
+                <Icon icon="mdi:file-document" width={25} />
+                <span>Datos Médicos</span>
+              </div>
+              {openDatosMedicos ? (
+                <Icon icon="mdi:keyboard-arrow-up" />
+              ) : (
+                <Icon icon="mdi:keyboard-arrow-down" />
+              )}
+            </div>
+          </NavLink>
+          {openDatosMedicos && (
+            <ul className="my-1 flex flex-col gap-1 pl-3">
+              <li>
+                <NavLink
+                  to="/datos-medicos/tabla"
+                  className={({ isActive }) =>
+                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
+                  }
+                >
+                  <Icon icon="mdi:file-document" width={25} />
+                  <span>Datos Médicos</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/datos-medicos/paciente"
+                  className={({ isActive }) =>
+                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
+                  }
+                >
+                  <Icon icon="mdi:file-document" width={25} />{" "}
+                  <span>Pacientes</span>
+                </NavLink>
+              </li>
+            </ul>
+          )}
+        </li>
+
+        {/* Recetas medicas */}
+        <li>
+          <NavLink
+            to="/recetas-medicas/tabla"
+            className="flex items-center gap-2 rounded-md py-1 pl-2 text-blanco "
+            onClick={() => setOpenRecetas(!openRecetas)}
+          >
+            <div className="flex w-full items-center justify-between pr-1">
+              <div className="flex items-center gap-2">
+                <Icon icon="mdi:file-document" width={25} />
+                <span>Recetas Médicas</span>
+              </div>
+              {openRecetas ? (
+                <Icon icon="mdi:keyboard-arrow-up" />
+              ) : (
+                <Icon icon="mdi:keyboard-arrow-down" />
+              )}
+            </div>
+          </NavLink>
+          {openRecetas && (
+            <ul className="my-1 flex flex-col gap-1 pl-3">
+              <li>
+                <NavLink
+                  to="/recetas-medicas/tabla"
+                  className={({ isActive }) =>
+                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
+                  }
+                >
+                  <Icon icon="mdi:file-document" width={25} />
+                  <span>Recetas Médicas</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/recetas-medicas/paciente"
+                  className={({ isActive }) =>
+                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
+                  }
+                >
+                  <Icon icon="mdi:file-document" width={25} />{" "}
+                  <span>Pacientes</span>
                 </NavLink>
               </li>
             </ul>
