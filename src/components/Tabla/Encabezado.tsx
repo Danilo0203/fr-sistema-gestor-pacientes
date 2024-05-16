@@ -1,12 +1,13 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input, Select, SelectItem } from "@nextui-org/react";
+import { ChangeEventHandler } from "react";
 
 export const Encabezado = (
-  filterValue,
-  onClear,
-  onSearchChange,
-  usuarios,
-  onRowsPerPageChange,
+  filterValue: string | (readonly string[] & string) | undefined,
+  onClear: (() => void) | undefined,
+  onSearchChange: ((value: string) => void) | undefined,
+  usuarios: string | unknown[],
+  onRowsPerPageChange: ChangeEventHandler<HTMLSelectElement> | undefined,
 ) => {
   return (
     <div className="flex flex-col gap-4">

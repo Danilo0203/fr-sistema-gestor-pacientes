@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useAuthStore } from "../store/auth";
 
 export const useLimpiarToken = () => {
-  const clearToken = useAuthStore((state) => state.setClearToke);
+  const clearToken = useAuthStore((state) => state.setClearToken);
 
   useEffect(() => {
     const handleBeforeUnload = () => {

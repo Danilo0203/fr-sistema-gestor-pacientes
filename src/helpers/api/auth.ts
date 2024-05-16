@@ -12,10 +12,13 @@ export const login = async (usuario: string, password: string) => {
   try {
     const login = await api.post("/auth/login", data);
     return login.data;
-  } catch (error) {
-    if (error.message === "Network Error") {
-      toast.error("Error de conexión con el servidor");
-    }
+  } catch (error: unknown) {
+   if (typeof error === "object" && error !== null && "message" in error) {
+     const e = error as Error;
+     if (e.message === "Network Error") {
+       toast.error("Error de conexión con el servidor");
+     }
+   }
   }
 };
 
