@@ -14,7 +14,11 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useCallback, useMemo } from "react";
 import { columns } from "./dataTable/data";
-import { ModalEditarGenero, ModalEliminarGenero } from "./Modal";
+import {
+  ModalAgregarGenero,
+  ModalEditarGenero,
+  ModalEliminarGenero,
+} from "./Modal";
 import { useTableGeneros } from "hooks/useTableGeneros";
 import { useGeneroStore } from "../../../../store/pacientes/generos";
 
@@ -50,8 +54,11 @@ export const TablaGeneros = () => {
   const renderCell = useCallback(
     (genero: Genero, columnKey: Column) => {
       const cellValue = genero[columnKey];
+      const id = generos.findIndex((u) => u.id === genero.id) + 1;
 
       switch (columnKey) {
+        case "id":
+          return <p>{id}</p>;
         case "genero":
           return <p>{genero.nombre}</p>;
         case "acciones":
@@ -101,22 +108,24 @@ export const TablaGeneros = () => {
               Total de géneros: {generos.length}
             </span>
           </div>
-
-          <Select
-            label="Filas por página"
-            className="max-w-xs"
-            onChange={onRowsPerPageChange}
-          >
-            <SelectItem key="5" value="5">
-              5
-            </SelectItem>
-            <SelectItem key="10" value="10">
-              10
-            </SelectItem>
-            <SelectItem key="15" value="15">
-              15
-            </SelectItem>
-          </Select>
+          <div className="flex w-1/5 flex-col items-end justify-center gap-2">
+            <ModalAgregarGenero updateTable={getGeneros} />
+            <Select
+              label="Filas por página"
+              className="max-w-xs"
+              onChange={onRowsPerPageChange}
+            >
+              <SelectItem key="5" value="5">
+                5
+              </SelectItem>
+              <SelectItem key="10" value="10">
+                10
+              </SelectItem>
+              <SelectItem key="15" value="15">
+                15
+              </SelectItem>
+            </Select>
+          </div>
         </div>
       </div>
     );
@@ -126,6 +135,7 @@ export const TablaGeneros = () => {
     onClear,
     filterValue,
     onSearchChange,
+    getGeneros,
   ]);
 
   return (

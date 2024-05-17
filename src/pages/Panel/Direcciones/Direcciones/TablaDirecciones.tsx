@@ -53,7 +53,10 @@ export const TablaDirecciones = () => {
   const renderCell = useCallback(
     (direccion: Direccion, columnKey: Column) => {
       const cellValue = direccion[columnKey];
+      const id = direcciones.findIndex((u) => u.id === direccion.id) + 1;
       switch (columnKey) {
+        case "id":
+          return <p>{id}</p>;
         case "nombre":
           return <p>{direccion.nombre}</p>;
         case "municipio":

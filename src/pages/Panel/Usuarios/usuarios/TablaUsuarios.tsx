@@ -57,15 +57,10 @@ export const TablaUsuarios = () => {
 
   const renderCell = useCallback((user: User, columnKey: Column) => {
     const cellValue = user[columnKey];
-
+    const id = usuarios.findIndex((u) => u.id === user.id) + 1;
     switch (columnKey) {
-      // case "id":
-      //   let elementos: JSX.Element[] = [];
-      //   for (let i = 0; i < usuarios.length; i++) {
-      //     // Crear una etiqueta <p> para cada número de usuario y nombre
-      //     elementos.push(<p key={i}>{i + 1}</p>);
-      //   }
-      //   return elementos;
+      case "id":
+        return <p>{id}</p>;
 
       case "usuario":
         return <p> {user.usuario} </p>;

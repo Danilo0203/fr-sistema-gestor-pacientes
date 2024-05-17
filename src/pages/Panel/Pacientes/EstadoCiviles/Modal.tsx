@@ -20,6 +20,7 @@ import { useEstadoCivilStore } from "../../../../store/pacientes/estadoCivil";
 import {
   updateEstadoCivil,
   deleteEstadoCivil,
+  createEstadoCivil,
 } from "helpers/api/pacientes/estado-civil";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, EstadoCivilData } from "types/index";
@@ -78,7 +79,6 @@ export const ModalEditarEstadoCivil = ({
         onOpenChange={onOpenChange}
         isDismissable={false}
         classNames={{ backdrop: "bg-black/10 blur-[1px]" }}
-        size="2xl"
       >
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -92,23 +92,14 @@ export const ModalEditarEstadoCivil = ({
                 </ModalHeader>
                 <Divider />
                 <ModalBody>
-                  <div className="flex flex-col gap-8">
-                    <div className="flex gap-8">
-                      <div className="flex flex-col gap-1">
-                        <Label id="nombre">Nombre</Label>
-                        <Input
-                          placeholder="Editar nombre"
-                          {...register("nombre")}
-                        >
-                          <Icon
-                            icon="mdi:account"
-                            width={20}
-                            className="text-azulFuerte"
-                          />
-                        </Input>
-                      </div>
-                    </div>
-                  </div>
+                  <Label id="nombre">Nombre</Label>
+                  <Input placeholder="Editar nombre" {...register("nombre")}>
+                    <Icon
+                      icon="mdi:account"
+                      width={20}
+                      className="text-azulFuerte"
+                    />
+                  </Input>
                 </ModalBody>
                 <ModalFooter>
                   <Button
@@ -199,6 +190,68 @@ export const ModalEliminarEstadoCivil = ({
             </>
           )}
         </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
+export const ModalAgregarEstadoCivil = ({ updateTable }: ModalProps) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const { register, handleSubmit } = useForm();
+
+  const añadirEstadoCivil = async (data) => {
+    await createEstadoCivil(data);
+    updateTable();
+  };
+  const onSubmit = (data) => {
+    console.log(data);
+    añadirEstadoCivil(data);
+  };
+  return (
+    <>
+      <Button
+        onPress={onOpen}
+        className="bg-azulFuerte text-white"
+        startContent={<Icon icon="mdi:user-add" width={20} />}
+      >
+        Agregar Estado Civil
+      </Button>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        placement="top-center"
+      >
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Argegar Estado Civil
+                </ModalHeader>
+                <Divider />
+                <ModalBody className="mt-4">
+                  <Label>Estado Civil</Label>
+                  <Input
+                    autoFocus
+                    placeholder="Ingrese el estado civil"
+                    type="text"
+                    {...register("nombre")}
+                  />
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="flat" onPress={onClose}>
+                    Cerrar
+                  </Button>
+                  <Button color="primary" type="submit" onPress={onClose}>
+                    Agregar
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </form>
       </Modal>
     </>
   );

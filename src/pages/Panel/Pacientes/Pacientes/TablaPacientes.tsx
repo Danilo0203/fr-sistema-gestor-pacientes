@@ -68,8 +68,11 @@ export const TablaPacientes = () => {
       if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
         edad--;
       }
+      const id = pacientes.findIndex((u) => u.id === paciente.id) + 1;
 
       switch (columnKey) {
+        case "id":
+          return <p> {id} </p>;
         case "nombre":
           return <p>{paciente.nombre}</p>;
         case "apellido":

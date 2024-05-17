@@ -23,6 +23,10 @@ export const columns = [
     label: "Dirección",
   },
   {
+    key: "citas",
+    label: "Citas",
+  },
+  {
     key: "acciones",
     label: "Acciones",
   },

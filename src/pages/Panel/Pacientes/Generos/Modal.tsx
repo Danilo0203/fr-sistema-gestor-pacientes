@@ -17,7 +17,11 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGeneroStore } from "../../../../store/pacientes/generos";
-import { updateGenero, deleteGenero } from "helpers/api/pacientes/genero";
+import {
+  updateGenero,
+  deleteGenero,
+  createGenero,
+} from "helpers/api/pacientes/genero";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, GeneroData } from "types/index";
 
@@ -26,6 +30,7 @@ export const ModalEditarGenero = ({ idGenero, updateTable }: ModalProps) => {
   const generos = useGeneroStore((state) => state.data);
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
+
   const params = useParams();
 
   const handleEdit = () => {
@@ -72,7 +77,7 @@ export const ModalEditarGenero = ({ idGenero, updateTable }: ModalProps) => {
         onOpenChange={onOpenChange}
         isDismissable={false}
         classNames={{ backdrop: "bg-black/10 blur-[1px]" }}
-        size="2xl"
+        // size="2xl"
       >
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -86,23 +91,14 @@ export const ModalEditarGenero = ({ idGenero, updateTable }: ModalProps) => {
                 </ModalHeader>
                 <Divider />
                 <ModalBody>
-                  <div className="flex flex-col gap-8">
-                    <div className="flex gap-8">
-                      <div className="flex flex-col gap-1">
-                        <Label id="nombre">Nombre</Label>
-                        <Input
-                          placeholder="Editar nombre"
-                          {...register("nombre")}
-                        >
-                          <Icon
-                            icon="mdi:account"
-                            width={20}
-                            className="text-azulFuerte"
-                          />
-                        </Input>
-                      </div>
-                    </div>
-                  </div>
+                  <Label id="nombre">Nombre</Label>
+                  <Input placeholder="Editar género" {...register("nombre")}>
+                    <Icon
+                      icon="mdi:account"
+                      width={20}
+                      className="text-azulFuerte"
+                    />
+                  </Input>
                 </ModalBody>
                 <ModalFooter>
                   <Button
@@ -187,6 +183,68 @@ export const ModalEliminarGenero = ({ idGenero, updateTable }: ModalProps) => {
             </>
           )}
         </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
+export const ModalAgregarGenero = ({ updateTable }: ModalProps) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const { register, handleSubmit } = useForm();
+
+  const añadirGenero = async (data) => {
+    await createGenero(data);
+    updateTable();
+  };
+  const onSubmit = (data) => {
+    console.log(data);
+    añadirGenero(data);
+  };
+  return (
+    <>
+      <Button
+        onPress={onOpen}
+        className="bg-azulFuerte text-white"
+        startContent={<Icon icon="mdi:user-add" width={20} />}
+      >
+        Agregar Género
+      </Button>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        placement="top-center"
+      >
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Argegar Género
+                </ModalHeader>
+                <Divider />
+                <ModalBody className="mt-4">
+                  <Label>Género</Label>
+                  <Input
+                    autoFocus
+                    placeholder="Ingrese el género"
+                    type="text"
+                    {...register("nombre")}
+                  />
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="flat" onPress={onClose}>
+                    Cerrar
+                  </Button>
+                  <Button color="primary" type="submit" onPress={onClose}>
+                    Agregar
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </form>
       </Modal>
     </>
   );

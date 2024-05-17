@@ -46,6 +46,7 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
   const { id } = params;
 
   const usuarioID: UserData = getUsuarioById(id, usuarios)[0];
+  console.log(usuarioID);
 
   useEffect(() => {
     setValue("usuario", usuarioID.usuario);

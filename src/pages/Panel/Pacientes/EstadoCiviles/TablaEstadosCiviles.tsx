@@ -14,7 +14,7 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useCallback, useMemo } from "react";
 import { columns } from "./dataTable/data";
-import { ModalEditarEstadoCivil, ModalEliminarEstadoCivil } from "./Modal";
+import { ModalAgregarEstadoCivil, ModalEditarEstadoCivil, ModalEliminarEstadoCivil } from "./Modal";
 import { useTableEstadoCiviles } from "hooks/useTableEstadoCiviles";
 import { useEstadoCivilStore } from "../../../../store/pacientes/estadoCivil";
 
@@ -101,22 +101,25 @@ export const TablaEstadoCiviles = () => {
               Total de estados civiles: {estadoCiviles.length}
             </span>
           </div>
+          <div className="flex w-1/5 flex-col items-end justify-center gap-2">
+            <ModalAgregarEstadoCivil updateTable={getEstadoCiviles} />
 
-          <Select
-            label="Filas por página"
-            className="max-w-xs"
-            onChange={onRowsPerPageChange}
-          >
-            <SelectItem key="5" value="5">
-              5
-            </SelectItem>
-            <SelectItem key="10" value="10">
-              10
-            </SelectItem>
-            <SelectItem key="15" value="15">
-              15
-            </SelectItem>
-          </Select>
+            <Select
+              label="Filas por página"
+              className="max-w-xs"
+              onChange={onRowsPerPageChange}
+            >
+              <SelectItem key="5" value="5">
+                5
+              </SelectItem>
+              <SelectItem key="10" value="10">
+                10
+              </SelectItem>
+              <SelectItem key="15" value="15">
+                15
+              </SelectItem>
+            </Select>
+          </div>
         </div>
       </div>
     );

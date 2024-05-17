@@ -50,7 +50,7 @@ export const ModalEditarDireccion = ({
 
   const { id } = params;
 
-  const direccionID: DireccionData = getUsuarioById(id, direcciones)[0];
+  const direccionID: DireccionData = getUsuarioById(id, direcciones)[0] ?? [];
 
   useEffect(() => {
     setValue("nombre", direccionID.nombre);

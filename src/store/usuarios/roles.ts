@@ -7,7 +7,9 @@ type RolesStoreProps = {
   error: boolean;
   data: Array<T>;
   errorData: null;
+  dataLoaded: boolean;
   execute: () => void;
+  init: () => void;
 };
 
 const initialState = {
@@ -16,12 +18,16 @@ const initialState = {
   error: false,
   data: [],
   errorData: null,
+  dataLoaded: false,
 };
 
-export const useRolStore = create<RolesStoreProps>()((set) => ({
+export const useRolStore = create<RolesStoreProps>()((set, get) => ({
   ...initialState,
   execute: async () => {
-    set({ ...initialState, loading: true });
+    set((state) => {
+      if (state.dataLoaded) return state; // Si los datos ya están cargados, no hacer nada
+      return { ...state, loading: true };
+    });
     try {
       const roles = await api.get("/roles");
       set({
@@ -34,10 +40,17 @@ export const useRolStore = create<RolesStoreProps>()((set) => ({
             descripcion: roles.descripcion,
           };
         }),
+        dataLoaded: true, // Se cargaron los datos
       });
     } catch (err) {
       console.error("Error al obtener los roles: ", err);
       set({ ...initialState, error: true, errorData: err.message });
+    }
+  },
+  init: async () => {
+    const state = get();
+    if (!state.dataLoaded) {
+      await state.execute();
     }
   },
 }));

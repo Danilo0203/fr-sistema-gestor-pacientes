@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useAuthStore } from "../../store/auth";
 
 export const Sidbar = () => {
   const [openUsuarios, setOpenUsuarios] = useState(false);
@@ -8,7 +9,9 @@ export const Sidbar = () => {
   const [openDireccion, setOpenDireccion] = useState(false);
   const [openDatosMedicos, setOpenDatosMedicos] = useState(false);
   const [openRecetas, setOpenRecetas] = useState(false);
-
+  const rol = useAuthStore(
+    (state) => state.profile.rol.nombre,
+  ).toLocaleLowerCase();
   return (
     <nav className="mt-3">
       <ul className="flex flex-col gap-3">
@@ -23,8 +26,27 @@ export const Sidbar = () => {
           </NavLink>
         </li>
         {/* Usuarios */}
-        <li>
-          <NavLink
+        {rol === "administrador" && (
+          <li>
+            <NavLink
+              to="/usuarios/tabla"
+              className="flex items-center gap-2 rounded-md py-1 pl-2 text-blanco"
+              onClick={() => setOpenUsuarios(!openUsuarios)}
+            >
+              <div className="flex w-full items-center justify-between pr-1">
+                <div className="flex items-center gap-2">
+                  <Icon icon="mdi:user" width={25} />
+                  <span>Usuarios</span>
+                </div>
+                {openUsuarios ? (
+                  <Icon icon="mdi:keyboard-arrow-up" />
+                ) : (
+                  <Icon icon="mdi:keyboard-arrow-down" />
+                )}
+              </div>
+            </NavLink>
+
+            {/* <NavLink
             to="/usuarios/tabla"
             className="flex items-center gap-2 rounded-md py-1 pl-2 text-blanco"
             onClick={() => setOpenUsuarios(!openUsuarios)}
@@ -40,33 +62,35 @@ export const Sidbar = () => {
                 <Icon icon="mdi:keyboard-arrow-down" />
               )}
             </div>
-          </NavLink>
-          {openUsuarios && (
-            <ul className="my-1 flex flex-col gap-1 pl-3">
-              <li>
-                <NavLink
-                  to="/usuarios/tabla"
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
-                  }
-                >
-                  <Icon icon="mdi:user-group" width={25} />
-                  <span>Usuarios</span>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/usuarios/rol"
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
-                  }
-                >
-                  <Icon icon="mdi:user" width={25} /> <span>Rol</span>
-                </NavLink>
-              </li>
-            </ul>
-          )}
-        </li>
+          </NavLink> */}
+
+            {openUsuarios && (
+              <ul className="my-1 flex flex-col gap-1 pl-3">
+                <li>
+                  <NavLink
+                    to="/usuarios/tabla"
+                    className={({ isActive }) =>
+                      `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
+                    }
+                  >
+                    <Icon icon="mdi:user-group" width={25} />
+                    <span>Usuarios</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/usuarios/rol"
+                    className={({ isActive }) =>
+                      `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
+                    }
+                  >
+                    <Icon icon="mdi:user" width={25} /> <span>Rol</span>
+                  </NavLink>
+                </li>
+              </ul>
+            )}
+          </li>
+        )}
 
         {/* PACIENTES */}
         <li>

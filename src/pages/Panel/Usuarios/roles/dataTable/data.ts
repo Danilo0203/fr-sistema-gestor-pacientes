@@ -1,9 +1,9 @@
 export const columns = [
-  // {
-  //   key: "id",
-  //   label: "#",
-  //   sortable: true,
-  // },
+  {
+    key: "id",
+    label: "#",
+    sortable: true,
+  },
   {
     key: "rol",
     label: "Rol",

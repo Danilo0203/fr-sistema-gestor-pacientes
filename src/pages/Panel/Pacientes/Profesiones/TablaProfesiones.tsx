@@ -14,7 +14,11 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useCallback, useMemo } from "react";
 import { columns } from "./dataTable/data";
-import { ModalEditarProfesion, ModalEliminarProfesion } from "./Modal";
+import {
+  ModalAgregarProfesion,
+  ModalEditarProfesion,
+  ModalEliminarProfesion,
+} from "./Modal";
 import { useTableProfesiones } from "hooks/useTableProfesiones";
 import { useProfesionStore } from "../../../../store/pacientes/profesiones";
 
@@ -101,22 +105,24 @@ export const TablaProfesiones = () => {
               Total de profesiones: {profesiones.length}
             </span>
           </div>
-
-          <Select
-            label="Filas por página"
-            className="max-w-xs"
-            onChange={onRowsPerPageChange}
-          >
-            <SelectItem key="5" value="5">
-              5
-            </SelectItem>
-            <SelectItem key="10" value="10">
-              10
-            </SelectItem>
-            <SelectItem key="15" value="15">
-              15
-            </SelectItem>
-          </Select>
+          <div className="flex w-1/5 flex-col items-end justify-center gap-2">
+            <ModalAgregarProfesion updateTable={getProfesiones} />
+            <Select
+              label="Filas por página"
+              className="max-w-xs"
+              onChange={onRowsPerPageChange}
+            >
+              <SelectItem key="5" value="5">
+                5
+              </SelectItem>
+              <SelectItem key="10" value="10">
+                10
+              </SelectItem>
+              <SelectItem key="15" value="15">
+                15
+              </SelectItem>
+            </Select>
+          </div>
         </div>
       </div>
     );

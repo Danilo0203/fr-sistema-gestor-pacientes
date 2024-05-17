@@ -26,6 +26,7 @@ export const useTableRol = (roles) => {
   // Funcion para obtener roles
   useEffect(() => {
     getRoles();
+    
   }, [getRoles]);
 
   // Funcion para esperar la respuesta de la API

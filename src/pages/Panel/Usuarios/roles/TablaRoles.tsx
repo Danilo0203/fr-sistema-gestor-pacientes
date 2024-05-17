@@ -24,7 +24,9 @@ import { useTableRol } from "hooks/useTableRol";
 import { useRolStore } from "../../../../store/usuarios/roles";
 
 export const TablaRoles = () => {
-  const roles = useRolStore((state) => state.data);
+  const dataRoles = useRolStore((state) => state.data);
+
+  // const roles = useRolStore((state) => state.data);
   const {
     value,
     getRoles,
@@ -39,7 +41,7 @@ export const TablaRoles = () => {
     onRowsPerPageChange,
     onSearchChange,
     onClear,
-  } = useTableRol(roles);
+  } = useTableRol(dataRoles);
 
   interface Rol {
     id: string;
@@ -54,15 +56,10 @@ export const TablaRoles = () => {
 
   const renderCell = useCallback((rol: Rol, columnKey: Column) => {
     const cellValue = rol[columnKey];
-
+    const id = dataRoles.findIndex((u) => u.id === rol.id) + 1;
     switch (columnKey) {
-      // case "id":
-      //   let elementos: JSX.Element[] = [];
-      //   for (let i = 0; i < usuarios.length; i++) {
-      //     // Crear una etiqueta <p> para cada número de usuario y nombre
-      //     elementos.push(<p key={i}>{i + 1}</p>);
-      //   }
-      //   return elementos;
+      case "id":
+        return <p> {id} </p>;
 
       case "rol":
         return <p> {rol.nombre} </p>;
@@ -103,7 +100,7 @@ export const TablaRoles = () => {
               startContent={<Icon icon="mdi:account-search" width={20} />}
             />
 
-            <span className="text-small">Total de usuarios {roles.length}</span>
+            <span className="text-small">Total de usuarios {dataRoles.length}</span>
           </div>
           <div className="flex w-1/5 flex-col items-end justify-center gap-2">
             <ModalAñadirRoles updateTable={getRoles} />
@@ -126,7 +123,14 @@ export const TablaRoles = () => {
         </div>
       </div>
     );
-  }, [onRowsPerPageChange, roles.length, onClear, filterValue, onSearchChange]);
+  }, [
+    onRowsPerPageChange,
+    dataRoles.length,
+    onClear,
+    filterValue,
+    onSearchChange,
+    getRoles,
+  ]);
 
   return (
     <Table

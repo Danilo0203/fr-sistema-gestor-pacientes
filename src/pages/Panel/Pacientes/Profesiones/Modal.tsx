@@ -20,6 +20,7 @@ import { useProfesionStore } from "../../../../store/pacientes/profesiones";
 import {
   updateProfesion,
   deleteProfesion,
+  createProfesion,
 } from "helpers/api/pacientes/profesiones";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, ProfesionData } from "types/index";
@@ -78,7 +79,6 @@ export const ModalEditarProfesion = ({
         onOpenChange={onOpenChange}
         isDismissable={false}
         classNames={{ backdrop: "bg-black/10 blur-[1px]" }}
-        size="2xl"
       >
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -92,23 +92,14 @@ export const ModalEditarProfesion = ({
                 </ModalHeader>
                 <Divider />
                 <ModalBody>
-                  <div className="flex flex-col gap-8">
-                    <div className="flex gap-8">
-                      <div className="flex flex-col gap-1">
-                        <Label id="nombre">Nombre</Label>
-                        <Input
-                          placeholder="Editar nombre"
-                          {...register("nombre")}
-                        >
-                          <Icon
-                            icon="mdi:account"
-                            width={20}
-                            className="text-azulFuerte"
-                          />
-                        </Input>
-                      </div>
-                    </div>
-                  </div>
+                  <Label id="nombre">Nombre</Label>
+                  <Input placeholder="Editar nombre" {...register("nombre")}>
+                    <Icon
+                      icon="mdi:account"
+                      width={20}
+                      className="text-azulFuerte"
+                    />
+                  </Input>
                 </ModalBody>
                 <ModalFooter>
                   <Button
@@ -199,6 +190,66 @@ export const ModalEliminarProfesion = ({
             </>
           )}
         </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
+export const ModalAgregarProfesion = ({ updateTable }: ModalProps) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const { register, handleSubmit } = useForm();
+
+  const añadirProfesion = async (data: UserData) => {
+    await createProfesion(data);
+    updateTable();
+  };
+  const onSubmit = (data: UserData) => {
+    añadirProfesion(data);
+  };
+  return (
+    <>
+      <Button
+        onPress={onOpen}
+        className="bg-azulFuerte text-white"
+        startContent={<Icon icon="mdi:user-add" width={20} />}
+      >
+        Agregar Profesión
+      </Button>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        placement="top-center"
+      >
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Argegar Profesión
+                </ModalHeader>
+                <Divider />
+                <ModalBody className="mt-4">
+                  <Label>Profesión</Label>
+                  <Input
+                    placeholder="Ingrese la profesión"
+                    type="text"
+                    {...register("nombre")}
+                  />
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="flat" onPress={onClose}>
+                    Cerrar
+                  </Button>
+                  <Button color="primary" type="submit" onPress={onClose}>
+                    Agregar
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </form>
       </Modal>
     </>
   );
