@@ -7,7 +7,9 @@ type PacienteStoreProps = {
   error: boolean;
   data: Array<T>;
   errorData: null;
+  dataLoaded: boolean;
   execute: () => void;
+  init: () => void;
 };
 
 const initialState = {
@@ -16,12 +18,16 @@ const initialState = {
   error: false,
   data: [],
   errorData: null,
+  dataLoaded: false,
 };
 
-export const usePacienteStore = create<PacienteStoreProps>()((set) => ({
+export const usePacienteStore = create<PacienteStoreProps>()((set, get) => ({
   ...initialState,
   execute: async () => {
-    set({ ...initialState, loading: true });
+    set((state) => {
+      if (state.dataLoaded) return state; // Si los datos ya están cargados, no hacer nada
+      return { ...state, loading: true };
+    });
     try {
       const pacientes = await api.get("/pacientes");
       set({
@@ -45,10 +51,17 @@ export const usePacienteStore = create<PacienteStoreProps>()((set) => ({
             municipioID: paciente.direccion.municipio.id,
           };
         }),
+        dataLoaded: true, // Se cargaron los datos
       });
     } catch (err) {
       console.error("Error al obtener los pacientes: ", err);
       set({ ...initialState, error: true, errorData: err.message });
+    }
+  },
+  init: async () => {
+    const state = get();
+    if (!state.dataLoaded) {
+      await state.execute();
     }
   },
 }));

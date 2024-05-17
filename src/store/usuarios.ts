@@ -7,7 +7,9 @@ type UsuariosStoreProps = {
   error: boolean;
   data: string[];
   errorData: null;
+  dataLoaded: boolean;
   execute: () => void;
+  init: () => void;
 };
 
 const initialState = {
@@ -16,12 +18,16 @@ const initialState = {
   error: false,
   data: [],
   errorData: null,
+  dataLoaded: false,
 };
 
-export const useUsuarioStore = create<UsuariosStoreProps>()((set) => ({
+export const useUsuarioStore = create<UsuariosStoreProps>()((set, get) => ({
   ...initialState,
   execute: async () => {
-    set({ ...initialState, loading: true });
+    set((state) => {
+      if (state.dataLoaded) return state; // Si los datos ya están cargados, no hacer nada
+      return { ...state, loading: true };
+    });
     try {
       const usuarios = await api.get("/usuarios");
       set({
@@ -37,10 +43,18 @@ export const useUsuarioStore = create<UsuariosStoreProps>()((set) => ({
             rolID: usuarios.rol.id,
           };
         }),
+        dataLoaded: true, // Se cargaron los datos
       });
     } catch (err) {
       console.error("Error al obtener los usuarios: ", err);
       set({ ...initialState, error: true, errorData: err.message });
+    }
+  },
+  init: async () => {
+    const state = get();
+    console.log(state.error);
+    if (!state.dataLoaded || state.error) {
+      await state.execute();
     }
   },
 }));

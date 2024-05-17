@@ -24,9 +24,9 @@ export const useTablePacientes = (pacientes) => {
   }, [pacientes, filterValue]);
 
   // Funcion para obtener pacientes
-  useEffect(() => {
-    getPacientes();
-  }, [getPacientes]);
+  // useEffect(() => {
+  //   getPacientes();
+  // }, [getPacientes]);
 
   // Funcion para esperar la respuesta de la API
   useEffect(() => {

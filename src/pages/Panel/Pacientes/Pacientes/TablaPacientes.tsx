@@ -102,7 +102,7 @@ export const TablaPacientes = () => {
           return cellValue;
       }
     },
-    [getPacientes],
+    [getPacientes, pacientes],
   );
 
   const topContent = useMemo(() => {

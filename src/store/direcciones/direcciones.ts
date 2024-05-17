@@ -7,7 +7,9 @@ type DireccionStoreProps = {
   error: boolean;
   data: Array<T>;
   errorData: null;
+  dataLoaded: boolean;
   execute: () => void;
+  init: () => void;
 };
 
 const initialState = {
@@ -16,12 +18,16 @@ const initialState = {
   error: false,
   data: [],
   errorData: null,
+  dataLoaded: false,
 };
 
-export const useDireccionStore = create<DireccionStoreProps>()((set) => ({
+export const useDireccionStore = create<DireccionStoreProps>()((set, get) => ({
   ...initialState,
   execute: async () => {
-    set({ ...initialState, loading: true });
+    set((state) => {
+      if (state.dataLoaded) return state; // Si los datos ya están cargados, no hacer nada
+      return { ...state, loading: true };
+    });
     try {
       const direcciones = await api.get("/direcciones");
       set({
@@ -37,10 +43,18 @@ export const useDireccionStore = create<DireccionStoreProps>()((set) => ({
             departamentoID: direcciones.municipio.departamento.id,
           };
         }),
+        dataLoaded: true, // Se cargaron los datos
       });
     } catch (err) {
       console.error("Error al obtener los departamentos: ", err);
       set({ ...initialState, error: true, errorData: err.message });
+    }
+  },
+  init: async () => {
+    const state = get();
+    // console.log(state.dataLoaded);
+    if (!state.dataLoaded) {
+      await state.execute();
     }
   },
 }));

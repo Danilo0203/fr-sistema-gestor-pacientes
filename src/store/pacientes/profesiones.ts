@@ -7,7 +7,9 @@ type ProfesionStoreProps = {
   error: boolean;
   data: Array<T>;
   errorData: null;
+  dataLoaded: boolean;
   execute: () => void;
+  init: () => void;
 };
 
 const initialState = {
@@ -16,12 +18,16 @@ const initialState = {
   error: false,
   data: [],
   errorData: null,
+  dataLoaded: false,
 };
 
-export const useProfesionStore = create<ProfesionStoreProps>((set) => ({
+export const useProfesionStore = create<ProfesionStoreProps>((set, get) => ({
   ...initialState,
   execute: async () => {
-    set({ ...initialState, loading: true });
+    set((state) => {
+      if (state.dataLoaded) return state; // Si los datos ya están cargados, no hacer nada
+      return { ...state, loading: true };
+    });
     try {
       const profesiones = await api.get("/profesiones");
       set({
@@ -33,10 +39,17 @@ export const useProfesionStore = create<ProfesionStoreProps>((set) => ({
             nombre: profesion.nombre,
           };
         }),
+        dataLoaded: true, // Se cargaron los datos
       });
     } catch (err) {
       console.error("Error al obtener las profesiones: ", err);
       set({ ...initialState, error: true, errorData: err.message });
+    }
+  },
+  init: async () => {
+    const state = get();
+    if (!state.dataLoaded) {
+      await state.execute();
     }
   },
 }));

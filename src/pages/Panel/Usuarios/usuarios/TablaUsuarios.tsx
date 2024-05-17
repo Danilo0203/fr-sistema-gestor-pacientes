@@ -25,7 +25,6 @@ import { useUsuarioStore } from "../../../../store/usuarios";
 
 export const TablaUsuarios = () => {
   const usuarios = useUsuarioStore((state) => state.data);
-
   const {
     value,
     getUsuarios,

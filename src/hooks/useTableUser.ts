@@ -24,9 +24,9 @@ export const useTableUser = (usuarios) => {
   }, [usuarios, filterValue]);
 
   // Funcion para obtener usuarios
-  useEffect(() => {
-    getUsuarios();
-  }, [getUsuarios]);
+  // useEffect(() => {
+  //   getUsuarios();
+  // }, [getUsuarios]);
 
   // Funcion para esperar la respuesta de la API
   useEffect(() => {

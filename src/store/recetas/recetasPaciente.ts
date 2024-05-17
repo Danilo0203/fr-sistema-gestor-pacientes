@@ -7,7 +7,9 @@ type RecetasPacienteStoreProps = {
   error: boolean;
   data: Array<T>;
   errorData: null;
+  dataLoaded: boolean;
   execute: () => void;
+  init: () => void;
 };
 
 const initialState = {
@@ -16,13 +18,17 @@ const initialState = {
   error: false,
   data: [],
   errorData: null,
+  dataLoaded: false,
 };
 
 export const useRecetasPacienteStore = create<RecetasPacienteStoreProps>(
-  (set) => ({
+  (set, get) => ({
     ...initialState,
     execute: async () => {
-      set({ ...initialState, loading: true });
+      set((state) => {
+        if (state.dataLoaded) return state; // Si los datos ya están cargados, no hacer nada
+        return { ...state, loading: true };
+      });
       try {
         const recetasPacientes = await api.get("/recetas-medicas-paciente");
         set({
@@ -39,10 +45,17 @@ export const useRecetasPacienteStore = create<RecetasPacienteStoreProps>(
               descripcion: recetaPaciente.descripcion,
             };
           }),
+          dataLoaded: true, // Se cargaron los datos
         });
       } catch (err) {
         console.error("Error al obtener las recetas: ", err);
         set({ ...initialState, error: true, errorData: err.message });
+      }
+    },
+    init: async () => {
+      const state = get();
+      if (!state.dataLoaded) {
+        await state.execute();
       }
     },
   }),

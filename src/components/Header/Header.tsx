@@ -15,14 +15,15 @@ import {
   BreadcrumbItem,
 } from "@nextui-org/react";
 import { useAuthStore } from "../../store/auth";
-import { capitalizar } from "../../utils/capitalizarStrings";
 import { logout } from "helpers/api/auth";
+import { useUsuarioStore } from "../../store/usuarios";
 
 export const Header = () => {
   const clearSesion = useAuthStore((state) => state.setClearToken);
   const profile = useAuthStore((state) => state.profile);
-  const nombreUsuario = profile?.nombre;
-  const rolUsuario = capitalizar(profile.rol.nombre);
+  const usuariosData = useUsuarioStore((state) => state.data);
+  // Funcion para obtener el nombre del usuario logueado
+  const usuario = usuariosData.find((usuario) => usuario.id == profile.id);
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -152,7 +153,7 @@ export const Header = () => {
       </NavbarBrand>
 
       <NavbarContent as="div" justify="end">
-        <b>{nombreUsuario}</b>
+        <b>{usuario?.nombre}</b>
         <Dropdown placement="bottom-end">
           <DropdownTrigger>
             <Avatar
@@ -167,7 +168,7 @@ export const Header = () => {
           </DropdownTrigger>
           <DropdownMenu aria-label="Profile Actions" variant="flat">
             <DropdownItem key="profile" className="gap-2">
-              <p className="font-semibold">{rolUsuario}</p>
+              <p className="font-semibold">{usuario?.rol}</p>
             </DropdownItem>
             <DropdownItem key="perfil" startContent={<Icon icon="mdi:user" />}>
               <span>Perfil</span>
