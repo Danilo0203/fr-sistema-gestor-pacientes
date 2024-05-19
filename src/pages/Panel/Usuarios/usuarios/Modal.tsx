@@ -29,15 +29,15 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const usuarios = useUsuarioStore((state) => state.data);
   const roles = useRolStore((state) => state.data);
-  const getRoles = useRolStore((state) => state.execute);
+  // const getRoles = useRolStore((state) => state.execute);
 
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const params = useParams();
 
-  useEffect(() => {
-    getRoles();
-  }, [getRoles]);
+  // useEffect(() => {
+  //   getRoles();
+  // }, [getRoles]);
 
   const handleEdit = () => {
     navigate(`/usuarios/tabla/editar/${idUser}`);
@@ -46,7 +46,6 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
   const { id } = params;
 
   const usuarioID: UserData = getUsuarioById(id, usuarios)[0];
-  console.log(usuarioID);
 
   useEffect(() => {
     setValue("usuario", usuarioID.usuario);

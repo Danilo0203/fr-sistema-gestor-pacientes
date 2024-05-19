@@ -19,7 +19,7 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { usePacienteStore } from "../../../../store/pacientes/pacientes";
@@ -41,238 +41,239 @@ import { useMunicipioStore } from "../../../../store/direcciones/municipios";
 import { createDireccion } from "helpers/api/direccion/direcciones";
 import { format } from "@formkit/tempo";
 
-export const ModalEditarPaciente = ({
-  idPaciente,
-  updateTable,
-}: ModalProps) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const pacientes = usePacienteStore((state) => state.data);
-  const direcciones = useDireccionStore((state) => state.data);
-  const profesiones = useProfesionStore((state) => state.data);
-  const estadoCivil = useEstadoCivilStore((state) => state.data);
-  const generos = useGeneroStore((state) => state.data);
-  const getDirecciones = useDireccionStore((state) => state.execute);
-  const getProfesiones = useProfesionStore((state) => state.execute);
-  const getEstadoCivil = useEstadoCivilStore((state) => state.execute);
-  const getGeneros = useGeneroStore((state) => state.execute);
+export const ModalEditarPaciente = memo(
+  ({ idPaciente, updateTable }: ModalProps) => {
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const pacientes = usePacienteStore((state) => state.data);
+    const direcciones = useDireccionStore((state) => state.data);
+    const profesiones = useProfesionStore((state) => state.data);
+    const estadoCivil = useEstadoCivilStore((state) => state.data);
+    const generos = useGeneroStore((state) => state.data);
+    // const getDirecciones = useDireccionStore((state) => state.execute);
+    // const getProfesiones = useProfesionStore((state) => state.execute);
+    // const getEstadoCivil = useEstadoCivilStore((state) => state.execute);
+    // const getGeneros = useGeneroStore((state) => state.execute);
 
-  const { setValue, register, handleSubmit } = useForm();
-  const navigate = useNavigate();
-  const params = useParams();
+    const { setValue, register, handleSubmit } = useForm();
+    const navigate = useNavigate();
+    const params = useParams();
 
-  useEffect(() => {
-    getDirecciones();
-    getProfesiones();
-    getEstadoCivil();
-    getGeneros();
-  }, [getDirecciones, getProfesiones, getEstadoCivil, getGeneros]);
+    // useEffect(() => {
+    //   getDirecciones();
+    //   getProfesiones();
+    //   getEstadoCivil();
+    //   getGeneros();
+    // }, [getDirecciones, getProfesiones, getEstadoCivil, getGeneros]);
 
-  const handleEdit = () => {
-    navigate(`/pacientes/tabla/editar/${idPaciente}`);
-  };
+    const handleEdit = () => {
+      navigate(`/pacientes/tabla/editar/${idPaciente}`);
+    };
 
-  const { id } = params;
+    const { id } = params;
 
-  const pacienteID: PacienteData = getUsuarioById(id, pacientes)[0];
+    const pacienteID: PacienteData = getUsuarioById(id, pacientes)[0];
 
-  useEffect(() => {
-    setValue("nombre", pacienteID.nombre);
-    setValue("apellido", pacienteID.apellido);
-    setValue("fecha_nacimiento", pacienteID.fecha_nacimiento);
-    setValue("direccion", pacienteID.direccion);
-    setValue("profesion", pacienteID.profesion);
-    setValue("estadoCivil", pacienteID.estadoCivil);
-    setValue("genero", pacienteID.genero);
-  }, [
-    pacienteID.nombre,
-    pacienteID.apellido,
-    pacienteID.fecha_nacimiento,
-    pacienteID.direccion,
-    pacienteID.profesion,
-    pacienteID.estadoCivil,
-    pacienteID.genero,
-  ]);
+    useEffect(() => {
+      setValue("nombre", pacienteID.nombre);
+      setValue("apellido", pacienteID.apellido);
+      setValue("fecha_nacimiento", pacienteID.fecha_nacimiento);
+      setValue("direccion", pacienteID.direccion);
+      setValue("profesion", pacienteID.profesion);
+      setValue("estadoCivil", pacienteID.estadoCivil);
+      setValue("genero", pacienteID.genero);
+    }, [
+      pacienteID.nombre,
+      pacienteID.apellido,
+      pacienteID.fecha_nacimiento,
+      pacienteID.direccion,
+      pacienteID.profesion,
+      pacienteID.estadoCivil,
+      pacienteID.genero,
+    ]);
 
-  const handleClose = () => {
-    navigate("/pacientes/tabla");
-  };
+    const handleClose = () => {
+      navigate("/pacientes/tabla");
+    };
 
-  const actualizar = async (data: PacienteData) => {
-    await updatePaciente(pacienteID.id, data);
-    updateTable();
-  };
+    const actualizar = async (data: PacienteData) => {
+      await updatePaciente(pacienteID.id, data);
+      updateTable();
+    };
 
-  const onSubmit = (data: PacienteData) => {
-    actualizar(data);
-    navigate("/pacientes/tabla");
-  };
+    const onSubmit = (data: PacienteData) => {
+      actualizar(data);
+      navigate("/pacientes/tabla");
+    };
 
-  return (
-    <>
-      <button onClick={handleEdit}>
-        <Tooltip content="Editar" color="primary">
-          <span className="cursor-pointer text-lg text-azulFuerte active:opacity-50">
-            <Icon
-              icon="mdi:account-box-edit-outline"
-              width={25}
-              onClick={onOpen}
-            />
-          </span>
-        </Tooltip>
-      </button>
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        isDismissable={false}
-        placement="top-center"
-        size="xl"
-      >
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <ModalContent>
-            {(onClose) => (
-              <>
-                <ModalHeader className="flex flex-col gap-1 text-azulFuerte">
-                  Editar Paciente
-                </ModalHeader>
-                <Divider />
-                <ModalBody>
-                  <div className="flex flex-col gap-8">
-                    <div className="flex gap-8">
+    return (
+      <>
+        <button onClick={handleEdit}>
+          <Tooltip content="Editar" color="primary">
+            <span className="cursor-pointer text-lg text-azulFuerte active:opacity-50">
+              <Icon
+                icon="mdi:account-box-edit-outline"
+                width={25}
+                onClick={onOpen}
+              />
+            </span>
+          </Tooltip>
+        </button>
+        <Modal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          isDismissable={false}
+          placement="top-center"
+          size="xl"
+        >
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <ModalContent>
+              {(onClose) => (
+                <>
+                  <ModalHeader className="flex flex-col gap-1 text-azulFuerte">
+                    Editar Paciente
+                  </ModalHeader>
+                  <Divider />
+                  <ModalBody>
+                    <div className="flex flex-col gap-8">
+                      <div className="flex gap-8">
+                        <div className="flex flex-col gap-1">
+                          <Label id="nombre">Nombre</Label>
+                          <Input
+                            placeholder="Editar nombre"
+                            {...register("nombre")}
+                          >
+                            <Icon
+                              icon="mdi:account"
+                              width={20}
+                              className="text-azulFuerte"
+                            />
+                          </Input>
+                        </div>
+                        <div className="flex flex-col gap-1">
+                          <Label id="apellido">Apellido</Label>
+                          <Input
+                            placeholder="Editar apellido"
+                            {...register("apellido")}
+                          >
+                            <Icon
+                              icon="mdi:account"
+                              width={20}
+                              className="text-azulFuerte"
+                            />
+                          </Input>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-8">
+                        <div className="flex w-1/2 flex-col gap-1">
+                          <Label id="fechaNacimiento">
+                            Fecha de Nacimiento
+                          </Label>
+                          <Input
+                            type="date"
+                            placeholder="Editar fecha de nacimiento"
+                            {...register("fecha_nacimiento")}
+                          >
+                            <Icon
+                              icon="mdi:calendar"
+                              width={20}
+                              className="text-azulFuerte"
+                            />
+                          </Input>
+                        </div>
+                        <div className="flex w-1/2 flex-col gap-1">
+                          <Label id="genero_id">Género</Label>
+                          <Select
+                            items={generos}
+                            placeholder="Seleccione un género"
+                            defaultSelectedKeys={[pacienteID.generoID]}
+                            size="lg"
+                            {...register("genero_id")}
+                          >
+                            {(genero) => (
+                              <SelectItem key={genero.id}>
+                                {genero.nombre}
+                              </SelectItem>
+                            )}
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-8">
+                        <div className="flex w-1/2 flex-col gap-1">
+                          <Label id="profesion_id">Profesión</Label>
+                          <Select
+                            items={profesiones}
+                            placeholder="Seleccione una profesión"
+                            defaultSelectedKeys={[pacienteID.profesionID]}
+                            size="lg"
+                            {...register("profesion_id")}
+                          >
+                            {(profesion) => (
+                              <SelectItem key={profesion.id}>
+                                {profesion.nombre}
+                              </SelectItem>
+                            )}
+                          </Select>
+                        </div>
+                        <div className="flex w-1/2 flex-col gap-1">
+                          <Label id="estado_civil_id">Estado Civil</Label>
+                          <Select
+                            items={estadoCivil}
+                            placeholder="Seleccione un estado civil"
+                            defaultSelectedKeys={[pacienteID.estadoCivilID]}
+                            size="lg"
+                            {...register("estado_civil_id")}
+                          >
+                            {(estadoCivil) => (
+                              <SelectItem key={estadoCivil.id}>
+                                {estadoCivil.nombre}
+                              </SelectItem>
+                            )}
+                          </Select>
+                        </div>
+                      </div>
+
                       <div className="flex flex-col gap-1">
-                        <Label id="nombre">Nombre</Label>
-                        <Input
-                          placeholder="Editar nombre"
-                          {...register("nombre")}
-                        >
-                          <Icon
-                            icon="mdi:account"
-                            width={20}
-                            className="text-azulFuerte"
-                          />
-                        </Input>
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <Label id="apellido">Apellido</Label>
-                        <Input
-                          placeholder="Editar apellido"
-                          {...register("apellido")}
-                        >
-                          <Icon
-                            icon="mdi:account"
-                            width={20}
-                            className="text-azulFuerte"
-                          />
-                        </Input>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-8">
-                      <div className="flex w-1/2 flex-col gap-1">
-                        <Label id="fechaNacimiento">Fecha de Nacimiento</Label>
-                        <Input
-                          type="date"
-                          placeholder="Editar fecha de nacimiento"
-                          {...register("fecha_nacimiento")}
-                        >
-                          <Icon
-                            icon="mdi:calendar"
-                            width={20}
-                            className="text-azulFuerte"
-                          />
-                        </Input>
-                      </div>
-                      <div className="flex w-1/2 flex-col gap-1">
-                        <Label id="genero_id">Género</Label>
+                        <Label id="direccion_id">Dirección</Label>
                         <Select
-                          items={generos}
-                          placeholder="Seleccione un género"
-                          defaultSelectedKeys={[pacienteID.generoID]}
+                          items={direcciones}
+                          placeholder="Seleccione una dirección"
+                          defaultSelectedKeys={[pacienteID.direccionID]}
                           size="lg"
-                          {...register("genero_id")}
+                          {...register("direccion_id")}
                         >
-                          {(genero) => (
-                            <SelectItem key={genero.id}>
-                              {genero.nombre}
+                          {(direccion) => (
+                            <SelectItem key={direccion.id}>
+                              {direccion.nombre}
                             </SelectItem>
                           )}
                         </Select>
                       </div>
                     </div>
-
-                    <div className="flex gap-8">
-                      <div className="flex w-1/2 flex-col gap-1">
-                        <Label id="profesion_id">Profesión</Label>
-                        <Select
-                          items={profesiones}
-                          placeholder="Seleccione una profesión"
-                          defaultSelectedKeys={[pacienteID.profesionID]}
-                          size="lg"
-                          {...register("profesion_id")}
-                        >
-                          {(profesion) => (
-                            <SelectItem key={profesion.id}>
-                              {profesion.nombre}
-                            </SelectItem>
-                          )}
-                        </Select>
-                      </div>
-                      <div className="flex w-1/2 flex-col gap-1">
-                        <Label id="estado_civil_id">Estado Civil</Label>
-                        <Select
-                          items={estadoCivil}
-                          placeholder="Seleccione un estado civil"
-                          defaultSelectedKeys={[pacienteID.estadoCivilID]}
-                          size="lg"
-                          {...register("estado_civil_id")}
-                        >
-                          {(estadoCivil) => (
-                            <SelectItem key={estadoCivil.id}>
-                              {estadoCivil.nombre}
-                            </SelectItem>
-                          )}
-                        </Select>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-1">
-                      <Label id="direccion_id">Dirección</Label>
-                      <Select
-                        items={direcciones}
-                        placeholder="Seleccione una dirección"
-                        defaultSelectedKeys={[pacienteID.direccionID]}
-                        size="lg"
-                        {...register("direccion_id")}
-                      >
-                        {(direccion) => (
-                          <SelectItem key={direccion.id}>
-                            {direccion.nombre}
-                          </SelectItem>
-                        )}
-                      </Select>
-                    </div>
-                  </div>
-                </ModalBody>
-                <ModalFooter>
-                  <Button
-                    color="danger"
-                    variant="light"
-                    onPress={onClose}
-                    onClick={handleClose}
-                  >
-                    Cerrar
-                  </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
-                    Editar
-                  </Button>
-                </ModalFooter>
-              </>
-            )}
-          </ModalContent>
-        </form>
-      </Modal>
-    </>
-  );
-};
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      color="danger"
+                      variant="light"
+                      onPress={onClose}
+                      onClick={handleClose}
+                    >
+                      Cerrar
+                    </Button>
+                    <Button color="primary" type="submit" onPress={onClose}>
+                      Editar
+                    </Button>
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </form>
+        </Modal>
+      </>
+    );
+  },
+);
 
 export const ModalEliminarPaciente = ({
   idPaciente,
