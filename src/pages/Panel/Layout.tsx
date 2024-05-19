@@ -37,20 +37,27 @@ export const Layout = memo(() => {
   const initRoles = useRolStore((state) => state.init);
 
   useEffect(() => {
-    init();
-    initUsuarios();
-    initPacientes();
-    initGeneros();
-    initProfesion();
-    initDirecciones();
-    initMunicipios();
-    initDepto();
-    initDatoMedicos();
-    initDatosMedicosPacientes();
-    initRecetas();
-    initRecetasPacientes();
-    initEstadoCivil();
-    initRoles();
+    const loadData = async () => {
+      try {
+        await init();
+        await initUsuarios();
+        await initPacientes();
+        await initGeneros();
+        await initProfesion();
+        await initDirecciones();
+        await initMunicipios();
+        await initDepto();
+        await initDatoMedicos();
+        await initDatosMedicosPacientes();
+        await initRecetas();
+        await initRecetasPacientes();
+        await initEstadoCivil();
+        await initRoles();
+      } catch (error) {
+        console.error("Error al cargar los datos: ", error);
+      }
+    };
+    loadData();
   }, [
     init,
     initUsuarios,
