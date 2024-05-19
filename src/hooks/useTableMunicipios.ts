@@ -10,7 +10,7 @@ export const useTableMunicipios = (municipios) => {
   const [filterValue, setFilterValue] = useState("");
   const [filasPorPagina, setRowsPerPage] = useState(5);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: "nombre",
+    column: "id",
     direction: "ascending",
   });
 

@@ -24,9 +24,9 @@ export const useTableRecetas = (recetas) => {
   }, [recetas, filterValue]);
 
   // Funcion para obtener recetas
-  useEffect(() => {
-    getRecetas();
-  }, [getRecetas]);
+  // useEffect(() => {
+  //   getRecetas();
+  // }, [getRecetas]);
 
   // Funcion para esperar la respuesta de la API
   useEffect(() => {

@@ -10,7 +10,7 @@ export const useTableRol = (roles) => {
   const [filterValue, setFilterValue] = useState("");
   const [filasPorPagina, setRowsPerPage] = useState(5);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: "rol",
+    column: "id",
     direction: "ascending",
   });
 

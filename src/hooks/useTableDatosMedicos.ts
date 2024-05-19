@@ -10,7 +10,7 @@ export const useTableDatosMedicos = (datosMedicos) => {
   const [filterValue, setFilterValue] = useState("");
   const [filasPorPagina, setRowsPerPage] = useState(5);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: "nombre",
+    column: "id",
     direction: "ascending",
   });
 
@@ -24,9 +24,9 @@ export const useTableDatosMedicos = (datosMedicos) => {
   }, [datosMedicos, filterValue]);
 
   // Funcion para obtener datos medicos
-  useEffect(() => {
-    getDatosMedicos();
-  }, [getDatosMedicos]);
+  // useEffect(() => {
+  //   getDatosMedicos();
+  // }, [getDatosMedicos]);
 
   // Funcion para esperar la respuesta de la API
   useEffect(() => {
