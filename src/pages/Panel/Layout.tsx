@@ -34,6 +34,7 @@ export const Layout = memo(() => {
   const initRecetas = useRecetasStore((state) => state.init);
   const initRecetasPacientes = useRecetasPacienteStore((state) => state.init);
   const initEstadoCivil = useEstadoCivilStore((state) => state.init);
+  const initRoles = useRolStore((state) => state.init);
 
   useEffect(() => {
     init();
@@ -49,9 +50,11 @@ export const Layout = memo(() => {
     initRecetas();
     initRecetasPacientes();
     initEstadoCivil();
+    initRoles();
   }, [
     init,
     initUsuarios,
+    initRoles,
     initPacientes,
     initGeneros,
     initProfesion,

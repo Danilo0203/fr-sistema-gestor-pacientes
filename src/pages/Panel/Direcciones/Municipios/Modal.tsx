@@ -35,15 +35,15 @@ export const ModalEditarMunicipio = ({
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const municipios = useMunicipioStore((state) => state.data);
   const departamentos = useDepartamentoStore((state) => state.data);
-  const getDepartamentos = useDepartamentoStore((state) => state.execute);
+  // const getDepartamentos = useDepartamentoStore((state) => state.execute);
 
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const params = useParams();
 
-  useEffect(() => {
-    getDepartamentos();
-  }, [getDepartamentos]);
+  // useEffect(() => {
+  //   getDepartamentos();
+  // }, [getDepartamentos]);
 
   const handleEdit = () => {
     navigate(`/direcciones/municipio/editar/${idMunicipio}`);
@@ -56,7 +56,7 @@ export const ModalEditarMunicipio = ({
   useEffect(() => {
     setValue("nombre", municipioID.nombre);
     setValue("departamento", municipioID.departamento);
-  }, [municipioID.nombre, municipioID.departamento]);
+  }, [municipioID.nombre, municipioID.departamento, setValue]);
 
   const handleClose = () => {
     navigate("/direcciones/municipio");
@@ -89,13 +89,9 @@ export const ModalEditarMunicipio = ({
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         isDismissable={false}
-        classNames={{ backdrop: "bg-black/10 blur-[1px]" }}
         size="2xl"
       >
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mt-4 flex flex-col gap-8"
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
             {(onClose) => (
               <>

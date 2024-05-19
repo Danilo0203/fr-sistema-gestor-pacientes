@@ -76,13 +76,10 @@ export const ModalEditarGenero = ({ idGenero, updateTable }: ModalProps) => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         isDismissable={false}
-        classNames={{ backdrop: "bg-black/10 blur-[1px]" }}
+
         // size="2xl"
       >
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mt-4 flex flex-col gap-8"
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
             {(onClose) => (
               <>
@@ -234,7 +231,7 @@ export const ModalAgregarGenero = ({ updateTable }: ModalProps) => {
                   />
                 </ModalBody>
                 <ModalFooter>
-                  <Button color="danger" variant="flat" onPress={onClose}>
+                  <Button color="danger" variant="light" onPress={onClose}>
                     Cerrar
                   </Button>
                   <Button color="primary" type="submit" onPress={onClose}>

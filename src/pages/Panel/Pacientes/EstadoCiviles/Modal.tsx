@@ -74,16 +74,8 @@ export const ModalEditarEstadoCivil = ({
           </span>
         </Tooltip>
       </button>
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        isDismissable={false}
-        classNames={{ backdrop: "bg-black/10 blur-[1px]" }}
-      >
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mt-4 flex flex-col gap-8"
-        >
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
             {(onClose) => (
               <>
@@ -241,7 +233,7 @@ export const ModalAgregarEstadoCivil = ({ updateTable }: ModalProps) => {
                   />
                 </ModalBody>
                 <ModalFooter>
-                  <Button color="danger" variant="flat" onPress={onClose}>
+                  <Button color="danger" variant="light" onPress={onClose}>
                     Cerrar
                   </Button>
                   <Button color="primary" type="submit" onPress={onClose}>

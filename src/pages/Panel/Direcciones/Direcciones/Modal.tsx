@@ -34,15 +34,15 @@ export const ModalEditarDireccion = ({
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const direcciones = useDireccionStore((state) => state.data);
   const municipios = useMunicipioStore((state) => state.data);
-  const getMunicipios = useMunicipioStore((state) => state.execute);
+  // const getMunicipios = useMunicipioStore((state) => state.execute);
 
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const params = useParams();
 
-  useEffect(() => {
-    getMunicipios();
-  }, [getMunicipios]);
+  // useEffect(() => {
+  //   getMunicipios();
+  // }, [getMunicipios]);
 
   const handleEdit = () => {
     navigate(`/direcciones/tabla/editar/${idDireccion}`);
@@ -88,13 +88,9 @@ export const ModalEditarDireccion = ({
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         isDismissable={false}
-        classNames={{ backdrop: "bg-black/10 blur-[1px]" }}
         size="2xl"
       >
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mt-4 flex flex-col gap-8"
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
             {(onClose) => (
               <>

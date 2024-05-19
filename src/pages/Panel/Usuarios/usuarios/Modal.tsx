@@ -87,10 +87,7 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
         placement="top-center"
         size="2xl"
       >
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mt-4 flex flex-col gap-8"
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
             {(onClose) => (
               <>
@@ -279,11 +276,11 @@ export const ModalEliminarUsuarios = ({ idUser, updateTable }: ModalProps) => {
 export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const roles = useRolStore((state) => state.data);
-  const getRoles = useRolStore((state) => state.execute);
+  // const getRoles = useRolStore((state) => state.execute);
   const { register, handleSubmit } = useForm();
-  useEffect(() => {
-    getRoles();
-  }, [getRoles]);
+  // useEffect(() => {
+  //   getRoles();
+  // }, [getRoles]);
 
   const añadirUsuario = async (data: UserData) => {
     await registerUser(data);

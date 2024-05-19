@@ -44,7 +44,7 @@ export const ModalEditarDepartamento = ({
 
   useEffect(() => {
     setValue("nombre", departamentoID.nombre);
-  }, [departamentoID.nombre]);
+  }, [departamentoID.nombre, setValue]);
 
   const handleClose = () => {
     navigate("/direcciones/departamento");
@@ -77,13 +77,9 @@ export const ModalEditarDepartamento = ({
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         isDismissable={false}
-        classNames={{ backdrop: "bg-black/10 blur-[1px]" }}
-        size="2xl"
+        // size="2xl"
       >
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mt-4 flex flex-col gap-8"
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
             {(onClose) => (
               <>
@@ -92,23 +88,14 @@ export const ModalEditarDepartamento = ({
                 </ModalHeader>
                 <Divider />
                 <ModalBody>
-                  <div className="flex flex-col gap-8">
-                    <div className="flex gap-8">
-                      <div className="flex flex-col gap-1">
-                        <Label id="nombre">Nombre</Label>
-                        <Input
-                          placeholder="Editar nombre"
-                          {...register("nombre")}
-                        >
-                          <Icon
-                            icon="mdi:account"
-                            width={20}
-                            className="text-azulFuerte"
-                          />
-                        </Input>
-                      </div>
-                    </div>
-                  </div>
+                  <Label id="nombre">Nombre</Label>
+                  <Input placeholder="Editar nombre" {...register("nombre")}>
+                    <Icon
+                      icon="mdi:account"
+                      width={20}
+                      className="text-azulFuerte"
+                    />
+                  </Input>
                 </ModalBody>
                 <ModalFooter>
                   <Button
@@ -137,11 +124,13 @@ export const ModalEliminarDepartamento = ({
   updateTable,
 }: ModalProps) => {
   const departamentos = useDepartamentoStore((state) => state.data);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  
   const handleDelete = async () => {
     await deleteDepartamento(idDepartamento);
     updateTable();
   };
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
   const departamentoID: DepartamentoData = getUsuarioById(
     idDepartamento,
     departamentos,
@@ -171,10 +160,10 @@ export const ModalEliminarDepartamento = ({
               <ModalBody>
                 <div className="flex w-full flex-col items-center gap-2 py-4">
                   <h2 className="text-xl font-medium">
-                    ¿Desea eliminar el departamento:
+                    Desea eliminar el departamento:
                   </h2>
                   <h3 className="text-2xl font-bold text-red-600">
-                    {departamentoID.nombre} ?
+                    ¿{departamentoID.nombre}?
                   </h3>
                 </div>
                 <div className="flex gap-3">
