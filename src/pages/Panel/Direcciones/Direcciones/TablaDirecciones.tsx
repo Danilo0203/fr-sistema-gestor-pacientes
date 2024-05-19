@@ -80,7 +80,7 @@ export const TablaDirecciones = () => {
           return cellValue;
       }
     },
-    [getDirecciones],
+    [getDirecciones, direcciones],
   );
 
   const topContent = useMemo(() => {
@@ -115,6 +115,7 @@ export const TablaDirecciones = () => {
             label="Filas por página"
             className="max-w-xs"
             onChange={onRowsPerPageChange}
+            size="sm"
           >
             <SelectItem key="5" value="5">
               5
@@ -141,6 +142,7 @@ export const TablaDirecciones = () => {
     <Table
       aria-label="Tabla de direcciones"
       isStriped
+      removeWrapper
       onSortChange={setSortDescriptor}
       sortDescriptor={sortDescriptor}
       topContent={topContent}

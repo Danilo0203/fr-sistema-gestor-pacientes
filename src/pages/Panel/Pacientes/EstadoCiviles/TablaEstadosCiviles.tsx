@@ -14,7 +14,11 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useCallback, useMemo } from "react";
 import { columns } from "./dataTable/data";
-import { ModalAgregarEstadoCivil, ModalEditarEstadoCivil, ModalEliminarEstadoCivil } from "./Modal";
+import {
+  ModalAgregarEstadoCivil,
+  ModalEditarEstadoCivil,
+  ModalEliminarEstadoCivil,
+} from "./Modal";
 import { useTableEstadoCiviles } from "hooks/useTableEstadoCiviles";
 import { useEstadoCivilStore } from "../../../../store/pacientes/estadoCivil";
 
@@ -108,6 +112,7 @@ export const TablaEstadoCiviles = () => {
               label="Filas por página"
               className="max-w-xs"
               onChange={onRowsPerPageChange}
+              size="sm"
             >
               <SelectItem key="5" value="5">
                 5
@@ -135,6 +140,7 @@ export const TablaEstadoCiviles = () => {
     <Table
       aria-label="Tabla de estados civiles"
       isStriped
+      removeWrapper
       onSortChange={setSortDescriptor}
       sortDescriptor={sortDescriptor}
       topContent={topContent}

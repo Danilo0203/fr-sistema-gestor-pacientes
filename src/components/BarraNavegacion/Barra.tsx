@@ -4,7 +4,7 @@ import { Divider } from "@nextui-org/react";
 
 export const BarraNavegacion = () => {
   return (
-    <div className="flex min-h-dvh w-56 flex-col bg-azulFuerte p-2">
+    <div className="flex flex-grow w-56 flex-col bg-azulFuerte p-2">
       <div className="mx-auto mb-2">
         <LogoPanel size={3} />
       </div>

@@ -114,6 +114,7 @@ export const TablaGeneros = () => {
               label="Filas por página"
               className="max-w-xs"
               onChange={onRowsPerPageChange}
+              size="sm"
             >
               <SelectItem key="5" value="5">
                 5
@@ -142,6 +143,7 @@ export const TablaGeneros = () => {
     <Table
       aria-label="Tabla de géneros"
       isStriped
+      removeWrapper
       onSortChange={setSortDescriptor}
       sortDescriptor={sortDescriptor}
       topContent={topContent}

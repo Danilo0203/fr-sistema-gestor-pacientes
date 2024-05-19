@@ -53,30 +53,33 @@ export const TablaMunicipios = () => {
     sortable?: boolean;
   }
 
-  const renderCell = useCallback((municipio: Municipio, columnKey: Column) => {
-    const cellValue = municipio[columnKey];
-    switch (columnKey) {
-      case "nombre":
-        return <p>{municipio.nombre}</p>;
-      case "departamento":
-        return <p>{municipio.departamento}</p>;
-      case "acciones":
-        return (
-          <div className="relative flex items-center gap-3">
-            <ModalEditarMunicipio
-              idMunicipio={municipio.id}
-              updateTable={getMunicipios}
-            />
-            <ModalEliminarMunicipio
-              idMunicipio={municipio.id}
-              updateTable={getMunicipios}
-            />
-          </div>
-        );
-      default:
-        return <p>{cellValue}</p>;
-    }
-  }, []);
+  const renderCell = useCallback(
+    (municipio: Municipio, columnKey: Column) => {
+      const cellValue = municipio[columnKey];
+      switch (columnKey) {
+        case "nombre":
+          return <p>{municipio.nombre}</p>;
+        case "departamento":
+          return <p>{municipio.departamento}</p>;
+        case "acciones":
+          return (
+            <div className="relative flex items-center gap-3">
+              <ModalEditarMunicipio
+                idMunicipio={municipio.id}
+                updateTable={getMunicipios}
+              />
+              <ModalEliminarMunicipio
+                idMunicipio={municipio.id}
+                updateTable={getMunicipios}
+              />
+            </div>
+          );
+        default:
+          return <p>{cellValue}</p>;
+      }
+    },
+    [getMunicipios],
+  );
 
   const topContent = useMemo(() => {
     return (
@@ -111,6 +114,7 @@ export const TablaMunicipios = () => {
               label="Filas por página"
               className="max-w-xs"
               onChange={onRowsPerPageChange}
+              size="sm"
             >
               <SelectItem key="5" value="5">
                 5
@@ -138,6 +142,7 @@ export const TablaMunicipios = () => {
     <Table
       aria-label="Tabla de municipios"
       isStriped
+      removeWrapper
       onSortChange={setSortDescriptor}
       sortDescriptor={sortDescriptor}
       topContent={topContent}

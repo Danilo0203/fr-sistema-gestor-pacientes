@@ -170,7 +170,11 @@ export const Header = () => {
             <DropdownItem key="profile" className="gap-2" textValue="rol">
               <p className="font-semibold">{usuario?.rol}</p>
             </DropdownItem>
-            <DropdownItem key="perfil" startContent={<Icon icon="mdi:user" />} textValue="perfil" >
+            <DropdownItem
+              key="perfil"
+              startContent={<Icon icon="mdi:user" />}
+              textValue="perfil"
+            >
               <span>Perfil</span>
             </DropdownItem>
             <DropdownItem

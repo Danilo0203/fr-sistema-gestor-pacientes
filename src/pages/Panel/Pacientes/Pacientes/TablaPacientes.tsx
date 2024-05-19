@@ -168,6 +168,7 @@ export const TablaPacientes = () => {
     <Table
       aria-label="Tabla de pacientes"
       isStriped
+      removeWrapper
       onSortChange={setSortDescriptor}
       sortDescriptor={sortDescriptor}
       topContent={topContent}

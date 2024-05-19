@@ -106,6 +106,7 @@ export const TablaDatosMedicos = () => {
             label="Filas por página"
             className="max-w-xs"
             onChange={onRowsPerPageChange}
+            size="sm"
           >
             <SelectItem key="5" value="5">
               5
@@ -132,6 +133,10 @@ export const TablaDatosMedicos = () => {
     <Table
       aria-label="Tabla de datos médicos"
       isStriped
+      removeWrapper
+      removeWrapper
+      removeWrapper
+      removeWrapper
       onSortChange={setSortDescriptor}
       sortDescriptor={sortDescriptor}
       topContent={topContent}

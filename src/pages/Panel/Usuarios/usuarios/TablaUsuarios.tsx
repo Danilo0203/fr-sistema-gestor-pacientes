@@ -113,6 +113,7 @@ export const TablaUsuarios = () => {
               label="Filas por página"
               className="max-w-xs"
               onChange={onRowsPerPageChange}
+              size="sm"
             >
               <SelectItem key="5" value="5">
                 5
@@ -140,6 +141,7 @@ export const TablaUsuarios = () => {
     <Table
       aria-label="Tabla de usuarios"
       isStriped
+      removeWrapper
       onSortChange={setSortDescriptor}
       sortDescriptor={sortDescriptor}
       topContent={topContent}

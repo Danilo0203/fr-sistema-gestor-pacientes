@@ -76,8 +76,8 @@ export const Layout = memo(() => {
   ]);
   return (
     <>
-      <section className="flex">
-        <div>
+      <section className="flex min-h-dvh">
+        <div className="flex">
           <BarraNavegacion />
         </div>
         <div className="w-full">
