@@ -188,6 +188,7 @@ export const ModalEditarPaciente = memo(
                             placeholder="Seleccione un género"
                             defaultSelectedKeys={[pacienteID.generoID]}
                             size="lg"
+                            aria-label="genero"
                             {...register("genero_id")}
                           >
                             {(genero) => (
@@ -207,6 +208,7 @@ export const ModalEditarPaciente = memo(
                             placeholder="Seleccione una profesión"
                             defaultSelectedKeys={[pacienteID.profesionID]}
                             size="lg"
+                            aria-label="profesion"
                             {...register("profesion_id")}
                           >
                             {(profesion) => (
@@ -223,6 +225,7 @@ export const ModalEditarPaciente = memo(
                             placeholder="Seleccione un estado civil"
                             defaultSelectedKeys={[pacienteID.estadoCivilID]}
                             size="lg"
+                            aria-label="estado civil"
                             {...register("estado_civil_id")}
                           >
                             {(estadoCivil) => (
@@ -241,6 +244,7 @@ export const ModalEditarPaciente = memo(
                           placeholder="Seleccione una dirección"
                           defaultSelectedKeys={[pacienteID.direccionID]}
                           size="lg"
+                          aria-label="direccion"
                           {...register("direccion_id")}
                         >
                           {(direccion) => (
@@ -353,17 +357,17 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
   const defaultDate = today(getLocalTimeZone());
   const [value, setValue] = useState<DateValue>(defaultDate);
   const dataDepartamentos = useDepartamentoStore((state) => state.data);
-  const getDepartamentos = useDepartamentoStore((state) => state.execute);
+  // const getDepartamentos = useDepartamentoStore((state) => state.execute);
   const dataMunicipios = useMunicipioStore((state) => state.data);
-  const getMunicipios = useMunicipioStore((state) => state.execute);
-  const getGeneros = useGeneroStore((state) => state.execute);
+  // const getMunicipios = useMunicipioStore((state) => state.execute);
+  // const getGeneros = useGeneroStore((state) => state.execute);
   const dataGeneros = useGeneroStore((state) => state.data);
   const dataEstadoCivil = useEstadoCivilStore((state) => state.data);
-  const getEstadoCivil = useEstadoCivilStore((state) => state.execute);
+  // const getEstadoCivil = useEstadoCivilStore((state) => state.execute);
   const dataProfesiones = useProfesionStore((state) => state.data);
-  const getProfesiones = useProfesionStore((state) => state.execute);
+  // const getProfesiones = useProfesionStore((state) => state.execute);
   const [deptoSelect, setDeptoSelect] = useState("17");
-  const getDireccion = useDireccionStore((state) => state.execute);
+  // const getDireccion = useDireccionStore((state) => state.execute);
   const dataDireccion = useDireccionStore((state) => state.data);
   const [direccionSelect, setDireccionSelect] = useState("");
   const [valueDireccion, setValueDireccion] = useState("");
@@ -374,21 +378,21 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
   };
 
   const { register, handleSubmit } = useForm();
-  useEffect(() => {
-    getDepartamentos();
-    getMunicipios();
-    getGeneros();
-    getEstadoCivil();
-    getProfesiones();
-    getDireccion();
-  }, [
-    getDepartamentos,
-    getMunicipios,
-    getGeneros,
-    getEstadoCivil,
-    getProfesiones,
-    getDireccion,
-  ]);
+  // useEffect(() => {
+  //   getDepartamentos();
+  //   getMunicipios();
+  //   getGeneros();
+  //   getEstadoCivil();
+  //   getProfesiones();
+  //   getDireccion();
+  // }, [
+  //   getDepartamentos,
+  //   getMunicipios,
+  //   getGeneros,
+  //   getEstadoCivil,
+  //   getProfesiones,
+  //   getDireccion,
+  // ]);
 
   const handleSelectionChange = (key) => {
     setDireccionSelect(key);
@@ -534,6 +538,7 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                         placeholder="Seleccione un genero"
                         variant="underlined"
                         size="lg"
+                        aria-label="genero"
                         {...register("genero_id")}
                       >
                         {(genero) => (
@@ -550,6 +555,7 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                         placeholder="Seleccione un departamento"
                         variant="underlined"
                         size="lg"
+                        aria-label="estado civil"
                         {...register("estado_civil_id")}
                       >
                         {(civil) => (
@@ -571,6 +577,7 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                         onChange={setValue}
                         size="lg"
                         className="flex-grow"
+                        aria-label="fecha_nacimiento"
                       />
                     </div>
                     <div className="flex flex-col">
@@ -580,6 +587,7 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                         placeholder="Seleccione una profesión"
                         variant="underlined"
                         size="lg"
+                        aria-label="profesion"
                         className="flex-grow"
                         {...register("profesion_id")}
                       >
@@ -602,6 +610,7 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                       allowsCustomValue={true}
                       onInputChange={(value) => setValueDireccion(value)}
                       onSelectionChange={handleSelectionChange}
+                      aria-label="direccion"
                       {...register("nombreDireccion")}
                     >
                       {(direccion) => (
@@ -629,6 +638,7 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                         size="lg"
                         selectedKey={deptoSelect}
                         onSelectionChange={setDeptoSelect}
+                        aria-label="departamento"
                       >
                         {(depto) => (
                           <AutocompleteItem key={depto.id}>
@@ -644,6 +654,7 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                         placeholder="Seleccione un departamento"
                         variant="underlined"
                         size="lg"
+                        aria-label="municipio"
                         {...register("municipio_id")}
                       >
                         {(muni) => (

@@ -52,7 +52,6 @@ export const useUsuarioStore = create<UsuariosStoreProps>()((set, get) => ({
   },
   init: async () => {
     const state = get();
-    console.log(state.error);
     if (!state.dataLoaded || state.error) {
       await state.execute();
     }
