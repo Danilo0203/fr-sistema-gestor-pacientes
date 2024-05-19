@@ -169,6 +169,7 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
                     <div className="flex flex-col gap-1">
                       <Label id="rol_id">Rol</Label>
                       <Select
+                        aria-label="Rol"
                         items={roles}
                         placeholder="Seleccione un rol"
                         defaultSelectedKeys={[usuarioID.rolID]}
@@ -358,6 +359,7 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
 
                   <Label id="rol_id">Rol</Label>
                   <Select
+                    aria-label="Rol"
                     items={roles}
                     placeholder="Seleccione un rol"
                     size="lg"

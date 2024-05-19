@@ -122,6 +122,7 @@ export const ModalEditarMunicipio = ({
                       <div className="flex w-1/2 flex-col gap-1">
                         <Label id="departamento_id">Departamento</Label>
                         <Select
+                          aria-label="Departamento"
                           items={departamentos}
                           placeholder="Seleccione un departamento"
                           defaultSelectedKeys={[municipioID.departamentoID]}
@@ -232,12 +233,12 @@ export const ModalEliminarMunicipio = ({
 export const ModalAgregarMunicipio = ({ updateTable }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const dataDepartamentos = useDepartamentoStore((state) => state.data);
-  const getDepartamentos = useDepartamentoStore((state) => state.execute);
+  // const getDepartamentos = useDepartamentoStore((state) => state.execute);
   const { register, handleSubmit } = useForm();
 
-  useEffect(() => {
-    getDepartamentos();
-  }, [getDepartamentos]);
+  // useEffect(() => {
+  //   getDepartamentos();
+  // }, [getDepartamentos]);
 
   const agregarMunicipio = async (data) => {
     await createMunicipio(data);
@@ -281,6 +282,7 @@ export const ModalAgregarMunicipio = ({ updateTable }: ModalProps) => {
                   />
                   <Label>Departamento</Label>
                   <Select
+                    aria-label="Departamento"
                     items={dataDepartamentos}
                     placeholder="Seleccione un departamento"
                     variant="underlined"

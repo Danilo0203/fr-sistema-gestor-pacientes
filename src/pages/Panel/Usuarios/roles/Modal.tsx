@@ -203,7 +203,7 @@ export const ModalEliminarRoles = ({ idRol, updateTable }: ModalProps) => {
   );
 };
 
-export const ModalAñadirRoles = ({ updateTable }: ModalProps) => {
+export const ModalAgregarRoles = ({ updateTable }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const { register, handleSubmit } = useForm();

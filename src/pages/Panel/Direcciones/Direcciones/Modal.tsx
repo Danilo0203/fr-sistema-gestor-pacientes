@@ -121,6 +121,7 @@ export const ModalEditarDireccion = ({
                       <div className="flex w-1/2 flex-col gap-1">
                         <Label id="municipio_id">Municipio</Label>
                         <Select
+                          aria-label="Municipio"
                           items={municipios}
                           placeholder="Seleccione un municipio"
                           defaultSelectedKeys={[direccionID.municipioID]}

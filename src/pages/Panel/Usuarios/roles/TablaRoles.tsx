@@ -15,7 +15,7 @@ import {
 import { columns } from "./dataTable/data";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import {
-  ModalAñadirRoles,
+  ModalAgregarRoles,
   ModalEditarRoles,
   ModalEliminarRoles,
 } from "./Modal";
@@ -100,10 +100,12 @@ export const TablaRoles = () => {
               startContent={<Icon icon="mdi:account-search" width={20} />}
             />
 
-            <span className="text-small">Total de usuarios {dataRoles.length}</span>
+            <span className="text-small">
+              Total de usuarios {dataRoles.length}
+            </span>
           </div>
           <div className="flex w-1/5 flex-col items-end justify-center gap-2">
-            <ModalAñadirRoles updateTable={getRoles} />
+            <ModalAgregarRoles updateTable={getRoles} />
             <Select
               label="Filas por página"
               className="max-w-xs"

@@ -71,7 +71,7 @@ export const TablaDepartamentos = () => {
           return cellValue;
       }
     },
-    [],
+    [getDepartamentos],
   );
 
   const topContent = useMemo(() => {

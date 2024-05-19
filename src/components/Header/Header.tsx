@@ -167,10 +167,10 @@ export const Header = () => {
             />
           </DropdownTrigger>
           <DropdownMenu aria-label="Profile Actions" variant="flat">
-            <DropdownItem key="profile" className="gap-2">
+            <DropdownItem key="profile" className="gap-2" textValue="rol">
               <p className="font-semibold">{usuario?.rol}</p>
             </DropdownItem>
-            <DropdownItem key="perfil" startContent={<Icon icon="mdi:user" />}>
+            <DropdownItem key="perfil" startContent={<Icon icon="mdi:user" />} textValue="perfil" >
               <span>Perfil</span>
             </DropdownItem>
             <DropdownItem
@@ -178,6 +178,7 @@ export const Header = () => {
               color="danger"
               startContent={<Icon icon="mdi:logout" />}
               onPress={handleCerrarSesion}
+              textValue="cerrarSesion"
             >
               <span>Cerrar Sesión</span>
             </DropdownItem>
