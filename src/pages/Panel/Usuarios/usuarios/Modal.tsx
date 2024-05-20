@@ -15,8 +15,8 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { useUsuarioStore } from "../../../../store/usuarios";
 import { useForm } from "react-hook-form";
 import { useRolStore } from "../../../../store/usuarios/roles";
@@ -29,36 +29,28 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const usuarios = useUsuarioStore((state) => state.data);
   const roles = useRolStore((state) => state.data);
-  // const getRoles = useRolStore((state) => state.execute);
-
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const params = useParams();
-
-  // useEffect(() => {
-  //   getRoles();
-  // }, [getRoles]);
+  const [usuarioEdit, setUsuarioEdit] = useState(null);
 
   const handleEdit = () => {
-    navigate(`/usuarios/tabla/editar/${idUser}`);
+    const [editUsuario] = getUsuarioById(idUser, usuarios);
+    const dataUsuario = {
+      id: editUsuario.id,
+      rol: editUsuario.rolID,
+    };
+    setUsuarioEdit(dataUsuario);
+    setValue("usuario", editUsuario.usuario);
+    setValue("nombre", editUsuario.nombre);
+    setValue("email", editUsuario.email);
   };
-
-  const { id } = params;
-
-  const usuarioID: UserData = getUsuarioById(id, usuarios)[0];
-
-  useEffect(() => {
-    setValue("usuario", usuarioID.usuario);
-    setValue("nombre", usuarioID.nombre);
-    setValue("email", usuarioID.email);
-  }, [usuarioID.usuario, usuarioID.nombre, usuarioID.email, setValue]);
 
   const handleClose = () => {
     navigate("/usuarios/tabla");
   };
 
   const actualizar = async (data: UserData) => {
-    await updateUsuario(usuarioID.id, data);
+    await updateUsuario(usuarioEdit?.id, data);
     updateTable();
   };
 
@@ -169,7 +161,7 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
                         aria-label="Rol"
                         items={roles}
                         placeholder="Seleccione un rol"
-                        defaultSelectedKeys={[usuarioID.rolID]}
+                        defaultSelectedKeys={[usuarioEdit?.rol]}
                         size="lg"
                         {...register("rol_id")}
                       >
@@ -276,18 +268,14 @@ export const ModalEliminarUsuarios = ({ idUser, updateTable }: ModalProps) => {
 export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const roles = useRolStore((state) => state.data);
-  // const getRoles = useRolStore((state) => state.execute);
-  const { register, handleSubmit } = useForm();
-  // useEffect(() => {
-  //   getRoles();
-  // }, [getRoles]);
-
-  const agregarUsuario = async (data: UserData) => {
+  const { register, handleSubmit, reset } = useForm();
+  const añadirUsuario = async (data: UserData) => {
     await registerUser(data);
     updateTable();
   };
   const onSubmit = (data: UserData) => {
-    agregarUsuario(data);
+    añadirUsuario(data);
+    reset();
   };
   return (
     <>
@@ -303,6 +291,7 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
         onOpenChange={onOpenChange}
         isDismissable={false}
         placement="top-center"
+        size="2xl"
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
@@ -312,66 +301,103 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                   Agregar Usuario
                 </ModalHeader>
                 <Divider />
-                <ModalBody className="mt-4">
-                  <Label>Usuario</Label>
-                  <Input
-                    autoFocus
-                    placeholder="Ingrese el usuario"
-                    type="text"
-                    {...register("usuario")}
-                  />
-                  <Label>Nombre</Label>
-                  <Input
-                    placeholder="Ingrese el nombre"
-                    type="text"
-                    {...register("nombre")}
-                  />
-                  <Label>Correo</Label>
-                  <Input
-                    placeholder="Ingrese el correo"
-                    type="email"
-                    {...register("email")}
-                  />
-                  <Label id="password">Contraseña</Label>
-                  <Input
-                    placeholder="Contraseña"
-                    type="password"
-                    {...register("password")}
-                  >
-                    <Icon
-                      icon="mdi:lock"
-                      width={20}
-                      className="text-azulFuerte"
-                    />
-                  </Input>
-
-                  <Label id="passwordConfirm">Confirmar Contraseña</Label>
-                  <Input placeholder="Confirmar contraseña" type="password">
-                    <Icon
-                      icon="mdi:lock"
-                      width={20}
-                      className="text-azulFuerte"
-                    />
-                  </Input>
-
-                  <Label id="rol_id">Rol</Label>
-                  <Select
-                    aria-label="Rol"
-                    items={roles}
-                    placeholder="Seleccione un rol"
-                    size="lg"
-                    {...register("rol_id")}
-                  >
-                    {(rol) => (
-                      <SelectItem key={rol.id}>{rol.nombre}</SelectItem>
-                    )}
-                  </Select>
+                <ModalBody className="mt-4 flex flex-col gap-8">
+                  <div className="flex gap-8">
+                    <div className="flex flex-col gap-1">
+                      <Label>Usuario</Label>
+                      <Input
+                        autoFocus
+                        placeholder="Ingrese el usuario"
+                        type="text"
+                        {...register("usuario")}
+                      >
+                        <Icon
+                          icon="mdi:account"
+                          width={20}
+                          className="text-azulFuerte"
+                        />
+                      </Input>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <Label>Nombre</Label>
+                      <Input
+                        placeholder="Ingrese el nombre"
+                        type="text"
+                        {...register("nombre")}
+                      >
+                        <Icon
+                          icon="mdi:account"
+                          width={20}
+                          className="text-azulFuerte"
+                        />
+                      </Input>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <Label>Correo</Label>
+                    <Input
+                      placeholder="Ingrese el correo"
+                      type="email"
+                      {...register("email")}
+                    >
+                      <Icon
+                        icon="mdi:email"
+                        width={20}
+                        className="text-azulFuerte"
+                      />
+                    </Input>
+                  </div>
+                  <div className="flex gap-8">
+                    <div className="flex flex-col gap-1">
+                      <Label id="password">Contraseña</Label>
+                      <Input
+                        placeholder="Contraseña"
+                        type="password"
+                        {...register("password")}
+                      >
+                        <Icon
+                          icon="mdi:lock"
+                          width={20}
+                          className="text-azulFuerte"
+                        />
+                      </Input>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <Label id="passwordConfirm">Confirmar Contraseña</Label>
+                      <Input placeholder="Confirmar contraseña" type="password">
+                        <Icon
+                          icon="mdi:lock"
+                          width={20}
+                          className="text-azulFuerte"
+                        />
+                      </Input>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <Label id="rol_id">Rol</Label>
+                    <Select
+                      aria-label="Rol"
+                      items={roles}
+                      placeholder="Seleccione un rol"
+                      size="lg"
+                      {...register("rol_id")}
+                    >
+                      {(rol) => (
+                        <SelectItem key={rol.id}>{rol.nombre}</SelectItem>
+                      )}
+                    </Select>
+                  </div>
                 </ModalBody>
                 <ModalFooter>
-                  <Button color="danger" variant="flat" onPress={onClose}>
+                  <Button color="danger" variant="light" onPress={onClose}>
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
+                  <Button
+                    color="primary"
+                    type="submit"
+                    // onClick={() => reset()}
+                    onPress={onClose}
+                  >
                     Agregar
                   </Button>
                 </ModalFooter>

@@ -63,12 +63,12 @@ const routes = createBrowserRouter([
               {
                 path: "tabla",
                 element: <TablaUsuarios />,
-                children: [
-                  {
-                    path: "editar/:id",
-                    element: <ModalEditarUsuarios />,
-                  },
-                ],
+                // children: [
+                //   {
+                //     path: "editar/:id",
+                //     element: <ModalEditarUsuarios />,
+                //   },
+                // ],
               },
 
               {
@@ -90,12 +90,12 @@ const routes = createBrowserRouter([
               {
                 path: "tabla",
                 element: <TablaPacientes />,
-                children: [
-                  {
-                    path: "editar/:id",
-                    element: <ModalEditarPaciente />,
-                  },
-                ],
+                // children: [
+                //   {
+                //     path: "editar/:id",
+                //     element: <ModalEditarPaciente />,
+                //   },
+                // ],
               },
               {
                 path: "profesion",
