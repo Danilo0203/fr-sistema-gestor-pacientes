@@ -20,6 +20,7 @@ import { useDatosMedicosStore } from "../../../../store/datosMedicos/datosMedico
 import {
   updateDatoMedico,
   deleteDatoMedico,
+  createDatoMedico,
 } from "helpers/api/datosMedicos/datos-medicos";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, DatosMedicosData } from "types/index";
@@ -198,6 +199,67 @@ export const ModalEliminarDatoMedico = ({
             </>
           )}
         </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
+export const ModalAgregarDatoMedico = ({ updateTable }: ModalProps) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const { register, handleSubmit } = useForm();
+
+  const agregarDatoMedico = async (data: DatosMedicosData) => {
+    await createDatoMedico(data);
+    updateTable();
+  };
+  const onSubmit = (data) => {
+    agregarDatoMedico(data);
+  };
+  return (
+    <>
+      <Button
+        onPress={onOpen}
+        className="bg-azulFuerte text-white"
+        startContent={<Icon icon="mdi:user-add" width={20} />}
+      >
+        Agregar Dato Médico
+      </Button>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        placement="top-center"
+      >
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Agregar Dato Médico
+                </ModalHeader>
+                <Divider />
+                <ModalBody className="mt-4">
+                  <Label>Dato Médico</Label>
+                  <Input
+                    autoFocus
+                    placeholder="Ingrese el dato médico"
+                    type="text"
+                    {...register("nombre")}
+                  />
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Cerrar
+                  </Button>
+                  <Button color="primary" type="submit" onPress={onClose}>
+                    Agregar
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </form>
       </Modal>
     </>
   );

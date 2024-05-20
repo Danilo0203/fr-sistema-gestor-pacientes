@@ -13,7 +13,11 @@ import {
 } from "@nextui-org/react";
 import { columns } from "./dataTable/data";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { ModalEditarDireccion, ModalEliminarDireccion } from "./Modal";
+import {
+  ModalEditarDireccion,
+  ModalEliminarDireccion,
+  ModalAgregarDireccion,
+} from "./Modal";
 import { useCallback, useMemo } from "react";
 import { useTableDirecciones } from "hooks/useTableDirecciones";
 import { useDireccionStore } from "../../../../store/direcciones/direcciones";
@@ -111,22 +115,25 @@ export const TablaDirecciones = () => {
             </span>
           </div>
 
-          <Select
-            label="Filas por página"
-            className="max-w-xs"
-            onChange={onRowsPerPageChange}
-            size="sm"
-          >
-            <SelectItem key="5" value="5">
-              5
-            </SelectItem>
-            <SelectItem key="10" value="10">
-              10
-            </SelectItem>
-            <SelectItem key="15" value="15">
-              15
-            </SelectItem>
-          </Select>
+          <div className="flex w-1/5 flex-col items-end justify-center gap-2">
+            <ModalAgregarDireccion updateTable={getDirecciones} />
+            <Select
+              label="Filas por página"
+              className="max-w-xs"
+              onChange={onRowsPerPageChange}
+              size="sm"
+            >
+              <SelectItem key="5" value="5">
+                5
+              </SelectItem>
+              <SelectItem key="10" value="10">
+                10
+              </SelectItem>
+              <SelectItem key="15" value="15">
+                15
+              </SelectItem>
+            </Select>
+          </div>
         </div>
       </div>
     );

@@ -133,6 +133,7 @@ export const TablaMunicipios = () => {
   }, [
     onRowsPerPageChange,
     municipios.length,
+    getMunicipios,
     onClear,
     filterValue,
     onSearchChange,

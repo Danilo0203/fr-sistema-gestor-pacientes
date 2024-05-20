@@ -192,13 +192,12 @@ export const ModalAgregarEstadoCivil = ({ updateTable }: ModalProps) => {
 
   const { register, handleSubmit } = useForm();
 
-  const añadirEstadoCivil = async (data) => {
+  const agregarEstadoCivil = async (data) => {
     await createEstadoCivil(data);
     updateTable();
   };
   const onSubmit = (data) => {
-    console.log(data);
-    añadirEstadoCivil(data);
+    agregarEstadoCivil(data);
   };
   return (
     <>
@@ -220,7 +219,7 @@ export const ModalAgregarEstadoCivil = ({ updateTable }: ModalProps) => {
             {(onClose) => (
               <>
                 <ModalHeader className="flex flex-col gap-1">
-                  Argegar Estado Civil
+                  Agregar Estado Civil
                 </ModalHeader>
                 <Divider />
                 <ModalBody className="mt-4">

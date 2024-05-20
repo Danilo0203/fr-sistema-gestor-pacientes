@@ -14,7 +14,11 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useCallback, useMemo } from "react";
 import { columns } from "./dataTable/data";
-import { ModalEditarDatoMedico, ModalEliminarDatoMedico } from "./Modal";
+import {
+  ModalEditarDatoMedico,
+  ModalEliminarDatoMedico,
+  ModalAgregarDatoMedico,
+} from "./Modal";
 import { useTableDatosMedicos } from "hooks/useTableDatosMedicos";
 import { useDatosMedicosStore } from "../../../../store/datosMedicos/datosMedicos";
 
@@ -102,22 +106,25 @@ export const TablaDatosMedicos = () => {
             </span>
           </div>
 
-          <Select
-            label="Filas por página"
-            className="max-w-xs"
-            onChange={onRowsPerPageChange}
-            size="sm"
-          >
-            <SelectItem key="5" value="5">
-              5
-            </SelectItem>
-            <SelectItem key="10" value="10">
-              10
-            </SelectItem>
-            <SelectItem key="15" value="15">
-              15
-            </SelectItem>
-          </Select>
+          <div className="flex w-1/5 flex-col items-end justify-center gap-2">
+            <ModalAgregarDatoMedico updateTable={getDatosMedicos} />
+            <Select
+              label="Filas por página"
+              className="max-w-xs"
+              onChange={onRowsPerPageChange}
+              size="sm"
+            >
+              <SelectItem key="5" value="5">
+                5
+              </SelectItem>
+              <SelectItem key="10" value="10">
+                10
+              </SelectItem>
+              <SelectItem key="15" value="15">
+                15
+              </SelectItem>
+            </Select>
+          </div>
         </div>
       </div>
     );
@@ -127,15 +134,13 @@ export const TablaDatosMedicos = () => {
     onClear,
     filterValue,
     onSearchChange,
+    getDatosMedicos,
   ]);
 
   return (
     <Table
       aria-label="Tabla de datos médicos"
       isStriped
-      removeWrapper
-      removeWrapper
-      removeWrapper
       removeWrapper
       onSortChange={setSortDescriptor}
       sortDescriptor={sortDescriptor}

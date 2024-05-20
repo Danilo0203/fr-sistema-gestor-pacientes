@@ -282,12 +282,12 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
   //   getRoles();
   // }, [getRoles]);
 
-  const añadirUsuario = async (data: UserData) => {
+  const agregarUsuario = async (data: UserData) => {
     await registerUser(data);
     updateTable();
   };
   const onSubmit = (data: UserData) => {
-    añadirUsuario(data);
+    agregarUsuario(data);
   };
   return (
     <>
@@ -309,7 +309,7 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
             {(onClose) => (
               <>
                 <ModalHeader className="flex flex-col gap-1">
-                  Argegar Usuario
+                  Agregar Usuario
                 </ModalHeader>
                 <Divider />
                 <ModalBody className="mt-4">

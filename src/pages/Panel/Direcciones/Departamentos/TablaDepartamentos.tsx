@@ -14,7 +14,11 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useCallback, useMemo } from "react";
 import { columns } from "./dataTable/data";
-import { ModalEditarDepartamento, ModalEliminarDepartamento } from "./Modal";
+import {
+  ModalEditarDepartamento,
+  ModalEliminarDepartamento,
+  ModalAgregarDepartamento,
+} from "./Modal";
 import { useTableDepartamento } from "hooks/useTableDepartamentos";
 import { useDepartamentoStore } from "../../../../store/direcciones/departamentos";
 
@@ -102,28 +106,32 @@ export const TablaDepartamentos = () => {
             </span>
           </div>
 
-          <Select
-            label="Filas por página"
-            className="max-w-xs"
-            onChange={onRowsPerPageChange}
-            size="sm"
-          >
-            <SelectItem key="5" value="5">
-              5
-            </SelectItem>
-            <SelectItem key="10" value="10">
-              10
-            </SelectItem>
-            <SelectItem key="15" value="15">
-              15
-            </SelectItem>
-          </Select>
+          <div className="flex w-1/5 flex-col items-end justify-center gap-2">
+            <ModalAgregarDepartamento updateTable={getDepartamentos} />
+            <Select
+              label="Filas por página"
+              className="max-w-xs"
+              onChange={onRowsPerPageChange}
+              size="sm"
+            >
+              <SelectItem key="5" value="5">
+                5
+              </SelectItem>
+              <SelectItem key="10" value="10">
+                10
+              </SelectItem>
+              <SelectItem key="15" value="15">
+                15
+              </SelectItem>
+            </Select>
+          </div>
         </div>
       </div>
     );
   }, [
     onRowsPerPageChange,
     departamentos.length,
+    getDepartamentos,
     onClear,
     filterValue,
     onSearchChange,

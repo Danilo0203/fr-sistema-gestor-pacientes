@@ -78,7 +78,7 @@ export const TablaGeneros = () => {
           return cellValue;
       }
     },
-    [getGeneros],
+    [getGeneros, generos],
   );
 
   const topContent = useMemo(() => {

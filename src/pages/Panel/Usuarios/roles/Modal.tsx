@@ -204,12 +204,12 @@ export const ModalAgregarRoles = ({ updateTable }: ModalProps) => {
 
   const { register, handleSubmit } = useForm();
 
-  const añadirRol = async (data) => {
+  const agregarRol = async (data) => {
     await createRol(data);
     updateTable();
   };
   const onSubmit = (data) => {
-    añadirRol(data);
+    agregarRol(data);
   };
   return (
     <>
@@ -231,7 +231,7 @@ export const ModalAgregarRoles = ({ updateTable }: ModalProps) => {
             {(onClose) => (
               <>
                 <ModalHeader className="flex flex-col gap-1">
-                  Argegar Rol
+                  Agregar Rol
                 </ModalHeader>
                 <Divider />
                 <ModalBody className="mt-4">

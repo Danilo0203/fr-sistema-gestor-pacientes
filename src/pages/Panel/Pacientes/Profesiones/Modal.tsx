@@ -197,12 +197,12 @@ export const ModalAgregarProfesion = ({ updateTable }: ModalProps) => {
 
   const { register, handleSubmit } = useForm();
 
-  const añadirProfesion = async (data: UserData) => {
+  const agregarProfesion = async (data: UserData) => {
     await createProfesion(data);
     updateTable();
   };
   const onSubmit = (data: UserData) => {
-    añadirProfesion(data);
+    agregarProfesion(data);
   };
   return (
     <>
@@ -224,7 +224,7 @@ export const ModalAgregarProfesion = ({ updateTable }: ModalProps) => {
             {(onClose) => (
               <>
                 <ModalHeader className="flex flex-col gap-1">
-                  Argegar Profesión
+                  Agregar Profesión
                 </ModalHeader>
                 <Divider />
                 <ModalBody className="mt-4">

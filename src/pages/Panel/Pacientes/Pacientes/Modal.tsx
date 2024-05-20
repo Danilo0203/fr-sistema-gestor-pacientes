@@ -36,7 +36,6 @@ import { useDepartamentoStore } from "../../../../store/direcciones/departamento
 import { useDireccionStore } from "../../../../store/direcciones/direcciones";
 import { useMunicipioStore } from "../../../../store/direcciones/municipios";
 import { createDireccion } from "helpers/api/direccion/direcciones";
-import { format } from "@formkit/tempo";
 import { createEstadoCivil } from "helpers/api/pacientes/estado-civil";
 import { createProfesion } from "helpers/api/pacientes/profesiones";
 
@@ -357,10 +356,6 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
   const [profesionSelect, setProfesionSelect] = useState("");
   const [valueProfesion, setValueProfesion] = useState("");
 
-  const formartDate = (date: string) => {
-    return format(date, "YYYY/DD/MM");
-  };
-
   const { register, handleSubmit } = useForm();
 
   const handleSelectionChange = (
@@ -436,12 +431,12 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
     let idDireccion = direccionSelect;
 
     if (!idDireccion) {
-      const datosMuncipio = {
+      const datosMunicipio = {
         nombre: nombreDireccion,
         municipio_id: idMunicipio,
       };
 
-      const newDireccion = await createDireccion(datosMuncipio);
+      const newDireccion = await createDireccion(datosMunicipio);
       idDireccion = newDireccion.data.id;
     }
 
@@ -460,7 +455,7 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
     const datosPaciente = {
       nombre: nombrePaciente,
       apellido,
-      fecha_nacimiento: formartDate(fecha_nacimiento),
+      fecha_nacimiento,
       genero_id: idGenero,
       estado_civil_id: idEstadoCivil,
       profesion_id: idProfesion,

@@ -229,12 +229,7 @@ export const ModalEliminarMunicipio = ({
 export const ModalAgregarMunicipio = ({ updateTable }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const dataDepartamentos = useDepartamentoStore((state) => state.data);
-  // const getDepartamentos = useDepartamentoStore((state) => state.execute);
   const { register, handleSubmit } = useForm();
-
-  // useEffect(() => {
-  //   getDepartamentos();
-  // }, [getDepartamentos]);
 
   const agregarMunicipio = async (data) => {
     await createMunicipio(data);
@@ -265,7 +260,7 @@ export const ModalAgregarMunicipio = ({ updateTable }: ModalProps) => {
             {(onClose) => (
               <>
                 <ModalHeader className="flex flex-col gap-1">
-                  Argegar Municipio
+                  Agregar Municipio
                 </ModalHeader>
                 <Divider />
                 <ModalBody className="mt-4">

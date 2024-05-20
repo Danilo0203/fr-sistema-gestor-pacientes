@@ -20,6 +20,7 @@ import { useDepartamentoStore } from "../../../../store/direcciones/departamento
 import {
   updateDepartamento,
   deleteDepartamento,
+  createDepartamento,
 } from "helpers/api/direccion/departamentos";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, DepartamentoData } from "types/index";
@@ -125,7 +126,7 @@ export const ModalEliminarDepartamento = ({
 }: ModalProps) => {
   const departamentos = useDepartamentoStore((state) => state.data);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  
+
   const handleDelete = async () => {
     await deleteDepartamento(idDepartamento);
     updateTable();
@@ -188,6 +189,69 @@ export const ModalEliminarDepartamento = ({
             </>
           )}
         </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
+export const ModalAgregarDepartamento = ({ updateTable }: ModalProps) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const { register, handleSubmit } = useForm();
+
+  const agregarDepartamento = async (data: DepartamentoData) => {
+    await createDepartamento(data);
+    updateTable();
+  };
+
+  const onSubmit = (data) => {
+    agregarDepartamento(data);
+  };
+
+  return (
+    <>
+      <Button
+        onPress={onOpen}
+        className="bg-azulFuerte text-white"
+        startContent={<Icon icon="mdi:map-marker-plus" width={20} />}
+      >
+        Agregar Departamento
+      </Button>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        placement="top-center"
+      >
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Agregar Departamento
+                </ModalHeader>
+                <Divider />
+                <ModalBody className="mt-4">
+                  <Label>Departamento</Label>
+                  <Input
+                    autoFocus
+                    placeholder="Ingrese el Departamento"
+                    type="text"
+                    {...register("nombre")}
+                  />
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Cerrar
+                  </Button>
+                  <Button color="primary" type="submit" onPress={onClose}>
+                    Agregar
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </form>
       </Modal>
     </>
   );

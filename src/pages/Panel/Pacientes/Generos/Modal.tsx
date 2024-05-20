@@ -190,13 +190,12 @@ export const ModalAgregarGenero = ({ updateTable }: ModalProps) => {
 
   const { register, handleSubmit } = useForm();
 
-  const añadirGenero = async (data) => {
+  const agregarGenero = async (data: GeneroData) => {
     await createGenero(data);
     updateTable();
   };
   const onSubmit = (data) => {
-    console.log(data);
-    añadirGenero(data);
+    agregarGenero(data);
   };
   return (
     <>
@@ -218,7 +217,7 @@ export const ModalAgregarGenero = ({ updateTable }: ModalProps) => {
             {(onClose) => (
               <>
                 <ModalHeader className="flex flex-col gap-1">
-                  Argegar Género
+                  Agregar Género
                 </ModalHeader>
                 <Divider />
                 <ModalBody className="mt-4">

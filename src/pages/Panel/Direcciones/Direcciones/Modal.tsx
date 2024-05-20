@@ -23,6 +23,7 @@ import { useMunicipioStore } from "../../../../store/direcciones/municipios";
 import {
   deleteDireccion,
   updateDireccion,
+  createDireccion,
 } from "helpers/api/direccion/direcciones";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, DireccionData } from "types/index";
@@ -223,6 +224,84 @@ export const ModalEliminarDireccion = ({
             </>
           )}
         </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
+export const ModalAgregarDireccion = ({ updateTable }: ModalProps) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const dataMunicipios = useMunicipioStore((state) => state.data);
+  const { register, handleSubmit } = useForm();
+
+  const agregarDireccion = async (data: DireccionData) => {
+    await createDireccion(data);
+    updateTable();
+  };
+
+  const onSubmit = (data) => {
+    agregarDireccion(data);
+  };
+
+  return (
+    <>
+      <Button
+        onPress={onOpen}
+        className="bg-azulFuerte text-white"
+        startContent={<Icon icon="mdi:map-marker-plus" width={20} />}
+      >
+        Agregar Dirección
+      </Button>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        placement="top-center"
+      >
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Agregar Direccion
+                </ModalHeader>
+                <Divider />
+                <ModalBody className="mt-4">
+                  <Label>Dirección</Label>
+                  <Input
+                    autoFocus
+                    placeholder="Ingrese la dirección"
+                    type="text"
+                    {...register("nombre")}
+                  />
+                  <Label>Municipio</Label>
+                  <Select
+                    aria-label="Municipio"
+                    items={dataMunicipios}
+                    placeholder="Seleccione un Municipio"
+                    variant="underlined"
+                    size="lg"
+                    {...register("municipio_id")}
+                  >
+                    {(municipio) => (
+                      <SelectItem key={municipio.id}>
+                        {municipio.nombre}
+                      </SelectItem>
+                    )}
+                  </Select>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="flat" onPress={onClose}>
+                    Cerrar
+                  </Button>
+                  <Button color="primary" type="submit" onPress={onClose}>
+                    Agregar
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </form>
       </Modal>
     </>
   );
