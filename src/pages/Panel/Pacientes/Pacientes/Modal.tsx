@@ -17,9 +17,9 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { memo, useEffect, useState } from "react";
+import { memo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { usePacienteStore } from "../../../../store/pacientes/pacientes";
 import { useProfesionStore } from "../../../../store/pacientes/profesiones";
 import { useEstadoCivilStore } from "../../../../store/pacientes/estadoCivil";
@@ -43,6 +43,7 @@ import { createProfesion } from "helpers/api/pacientes/profesiones";
 export const ModalEditarPaciente = memo(
   ({ idPaciente, updateTable }: ModalProps) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const [pacienteEdit, setPacienteEdit] = useState(null);
     const pacientes = usePacienteStore((state) => state.data);
     const direcciones = useDireccionStore((state) => state.data);
     const profesiones = useProfesionStore((state) => state.data);
@@ -51,41 +52,39 @@ export const ModalEditarPaciente = memo(
 
     const { setValue, register, handleSubmit } = useForm();
     const navigate = useNavigate();
-    const params = useParams();
 
     const handleEdit = () => {
-      navigate(`/pacientes/tabla/editar/${idPaciente}`);
+      const [paciente] = getUsuarioById(idPaciente, pacientes);
+      const dataPaciente = {
+        id: paciente.id,
+        nombre: paciente.nombre,
+        apellido: paciente.apellido,
+        fecha_nacimiento: paciente.fecha_nacimiento,
+        direccion: paciente.direccion,
+        profesion: paciente.profesion,
+        estadoCivil: paciente.estadoCivil,
+        genero: paciente.genero,
+        estadoCivilID: paciente.estadoCivilID,
+        direccionID: paciente.direccionID,
+        generoID: paciente.generoID,
+        profesionID: paciente.profesionID,
+      };
+      setPacienteEdit(dataPaciente);
+      setValue("nombre", paciente.nombre);
+      setValue("apellido", paciente.apellido);
+      setValue("fecha_nacimiento", paciente.fecha_nacimiento);
+      setValue("direccion", paciente.direccion);
+      setValue("profesion", paciente.profesion);
+      setValue("estadoCivil", paciente.estadoCivil);
+      setValue("genero", paciente.genero);
     };
-
-    const { id } = params;
-
-    const pacienteID: PacienteData = getUsuarioById(id, pacientes)[0];
-
-    useEffect(() => {
-      setValue("nombre", pacienteID.nombre);
-      setValue("apellido", pacienteID.apellido);
-      setValue("fecha_nacimiento", pacienteID.fecha_nacimiento);
-      setValue("direccion", pacienteID.direccion);
-      setValue("profesion", pacienteID.profesion);
-      setValue("estadoCivil", pacienteID.estadoCivil);
-      setValue("genero", pacienteID.genero);
-    }, [
-      pacienteID.nombre,
-      pacienteID.apellido,
-      pacienteID.fecha_nacimiento,
-      pacienteID.direccion,
-      pacienteID.profesion,
-      pacienteID.estadoCivil,
-      pacienteID.genero,
-      setValue,
-    ]);
 
     const handleClose = () => {
       navigate("/pacientes/tabla");
     };
 
     const actualizar = async (data: PacienteData) => {
-      await updatePaciente(pacienteID.id, data);
+      await updatePaciente(pacienteEdit.id, data);
       updateTable();
     };
 
@@ -175,7 +174,7 @@ export const ModalEditarPaciente = memo(
                           <Select
                             items={generos}
                             placeholder="Seleccione un género"
-                            defaultSelectedKeys={[pacienteID.generoID]}
+                            defaultSelectedKeys={[pacienteEdit.generoID]}
                             size="lg"
                             aria-label="genero"
                             {...register("genero_id")}
@@ -195,7 +194,7 @@ export const ModalEditarPaciente = memo(
                           <Select
                             items={profesiones}
                             placeholder="Seleccione una profesión"
-                            defaultSelectedKeys={[pacienteID.profesionID]}
+                            defaultSelectedKeys={[pacienteEdit.profesionID]}
                             size="lg"
                             aria-label="profesion"
                             {...register("profesion_id")}
@@ -212,7 +211,7 @@ export const ModalEditarPaciente = memo(
                           <Select
                             items={estadoCivil}
                             placeholder="Seleccione un estado civil"
-                            defaultSelectedKeys={[pacienteID.estadoCivilID]}
+                            defaultSelectedKeys={[pacienteEdit.estadoCivilID]}
                             size="lg"
                             aria-label="estado civil"
                             {...register("estado_civil_id")}
@@ -231,7 +230,7 @@ export const ModalEditarPaciente = memo(
                         <Select
                           items={direcciones}
                           placeholder="Seleccione una dirección"
-                          defaultSelectedKeys={[pacienteID.direccionID]}
+                          defaultSelectedKeys={[pacienteEdit.direccionID]}
                           size="lg"
                           aria-label="direccion"
                           {...register("direccion_id")}
@@ -361,7 +360,7 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
     return format(date, "YYYY/DD/MM");
   };
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
   const handleSelectionChange = (
     key,
@@ -469,6 +468,7 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
     };
 
     agregarPaciente(datosPaciente);
+    reset();
   };
 
   return (
