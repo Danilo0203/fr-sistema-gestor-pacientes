@@ -17,6 +17,7 @@ import { useDatosMedicosPacientesStore } from "../../store/datosMedicos/datosMed
 import { useRecetasStore } from "../../store/recetas/recetas";
 import { useRecetasPacienteStore } from "../../store/recetas/recetasPaciente";
 import { useEstadoCivilStore } from "../../store/pacientes/estadoCivil";
+import { usePacienteCitasStore } from "../../store/pacientes/pacientesCitas";
 
 export const Layout = memo(() => {
   const init = useRolStore((state) => state.init);
@@ -35,12 +36,13 @@ export const Layout = memo(() => {
   const initRecetasPacientes = useRecetasPacienteStore((state) => state.init);
   const initEstadoCivil = useEstadoCivilStore((state) => state.init);
   const initRoles = useRolStore((state) => state.init);
-
+  const initCitas = usePacienteCitasStore((state) => state.init);
   useEffect(() => {
     const loadData = async () => {
       try {
         await init();
         await initUsuarios();
+        await initCitas();
         await initPacientes();
         await initGeneros();
         await initProfesion();
@@ -63,6 +65,7 @@ export const Layout = memo(() => {
     initUsuarios,
     initRoles,
     initPacientes,
+    initCitas,
     initGeneros,
     initProfesion,
     initDirecciones,

@@ -12,7 +12,7 @@ import {
   Input,
 } from "@nextui-org/react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { columns } from "./dataTable/data";
 import {
   ModalAgregarPaciente,
@@ -29,6 +29,7 @@ export const TablaPacientes = () => {
   const {
     value,
     getPacientes,
+    getCitas,
     pagina,
     setPagina,
     sortDescriptor,
@@ -40,6 +41,7 @@ export const TablaPacientes = () => {
     onRowsPerPageChange,
     onSearchChange,
     onClear,
+    statusCita,
   } = useTablePacientes(pacientes);
 
   interface Paciente {
@@ -57,57 +59,68 @@ export const TablaPacientes = () => {
     sortable?: boolean;
   }
 
-  const renderCell = useCallback(
-    (paciente: Paciente, columnKey: Column) => {
-      const cellValue = paciente[columnKey];
+  const renderCell = (paciente: Paciente, columnKey: Column) => {
+    const cellValue = paciente[columnKey];
 
-      // Mostrar la edad del paciente en lugar de la fecha de nacimiento
-      const fechaNacimiento = new Date(paciente.fecha_nacimiento);
-      const hoy = new Date();
+    // Mostrar la edad del paciente en lugar de la fecha de nacimiento
+    const fechaNacimiento = new Date(paciente.fecha_nacimiento);
+    const hoy = new Date();
 
-      let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
-      const mes = hoy.getMonth() - fechaNacimiento.getMonth();
-      if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
-        edad--;
-      }
-      const id = pacientes.findIndex((u) => u.id === paciente.id) + 1;
+    let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+    const mes = hoy.getMonth() - fechaNacimiento.getMonth();
+    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+      edad--;
+    }
 
-      switch (columnKey) {
-        case "id":
-          return <p> {id} </p>;
-        case "nombre":
-          return <p>{paciente.nombre}</p>;
-        case "apellido":
-          return <p>{paciente.apellido}</p>;
-        case "fechaNacimiento":
-          return <p>{edad} años</p>;
-        case "direccion":
-          return (
-            <p>
-              {paciente.direccion}, {paciente.municipio}
-            </p>
-          );
-        case "citas":
-          return <BotonCitas idPaciente={paciente.id} updateTable={getPacientes} />;
-        case "acciones":
-          return (
-            <div className="relative flex items-center gap-3">
-              <ModalEditarPaciente
-                idPaciente={paciente.id}
-                updateTable={getPacientes}
-              />
-              <ModalEliminarPaciente
-                idPaciente={paciente.id}
-                updateTable={getPacientes}
-              />
-            </div>
-          );
-        default:
-          return cellValue;
-      }
-    },
-    [getPacientes, pacientes],
-  );
+    const id = pacientes.findIndex((u) => u.id === paciente.id) + 1;
+
+    const cita = (id) => {
+      const cita = statusCita.find((cita) => cita.pacienteID === id);
+
+      return cita?.atender == 1 ? "Activo" : "Inactivo";
+    };
+
+    switch (columnKey) {
+      case "id":
+        return <p>{id}</p>;
+      case "nombre":
+        return <p>{paciente.nombre}</p>;
+      case "apellido":
+        return <p>{paciente.apellido}</p>;
+      case "fechaNacimiento":
+        return <p>{edad} años</p>;
+      case "direccion":
+        return (
+          <p>
+            {paciente.direccion}, {paciente.municipio}
+          </p>
+        );
+      case "citas":
+        return (
+          <BotonCitas
+            idPaciente={paciente.id}
+            boton={cita(paciente.id)}
+            updateTable={getPacientes}
+            updateCita={getCitas}
+          />
+        );
+      case "acciones":
+        return (
+          <div className="relative flex items-center gap-3">
+            <ModalEditarPaciente
+              idPaciente={paciente.id}
+              updateTable={getPacientes}
+            />
+            <ModalEliminarPaciente
+              idPaciente={paciente.id}
+              updateTable={getPacientes}
+            />
+          </div>
+        );
+      default:
+        return cellValue;
+    }
+  };
 
   const topContent = useMemo(() => {
     return (

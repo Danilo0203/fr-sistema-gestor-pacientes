@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SortDescriptor } from "@nextui-org/react";
 import { usePacienteStore } from "../store/pacientes/pacientes";
+import { usePacienteCitasStore } from "../store/pacientes/pacientesCitas";
 
 export const useTablePacientes = (pacientes) => {
   const getPacientes = usePacienteStore((state) => state.execute);
+  const dataCitas = usePacienteCitasStore((state) => state.data);
+  const getCitas = usePacienteCitasStore((state) => state.execute);
   const loading = usePacienteStore((state) => state.loading);
   const [value, setValue] = useState(0);
   const [pagina, setPagina] = useState(1);
@@ -22,11 +25,6 @@ export const useTablePacientes = (pacientes) => {
     );
     return filtrarPacientes;
   }, [pacientes, filterValue]);
-
-  // Funcion para obtener pacientes
-  // useEffect(() => {
-  //   getPacientes();
-  // }, [getPacientes]);
 
   // Funcion para esperar la respuesta de la API
   useEffect(() => {
@@ -92,6 +90,7 @@ export const useTablePacientes = (pacientes) => {
   return {
     value,
     getPacientes,
+    getCitas,
     pagina,
     setPagina,
     sortDescriptor,
@@ -103,5 +102,6 @@ export const useTablePacientes = (pacientes) => {
     onRowsPerPageChange,
     onSearchChange,
     onClear,
+    statusCita: dataCitas,
   };
 };

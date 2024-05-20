@@ -15,8 +15,7 @@ type PacienteStoreProps = {
   errorData: string | null;
   dataLoaded: boolean;
   execute: () => Promise<void>;
-  updateCitaStatus: (id: string) => Promise<void>;
-  init: (id: string) => Promise<void>;
+  init: () => Promise<void>;
 };
 
 const initialState = {
@@ -33,27 +32,23 @@ export const usePacienteCitasStore = create<PacienteStoreProps>((set, get) => ({
   execute: async () => {
     set({ loading: true });
     try {
-      const pacientes = await api.get(`/cita/paciente`);
+      const citas = await api.get(`/citas/paciente`);
       set({
         loading: false,
         success: true,
-        data: pacientes.data.data,
+        data: citas.data.data.map((cita: Cita) => {
+          return {
+            pacienteID: cita.paciente_id,
+            atender: cita.atender,
+          };
+        }),
         dataLoaded: true,
       });
     } catch (err) {
       set({ loading: false, error: true, errorData: err.message });
     }
   },
-  updateCitaStatus: async (id) => {
-    try {
-      const pacientes = await api.get(`/cita/paciente/${id}`);
-      set({
-        data: pacientes.data.data,
-      });
-    } catch (err) {
-      console.error("Error al actualizar el estado de la cita: ", err);
-    }
-  },
+
   init: async () => {
     const state = get();
     if (!state.dataLoaded) {
