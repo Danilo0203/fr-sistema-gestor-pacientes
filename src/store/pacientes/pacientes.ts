@@ -33,6 +33,7 @@ export const usePacienteStore = create<PacienteStoreProps>()((set, get) => ({
       set({
         ...initialState,
         success: true,
+
         data: pacientes.data.data.map((paciente: any) => {
           return {
             id: paciente.id,

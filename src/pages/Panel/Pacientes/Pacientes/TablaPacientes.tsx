@@ -21,9 +21,11 @@ import {
 } from "./Modal";
 import { useTablePacientes } from "hooks/useTablePacientes";
 import { usePacienteStore } from "../../../../store/pacientes/pacientes";
+import { BotonCitas } from "components/ui/Botones/BotonCitas";
 
 export const TablaPacientes = () => {
   const pacientes = usePacienteStore((state) => state.data);
+
   const {
     value,
     getPacientes,
@@ -85,6 +87,8 @@ export const TablaPacientes = () => {
               {paciente.direccion}, {paciente.municipio}
             </p>
           );
+        case "citas":
+          return <BotonCitas idPaciente={paciente.id} updateTable={getPacientes} />;
         case "acciones":
           return (
             <div className="relative flex items-center gap-3">

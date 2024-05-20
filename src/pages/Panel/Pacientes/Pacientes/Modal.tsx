@@ -48,21 +48,10 @@ export const ModalEditarPaciente = memo(
     const profesiones = useProfesionStore((state) => state.data);
     const estadoCivil = useEstadoCivilStore((state) => state.data);
     const generos = useGeneroStore((state) => state.data);
-    // const getDirecciones = useDireccionStore((state) => state.execute);
-    // const getProfesiones = useProfesionStore((state) => state.execute);
-    // const getEstadoCivil = useEstadoCivilStore((state) => state.execute);
-    // const getGeneros = useGeneroStore((state) => state.execute);
 
     const { setValue, register, handleSubmit } = useForm();
     const navigate = useNavigate();
     const params = useParams();
-
-    // useEffect(() => {
-    //   getDirecciones();
-    //   getProfesiones();
-    //   getEstadoCivil();
-    //   getGeneros();
-    // }, [getDirecciones, getProfesiones, getEstadoCivil, getGeneros]);
 
     const handleEdit = () => {
       navigate(`/pacientes/tabla/editar/${idPaciente}`);
