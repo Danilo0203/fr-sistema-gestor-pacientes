@@ -1,16 +1,6 @@
 import { create } from "zustand";
 import api from "../../helpers/libs/axios";
-
-type GeneroStoreProps = {
-  loading: boolean;
-  success: boolean;
-  error: boolean;
-  data: Array<T>;
-  errorData: null;
-  dataLoaded: boolean;
-  execute: () => void;
-  init: () => void;
-};
+import { GeneroProp, StoreProps } from "types/index";
 
 const initialState = {
   loading: false,
@@ -21,11 +11,11 @@ const initialState = {
   dataLoaded: false,
 };
 
-export const useGeneroStore = create<GeneroStoreProps>((set, get) => ({
+export const useGeneroStore = create<StoreProps>((set, get) => ({
   ...initialState,
   execute: async () => {
     set((state) => {
-      if (state.dataLoaded) return state; // Si los datos ya están cargados, no hacer nada
+      if (state.dataLoaded) return state;
       return { ...state, loading: true };
     });
     try {
@@ -33,22 +23,23 @@ export const useGeneroStore = create<GeneroStoreProps>((set, get) => ({
       set({
         ...initialState,
         success: true,
-        data: generos.data.data.map((genero: any) => {
+        data: generos.data.data.map((genero: GeneroProp) => {
           return {
             id: genero.id,
             nombre: genero.nombre,
           };
         }),
-        dataLoaded: true, // Se cargaron los datos
+        dataLoaded: true,
       });
     } catch (err) {
       console.error("Error al obtener los generos: ", err);
-      set({ ...initialState, error: true, errorData: err.message });
+      const errorMessage = (err as Error)?.message || "Unknown error";
+
+      set({ ...initialState, error: true, errorData: errorMessage });
     }
   },
   init: async () => {
     const state = get();
-    // console.log(state.dataLoaded);
     if (!state.dataLoaded) {
       await state.execute();
     }

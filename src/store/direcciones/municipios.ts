@@ -1,16 +1,6 @@
 import { create } from "zustand";
 import api from "../../helpers/libs/axios";
-
-type MunicipioStoreProps = {
-  loading: boolean;
-  success: boolean;
-  error: boolean;
-  data: Array<T>;
-  errorData: null;
-  dataLoaded: boolean;
-  execute: () => void;
-  init: () => void;
-};
+import { MunicipioProp, StoreProps } from "types/index";
 
 const initialState = {
   loading: false,
@@ -21,11 +11,11 @@ const initialState = {
   dataLoaded: false,
 };
 
-export const useMunicipioStore = create<MunicipioStoreProps>()((set, get) => ({
+export const useMunicipioStore = create<StoreProps>()((set, get) => ({
   ...initialState,
   execute: async () => {
     set((state) => {
-      if (state.dataLoaded) return state; // Si los datos ya están cargados, no hacer nada
+      if (state.dataLoaded) return state;
       return { ...state, loading: true };
     });
     try {
@@ -33,7 +23,7 @@ export const useMunicipioStore = create<MunicipioStoreProps>()((set, get) => ({
       set({
         ...initialState,
         success: true,
-        data: municipios.data.data.map((municipio: any) => {
+        data: municipios.data.data.map((municipio: MunicipioProp) => {
           return {
             id: municipio.id,
             nombre: municipio.nombre,
@@ -41,11 +31,13 @@ export const useMunicipioStore = create<MunicipioStoreProps>()((set, get) => ({
             departamentoID: municipio.departamento.id,
           };
         }),
-        dataLoaded: true, // Se cargaron los datos
+        dataLoaded: true,
       });
     } catch (err) {
       console.error("Error al obtener los municipios: ", err);
-      set({ ...initialState, error: true, errorData: err.message });
+      const errorMessage = (err as Error)?.message || "Unknown error";
+
+      set({ ...initialState, error: true, errorData: errorMessage });
     }
   },
   init: async () => {

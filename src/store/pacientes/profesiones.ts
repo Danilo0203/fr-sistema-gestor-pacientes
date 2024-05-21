@@ -1,16 +1,6 @@
 import { create } from "zustand";
 import api from "../../helpers/libs/axios";
-
-type ProfesionStoreProps = {
-  loading: boolean;
-  success: boolean;
-  error: boolean;
-  data: Array<T>;
-  errorData: null;
-  dataLoaded: boolean;
-  execute: () => void;
-  init: () => void;
-};
+import { ProfesionProp, StoreProps } from "types/index";
 
 const initialState = {
   loading: false,
@@ -21,11 +11,11 @@ const initialState = {
   dataLoaded: false,
 };
 
-export const useProfesionStore = create<ProfesionStoreProps>((set, get) => ({
+export const useProfesionStore = create<StoreProps>((set, get) => ({
   ...initialState,
   execute: async () => {
     set((state) => {
-      if (state.dataLoaded) return state; // Si los datos ya están cargados, no hacer nada
+      if (state.dataLoaded) return state;
       return { ...state, loading: true };
     });
     try {
@@ -33,17 +23,18 @@ export const useProfesionStore = create<ProfesionStoreProps>((set, get) => ({
       set({
         ...initialState,
         success: true,
-        data: profesiones.data.data.map((profesion: any) => {
+        data: profesiones.data.data.map((profesion: ProfesionProp) => {
           return {
             id: profesion.id,
             nombre: profesion.nombre,
           };
         }),
-        dataLoaded: true, // Se cargaron los datos
+        dataLoaded: true,
       });
     } catch (err) {
       console.error("Error al obtener las profesiones: ", err);
-      set({ ...initialState, error: true, errorData: err.message });
+      const errorMessage = (err as Error)?.message || "Unknown error";
+      set({ ...initialState, error: true, errorData: errorMessage });
     }
   },
   init: async () => {

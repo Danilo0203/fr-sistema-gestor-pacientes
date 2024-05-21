@@ -16,6 +16,177 @@ export interface DatosRegisroProp {
     [key: string]: string;
   }>;
 }
+// Tipos para los Store
+export type StoreProps = {
+  loading: boolean;
+  success: boolean;
+  error: boolean;
+  data: string[];
+  errorData: string | null;
+  dataLoaded: boolean;
+  execute: () => void;
+  init: () => void;
+};
+
+// Tipos para los encabezados de las tablas
+export interface TableUsuariosProps {
+  id: string;
+  usuario: string;
+  nombre: string;
+  rol: string;
+  acciones: string;
+}
+
+export type TableUsuariosKeys = keyof TableUsuariosProps;
+
+// Tipo de datos para los Usuarios del store
+export interface UsuarioProp {
+  id: number;
+  usuario: string;
+  nombre: string;
+  email: string;
+  rol: {
+    nombre: string;
+    id: number;
+  };
+}
+
+// Tipo de datos para los Roles del store
+export interface RolProp {
+  id: number;
+  nombre: string;
+  descripcion: string;
+}
+
+// Tipo de datos para las Recetas del store
+export interface RecetasProp {
+  id: number;
+  fecha: string;
+  usuario: {
+    nombre: string;
+    id: number;
+  };
+  usuarioID: number;
+}
+
+// Tipo de datos para las RecetasPaciente del store
+export interface RecetasPacienteProp {
+  id: number;
+  descripcion: string;
+  receta: {
+    fecha: string;
+    id: number;
+  };
+  paciente: {
+    nombre: string;
+    apellido: string;
+    id: number;
+  };
+}
+
+// Tipo de datos de Estado Civil
+export interface EstadoCivilProp {
+  id: number;
+  nombre: string;
+}
+
+// Tipo de datos de Genero
+export interface GeneroProp {
+  id: number;
+  nombre: string;
+}
+
+// Tipo de datos de Pacientes
+export interface PacienteProp {
+  id: number;
+  nombre: string;
+  apellido: string;
+  fecha_nacimiento: string;
+  genero: {
+    nombre: string;
+    id: number;
+  };
+  estado_civil: {
+    nombre: string;
+    id: number;
+  };
+  profesion: {
+    nombre: string;
+    id: number;
+  };
+  direccion: {
+    nombre: string;
+    id: number;
+    municipio: {
+      nombre: string;
+      id: number;
+    };
+  };
+}
+
+// Tipo de datos de Citas
+export interface CitaProp {
+  id: string;
+  atender: number;
+  paciente_id: string;
+}
+
+// Tipo de datos de Profesiones
+export interface ProfesionProp {
+  id: number;
+  nombre: string;
+}
+
+// Tipo de datos de Departamentos
+export interface DepartamentoProp {
+  id: number;
+  nombre: string;
+}
+
+// Tipo de datos de Direcciones
+export interface DireccionProp {
+  id: number;
+  nombre: string;
+  municipio: {
+    nombre: string;
+    id: number;
+    departamento: {
+      nombre: string;
+      id: number;
+    };
+  };
+}
+
+// Tipo de datos de Municipios
+export interface MunicipioProp {
+  id: number;
+  nombre: string;
+  departamento: {
+    nombre: string;
+    id: number;
+  };
+}
+
+// Tipo de datos de Datos Medicos
+export interface DatosMedicosProp {
+  id: number;
+  nombre: string;
+}
+
+// Tipo de datos de Datos Medicos Paciente
+export interface DatosMedicosPacienteProp {
+  id: number;
+  fecha: string;
+  dato_medico: {
+    nombre: string;
+    id: number;
+  };
+  paciente: {
+    nombre: string;
+    id: number;
+  };
+  valor: string;
+}
 
 export type FormInicioSesionType = {
   nombre: string;

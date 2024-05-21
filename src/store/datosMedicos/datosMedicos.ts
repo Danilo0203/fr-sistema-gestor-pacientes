@@ -1,16 +1,6 @@
 import { create } from "zustand";
 import api from "../../helpers/libs/axios";
-
-type DatosMedicosStoreProps = {
-  loading: boolean;
-  success: boolean;
-  error: boolean;
-  data: Array<T>;
-  errorData: null;
-  dataLoaded: boolean;
-  execute: () => void;
-  init: () => void;
-};
+import { DatosMedicosProp, StoreProps } from "types/index";
 
 const initialState = {
   loading: false,
@@ -21,37 +11,36 @@ const initialState = {
   dataLoaded: false,
 };
 
-export const useDatosMedicosStore = create<DatosMedicosStoreProps>(
-  (set, get) => ({
-    ...initialState,
-    execute: async () => {
-      set((state) => {
-        if (state.dataLoaded) return state; // Si los datos ya están cargados, no hacer nada
-        return { ...state, loading: true };
+export const useDatosMedicosStore = create<StoreProps>((set, get) => ({
+  ...initialState,
+  execute: async () => {
+    set((state) => {
+      if (state.dataLoaded) return state;
+      return { ...state, loading: true };
+    });
+    try {
+      const datosMedicos = await api.get("/datos-medicos");
+      set({
+        ...initialState,
+        success: true,
+        data: datosMedicos.data.data.map((datoMedico: DatosMedicosProp) => {
+          return {
+            id: datoMedico.id,
+            nombre: datoMedico.nombre,
+          };
+        }),
+        dataLoaded: true,
       });
-      try {
-        const datosMedicos = await api.get("/datos-medicos");
-        set({
-          ...initialState,
-          success: true,
-          data: datosMedicos.data.data.map((datoMedico: any) => {
-            return {
-              id: datoMedico.id,
-              nombre: datoMedico.nombre,
-            };
-          }),
-          dataLoaded: true, // Se cargaron los datos
-        });
-      } catch (err) {
-        console.error("Error al obtener los datos medicos: ", err);
-        set({ ...initialState, error: true, errorData: err.message });
-      }
-    },
-    init: async () => {
-      const state = get();
-      if (!state.dataLoaded) {
-        await state.execute();
-      }
-    },
-  }),
-);
+    } catch (err) {
+      console.error("Error al obtener los datos medicos: ", err);
+      const errorMessage = (err as Error)?.message || "Unknown error";
+      set({ ...initialState, error: true, errorData: errorMessage });
+    }
+  },
+  init: async () => {
+    const state = get();
+    if (!state.dataLoaded) {
+      await state.execute();
+    }
+  },
+}));

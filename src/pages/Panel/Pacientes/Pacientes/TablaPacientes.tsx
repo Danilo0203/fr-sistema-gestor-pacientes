@@ -12,7 +12,7 @@ import {
   Input,
 } from "@nextui-org/react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useCallback, useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { columns } from "./dataTable/data";
 import {
   ModalAgregarPaciente,

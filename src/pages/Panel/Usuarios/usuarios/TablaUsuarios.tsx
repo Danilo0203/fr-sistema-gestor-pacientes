@@ -22,6 +22,7 @@ import {
 import { useCallback, useMemo } from "react";
 import { useTableUser } from "hooks/useTableUser";
 import { useUsuarioStore } from "../../../../store/usuarios";
+import { TableUsuariosKeys, TableUsuariosProps } from "types/index";
 
 export const TablaUsuarios = () => {
   const usuarios = useUsuarioStore((state) => state.data);
@@ -34,50 +35,45 @@ export const TablaUsuarios = () => {
     setSortDescriptor,
     filterValue,
     loadingState,
-    paginas,
+    paginas,  
     ordenarItems,
     onRowsPerPageChange,
     onSearchChange,
     onClear,
   } = useTableUser(usuarios);
 
-  interface User {
-    id: string;
-    usuario: string;
-    nombre: string;
-    email: string;
-    rol: string;
-  }
-  interface Column {
-    key: string;
-    label: string;
-    sortable?: boolean;
-  }
-
-  const renderCell = useCallback((user: User, columnKey: Column) => {
-    const cellValue = user[columnKey];
-    const id = usuarios.findIndex((u) => u.id === user.id) + 1;
-    switch (columnKey) {
-      case "id":
-        return <p>{id}</p>;
-
-      case "usuario":
-        return <p> {user.usuario} </p>;
-      case "nombre":
-        return <p> {user.nombre} </p>;
-      case "rol":
-        return <p> {capitalizar(user.rol)} </p>;
-      case "acciones":
-        return (
-          <div className="relative flex items-center gap-3">
-            <ModalEditarUsuarios idUser={user.id} updateTable={getUsuarios} />
-            <ModalEliminarUsuarios idUser={user.id} updateTable={getUsuarios} />
-          </div>
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+  const renderCell = useCallback(
+    (user: TableUsuariosProps, columnKey: TableUsuariosKeys) => {
+      const cellValue = user[columnKey];
+      const id = usuarios.findIndex((u) => u.id === user.id) + 1;
+      switch (columnKey) {
+        case "id":
+          return <p>{id}</p>;
+        case "usuario":
+          return <p> {user.usuario} </p>;
+        case "nombre":
+          return <p> {user.nombre} </p>;
+        case "rol":
+          return <p> {capitalizar(user.rol)} </p>;
+        case "acciones":
+          return (
+            <div className="relative flex items-center gap-3">
+              <ModalEditarUsuarios
+                idUser={user.id.toString()}
+                updateTable={getUsuarios}
+              />
+              <ModalEliminarUsuarios
+                idUser={user.id.toString()}
+                updateTable={getUsuarios}
+              />
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [getUsuarios, usuarios],
+  );
 
   const topContent = useMemo(() => {
     return (
@@ -135,6 +131,7 @@ export const TablaUsuarios = () => {
     onClear,
     filterValue,
     onSearchChange,
+    getUsuarios,
   ]);
 
   return (

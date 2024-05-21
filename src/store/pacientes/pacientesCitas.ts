@@ -1,22 +1,6 @@
 import { create } from "zustand";
 import api from "../../helpers/libs/axios";
-
-type Cita = {
-  id: string;
-  atender: number;
-  paciente_id: string;
-};
-
-type PacienteStoreProps = {
-  loading: boolean;
-  success: boolean;
-  error: boolean;
-  data: Cita[];
-  errorData: string | null;
-  dataLoaded: boolean;
-  execute: () => Promise<void>;
-  init: () => Promise<void>;
-};
+import { CitaProp, StoreProps } from "types/index";
 
 const initialState = {
   loading: false,
@@ -27,7 +11,7 @@ const initialState = {
   dataLoaded: false,
 };
 
-export const usePacienteCitasStore = create<PacienteStoreProps>((set, get) => ({
+export const usePacienteCitasStore = create<StoreProps>((set, get) => ({
   ...initialState,
   execute: async () => {
     set({ loading: true });
@@ -36,7 +20,7 @@ export const usePacienteCitasStore = create<PacienteStoreProps>((set, get) => ({
       set({
         loading: false,
         success: true,
-        data: citas.data.data.map((cita: Cita) => {
+        data: citas.data.data.map((cita: CitaProp) => {
           return {
             pacienteID: cita.paciente_id,
             atender: cita.atender,
@@ -45,7 +29,9 @@ export const usePacienteCitasStore = create<PacienteStoreProps>((set, get) => ({
         dataLoaded: true,
       });
     } catch (err) {
-      set({ loading: false, error: true, errorData: err.message });
+      const errorMessage = (err as Error)?.message || "Unknown error";
+      console.log("Error al obtener las citas del paciente: ", errorMessage);
+      set({ loading: false, error: true, errorData: errorMessage });
     }
   },
 

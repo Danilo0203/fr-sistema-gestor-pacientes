@@ -392,12 +392,7 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                   <Button color="danger" variant="light" onPress={onClose}>
                     Cerrar
                   </Button>
-                  <Button
-                    color="primary"
-                    type="submit"
-                    // onClick={() => reset()}
-                    onPress={onClose}
-                  >
+                  <Button color="primary" type="submit" onPress={onClose}>
                     Agregar
                   </Button>
                 </ModalFooter>

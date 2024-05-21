@@ -1,16 +1,6 @@
 import { create } from "zustand";
 import api from "../../helpers/libs/axios";
-
-type RecetasStoreProps = {
-  loading: boolean;
-  success: boolean;
-  error: boolean;
-  data: Array<T>;
-  errorData: null;
-  dataLoaded: boolean;
-  execute: () => void;
-  init: () => void;
-};
+import { RecetasProp, StoreProps } from "types/index";
 
 const initialState = {
   loading: false,
@@ -21,11 +11,11 @@ const initialState = {
   dataLoaded: false,
 };
 
-export const useRecetasStore = create<RecetasStoreProps>((set, get) => ({
+export const useRecetasStore = create<StoreProps>((set, get) => ({
   ...initialState,
   execute: async () => {
     set((state) => {
-      if (state.dataLoaded) return state; // Si los datos ya están cargados, no hacer nada
+      if (state.dataLoaded) return state;
       return { ...state, loading: true };
     });
     try {
@@ -33,7 +23,7 @@ export const useRecetasStore = create<RecetasStoreProps>((set, get) => ({
       set({
         ...initialState,
         success: true,
-        data: recetas.data.data.map((receta: any) => {
+        data: recetas.data.data.map((receta: RecetasProp) => {
           return {
             id: receta.id,
             fecha: receta.fecha,
@@ -41,11 +31,12 @@ export const useRecetasStore = create<RecetasStoreProps>((set, get) => ({
             usuarioID: receta.usuario.id,
           };
         }),
-        dataLoaded: true, // Se cargaron los datos
+        dataLoaded: true,
       });
     } catch (err) {
       console.error("Error al obtener las recetas: ", err);
-      set({ ...initialState, error: true, errorData: err.message });
+      const errorMessage = (err as Error)?.message || "Unknown error";
+      set({ ...initialState, error: true, errorData: errorMessage });
     }
   },
   init: async () => {

@@ -1,16 +1,6 @@
 import { create } from "zustand";
 import api from "../helpers/libs/axios";
-
-type UsuariosStoreProps = {
-  loading: boolean;
-  success: boolean;
-  error: boolean;
-  data: string[];
-  errorData: null;
-  dataLoaded: boolean;
-  execute: () => void;
-  init: () => void;
-};
+import { UsuarioProp, StoreProps } from "types/index";
 
 const initialState = {
   loading: false,
@@ -21,11 +11,11 @@ const initialState = {
   dataLoaded: false,
 };
 
-export const useUsuarioStore = create<UsuariosStoreProps>()((set, get) => ({
+export const useUsuarioStore = create<StoreProps>()((set, get) => ({
   ...initialState,
   execute: async () => {
     set((state) => {
-      if (state.dataLoaded) return state; // Si los datos ya están cargados, no hacer nada
+      if (state.dataLoaded) return state;
       return { ...state, loading: true };
     });
     try {
@@ -33,7 +23,7 @@ export const useUsuarioStore = create<UsuariosStoreProps>()((set, get) => ({
       set({
         ...initialState,
         success: true,
-        data: usuarios.data.data.map((usuarios: any) => {
+        data: usuarios.data.data.map((usuarios: UsuarioProp) => {
           return {
             id: usuarios.id,
             usuario: usuarios.usuario,
@@ -43,11 +33,12 @@ export const useUsuarioStore = create<UsuariosStoreProps>()((set, get) => ({
             rolID: usuarios.rol.id,
           };
         }),
-        dataLoaded: true, // Se cargaron los datos
+        dataLoaded: true,
       });
     } catch (err) {
       console.error("Error al obtener los usuarios: ", err);
-      set({ ...initialState, error: true, errorData: err.message });
+      const errorMessage = (err as Error)?.message || "Unknown error";
+      set({ ...initialState, error: true, errorData: errorMessage });
     }
   },
   init: async () => {

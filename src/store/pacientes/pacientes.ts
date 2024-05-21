@@ -1,16 +1,6 @@
 import { create } from "zustand";
 import api from "../../helpers/libs/axios";
-
-type PacienteStoreProps = {
-  loading: boolean;
-  success: boolean;
-  error: boolean;
-  data: Array<T>;
-  errorData: null;
-  dataLoaded: boolean;
-  execute: () => void;
-  init: () => void;
-};
+import { PacienteProp, StoreProps } from "types/index";
 
 const initialState = {
   loading: false,
@@ -21,11 +11,11 @@ const initialState = {
   dataLoaded: false,
 };
 
-export const usePacienteStore = create<PacienteStoreProps>()((set, get) => ({
+export const usePacienteStore = create<StoreProps>()((set, get) => ({
   ...initialState,
   execute: async () => {
     set((state) => {
-      if (state.dataLoaded) return state; // Si los datos ya están cargados, no hacer nada
+      if (state.dataLoaded) return state;
       return { ...state, loading: true };
     });
     try {
@@ -34,7 +24,7 @@ export const usePacienteStore = create<PacienteStoreProps>()((set, get) => ({
         ...initialState,
         success: true,
 
-        data: pacientes.data.data.map((paciente: any) => {
+        data: pacientes.data.data.map((paciente: PacienteProp) => {
           return {
             id: paciente.id,
             nombre: paciente.nombre,
@@ -52,11 +42,12 @@ export const usePacienteStore = create<PacienteStoreProps>()((set, get) => ({
             municipioID: paciente.direccion.municipio.id,
           };
         }),
-        dataLoaded: true, // Se cargaron los datos
+        dataLoaded: true,
       });
     } catch (err) {
       console.error("Error al obtener los pacientes: ", err);
-      set({ ...initialState, error: true, errorData: err.message });
+      const errorMessage = (err as Error)?.message || "Unknown error";
+      set({ ...initialState, error: true, errorData: errorMessage });
     }
   },
   init: async () => {

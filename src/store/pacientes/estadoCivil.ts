@@ -1,16 +1,6 @@
 import { create } from "zustand";
 import api from "../../helpers/libs/axios";
-
-type EstadoCivilStoreProps = {
-  loading: boolean;
-  success: boolean;
-  error: boolean;
-  data: Array<T>;
-  errorData: null;
-  dataLoaded: boolean;
-  execute: () => void;
-  init: () => void;
-};
+import { EstadoCivilProp, StoreProps } from "types/index";
 
 const initialState = {
   loading: false,
@@ -21,37 +11,36 @@ const initialState = {
   dataLoaded: false,
 };
 
-export const useEstadoCivilStore = create<EstadoCivilStoreProps>(
-  (set, get) => ({
-    ...initialState,
-    execute: async () => {
-      set((state) => {
-        if (state.dataLoaded) return state; // Si los datos ya están cargados, no hacer nada
-        return { ...state, loading: true };
+export const useEstadoCivilStore = create<StoreProps>((set, get) => ({
+  ...initialState,
+  execute: async () => {
+    set((state) => {
+      if (state.dataLoaded) return state;
+      return { ...state, loading: true };
+    });
+    try {
+      const estadoCivil = await api.get("/estado-civil");
+      set({
+        ...initialState,
+        success: true,
+        data: estadoCivil.data.data.map((estado: EstadoCivilProp) => {
+          return {
+            id: estado.id,
+            nombre: estado.nombre,
+          };
+        }),
+        dataLoaded: true,
       });
-      try {
-        const estadoCivil = await api.get("/estado-civil");
-        set({
-          ...initialState,
-          success: true,
-          data: estadoCivil.data.data.map((estado: any) => {
-            return {
-              id: estado.id,
-              nombre: estado.nombre,
-            };
-          }),
-          dataLoaded: true, // Se cargaron los datos
-        });
-      } catch (err) {
-        console.error("Error al obtener los estados civiles: ", err);
-        set({ ...initialState, error: true, errorData: err.message });
-      }
-    },
-    init: async () => {
-      const state = get();
-      if (!state.dataLoaded) {
-        await state.execute();
-      }
-    },
-  }),
-);
+    } catch (err) {
+      console.error("Error al obtener los estados civiles: ", err);
+      const errorMessage = (err as Error)?.message || "Unknown error";
+      set({ ...initialState, error: true, errorData: errorMessage });
+    }
+  },
+  init: async () => {
+    const state = get();
+    if (!state.dataLoaded) {
+      await state.execute();
+    }
+  },
+}));

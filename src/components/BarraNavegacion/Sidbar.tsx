@@ -1,7 +1,8 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/auth";
+import { Button } from "@nextui-org/react";
 
 export const Sidbar = () => {
   const [openUsuarios, setOpenUsuarios] = useState(false);
@@ -9,60 +10,43 @@ export const Sidbar = () => {
   const [openDireccion, setOpenDireccion] = useState(false);
   const [openDatosMedicos, setOpenDatosMedicos] = useState(false);
   const [openRecetas, setOpenRecetas] = useState(false);
+
   const rol = useAuthStore(
     (state) => state.profile.rol.nombre,
   ).toLocaleLowerCase();
+
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
   return (
     <nav className="mt-3">
       <ul className="flex flex-col gap-3">
         <li>
-          <NavLink
-            to="/panel"
-            className={({ isActive }) =>
-              `flex items-center gap-2 rounded-md py-1 pl-2  text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
-            }
+          <Button
+            startContent={<Icon icon="mdi:home" width={25} />}
+            fullWidth
+            onPress={() => navigate("/panel")}
+            className={`flex items-center justify-start pl-2 ${pathname.includes("/panel") ? "bg-white text-azulFuerte" : "bg-transparent text-white"}`}
+            radius="sm"
           >
-            <Icon icon="mdi:home" width={25} /> <span>Panel</span>
-          </NavLink>
+            <span>Panel</span>
+          </Button>
         </li>
         {/* Usuarios */}
         {rol === "administrador" && (
           <li>
-            <NavLink
-              to="/usuarios/tabla"
-              className="flex items-center gap-2 rounded-md py-1 pl-2 text-blanco"
+            <Button
+              fullWidth
+              onPress={() => navigate("/usuarios/tabla")}
+              className={`flex items-center justify-between bg-transparent px-2 text-white`}
+              radius="sm"
               onClick={() => setOpenUsuarios(!openUsuarios)}
             >
-              <div className="flex w-full items-center justify-between pr-1">
-                <div className="flex items-center gap-2">
-                  <Icon icon="mdi:user" width={25} />
-                  <span>Usuarios</span>
-                </div>
-                {openUsuarios ? (
-                  <Icon icon="mdi:keyboard-arrow-up" />
-                ) : (
-                  <Icon icon="mdi:keyboard-arrow-down" />
-                )}
-              </div>
-            </NavLink>
-
-            {/* <NavLink
-            to="/usuarios/tabla"
-            className="flex items-center gap-2 rounded-md py-1 pl-2 text-blanco"
-            onClick={() => setOpenUsuarios(!openUsuarios)}
-          >
-            <div className="flex w-full items-center justify-between pr-1">
               <div className="flex items-center gap-2">
-                <Icon icon="mdi:user" width={25} />
-                <span>Usuarios</span>
+                <Icon icon="mdi:user" width={25} /> Usuarios
               </div>
-              {openUsuarios ? (
-                <Icon icon="mdi:keyboard-arrow-up" />
-              ) : (
-                <Icon icon="mdi:keyboard-arrow-down" />
-              )}
-            </div>
-          </NavLink> */}
+              <Icon icon="mdi:keyboard-arrow-down" />
+            </Button>
 
             {openUsuarios && (
               <ul className="my-1 flex flex-col gap-1 pl-3">
