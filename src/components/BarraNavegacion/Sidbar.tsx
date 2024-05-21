@@ -37,7 +37,20 @@ export const Sidbar = () => {
           <li>
             <Button
               fullWidth
-              onPress={() => navigate("/usuarios/tabla")}
+              endContent={
+                openUsuarios ? (
+                  <Icon icon="mdi:keyboard-arrow-down" width={18} />
+                ) : (
+                  <Icon icon="mdi:keyboard-arrow-up" width={18} />
+                )
+              }
+              onPress={() =>
+                pathname.includes("/usuarios/tabla")
+                  ? navigate("/usuarios/tabla")
+                  : pathname.includes("/usuarios/rol")
+                    ? navigate("/usuarios/rol")
+                    : navigate("/usuarios/tabla")
+              }
               className={`flex items-center justify-between bg-transparent px-2 text-white`}
               radius="sm"
               onClick={() => setOpenUsuarios(!openUsuarios)}
@@ -45,31 +58,33 @@ export const Sidbar = () => {
               <div className="flex items-center gap-2">
                 <Icon icon="mdi:user" width={25} /> Usuarios
               </div>
-              <Icon icon="mdi:keyboard-arrow-down" />
             </Button>
 
             {openUsuarios && (
               <ul className="my-1 flex flex-col gap-1 pl-3">
                 <li>
-                  <NavLink
-                    to="/usuarios/tabla"
-                    className={({ isActive }) =>
-                      `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
-                    }
+                  <Button
+                    fullWidth
+                    onPress={() => navigate("/usuarios/tabla")}
+                    className={`flex items-center justify-between px-2 ${pathname.includes("/usuarios/tabla") ? "bg-white text-azulFuerte" : "bg-transparent text-white"}`}
+                    radius="sm"
                   >
-                    <Icon icon="mdi:user-group" width={25} />
-                    <span>Usuarios</span>
-                  </NavLink>
+                    <div className="flex items-center gap-2">
+                      <Icon icon="mdi:user" width={25} /> Usuarios
+                    </div>
+                  </Button>
                 </li>
                 <li>
-                  <NavLink
-                    to="/usuarios/rol"
-                    className={({ isActive }) =>
-                      `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
-                    }
+                  <Button
+                    fullWidth
+                    onPress={() => navigate("/usuarios/rol")}
+                    className={`flex items-center justify-between px-2 ${pathname.includes("/usuarios/rol") ? "bg-white text-azulFuerte" : "bg-transparent text-white"}`}
+                    radius="sm"
                   >
-                    <Icon icon="mdi:user" width={25} /> <span>Rol</span>
-                  </NavLink>
+                    <div className="flex items-center gap-2">
+                      <Icon icon="mdi:user" width={25} /> Roles
+                    </div>
+                  </Button>
                 </li>
               </ul>
             )}
@@ -78,65 +93,83 @@ export const Sidbar = () => {
 
         {/* PACIENTES */}
         <li>
-          <NavLink
-            to="/pacientes/tabla"
-            className="flex items-center gap-2 rounded-md py-1 pl-2 text-blanco"
+          <Button
+            fullWidth
+            endContent={
+              openPacientes ? (
+                <Icon icon="mdi:keyboard-arrow-down" width={18} />
+              ) : (
+                <Icon icon="mdi:keyboard-arrow-up" width={18} />
+              )
+            }
+            onPress={() =>
+              pathname.includes("pacientes/tabla")
+                ? navigate("/pacientes/tabla")
+                : pathname.includes("pacientes/profesion")
+                  ? navigate("/pacientes/profesion")
+                  : pathname.includes("pacientes/estado-civil")
+                    ? navigate("/pacientes/estado-civil")
+                    : pathname.includes("pacientes/genero")
+                      ? navigate("/pacientes/genero")
+                      : navigate("/pacientes/tabla")
+            }
+            className={`flex items-center justify-between bg-transparent px-2 text-white`}
+            radius="sm"
             onClick={() => setOpenPacientes(!openPacientes)}
           >
-            <div className="flex w-full items-center justify-between pr-1">
-              <div className="flex items-center gap-2">
-                <Icon icon="mdi:account" width={25} /> {/* Modified icon */}
-                <span>Pacientes</span>
-              </div>
-              {openPacientes ? (
-                <Icon icon="mdi:keyboard-arrow-up" />
-              ) : (
-                <Icon icon="mdi:keyboard-arrow-down" />
-              )}
+            <div className="flex items-center gap-2">
+              <Icon icon="mdi:user-group" width={25} /> Pacientes
             </div>
-          </NavLink>
+          </Button>
           {openPacientes && (
             <ul className="my-1 flex flex-col gap-1 pl-3">
               <li>
-                <NavLink
-                  to="/pacientes/tabla"
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
-                  }
+                <Button
+                  fullWidth
+                  onPress={() => navigate("/pacientes/tabla")}
+                  className={`flex items-center justify-between px-2 ${pathname.includes("/pacientes/tabla") ? "bg-white text-azulFuerte" : "bg-transparent text-white"}`}
+                  radius="sm"
                 >
-                  <Icon icon="mdi:user-group" width={25} />
-                  <span>Pacientes</span>
-                </NavLink>
+                  <div className="flex items-center gap-2">
+                    <Icon icon="mdi:user-group" width={25} /> Pacientes
+                  </div>
+                </Button>
               </li>
               <li>
-                <NavLink
-                  to="/pacientes/profesion"
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
-                  }
+                <Button
+                  fullWidth
+                  onPress={() => navigate("/pacientes/profesion")}
+                  className={`flex items-center justify-between px-2 ${pathname.includes("/pacientes/profesion") ? "bg-white text-azulFuerte" : "bg-transparent text-white"}`}
+                  radius="sm"
                 >
-                  <Icon icon="mdi:work" width={25} /> <span>Profesion</span>
-                </NavLink>
+                  <div className="flex items-center gap-2">
+                    <Icon icon="mdi:work" width={25} /> Profesiones
+                  </div>
+                </Button>
               </li>
               <li>
-                <NavLink
-                  to="/pacientes/estado-civil"
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
-                  }
+                <Button
+                  fullWidth
+                  onPress={() => navigate("/pacientes/estado-civil")}
+                  className={`flex items-center justify-between px-2 ${pathname.includes("/pacientes/estado-civil") ? "bg-white text-azulFuerte" : "bg-transparent text-white"}`}
+                  radius="sm"
                 >
-                  <Icon icon="mdi:heart" width={25} /> <span>Estado Civil</span>
-                </NavLink>
+                  <div className="flex items-center gap-2">
+                    <Icon icon="mdi:heart" width={25} /> Estado Civil
+                  </div>
+                </Button>
               </li>
               <li>
-                <NavLink
-                  to="/pacientes/genero"
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
-                  }
+                <Button
+                  fullWidth
+                  onPress={() => navigate("/pacientes/genero")}
+                  className={`flex items-center justify-between px-2 ${pathname.includes("/pacientes/genero") ? "bg-white text-azulFuerte" : "bg-transparent text-white"}`}
+                  radius="sm"
                 >
-                  <Icon icon="mdi:user" width={25} /> <span>Genero</span>
-                </NavLink>
+                  <div className="flex items-center gap-2">
+                    <Icon icon="mdi:user" width={25} /> Género
+                  </div>
+                </Button>
               </li>
             </ul>
           )}
@@ -144,57 +177,69 @@ export const Sidbar = () => {
 
         {/* Direcciones */}
         <li>
-          <NavLink
-            to="/direcciones/tabla"
-            className="flex items-center gap-2 rounded-md py-1 pl-2 text-blanco "
+          <Button
+            fullWidth
+            endContent={
+              openDireccion ? (
+                <Icon icon="mdi:keyboard-arrow-down" width={18} />
+              ) : (
+                <Icon icon="mdi:keyboard-arrow-up" width={18} />
+              )
+            }
+            onPress={() =>
+              pathname.includes("direcciones/tabla")
+                ? navigate("/direcciones/tabla")
+                : pathname.includes("direcciones/municipio")
+                  ? navigate("/direcciones/municipio")
+                  : pathname.includes("direcciones/departamento")
+                    ? navigate("/direcciones/departamento")
+                    : navigate("/direcciones/tabla")
+            }
+            className={`flex items-center justify-between bg-transparent px-2 text-white`}
+            radius="sm"
             onClick={() => setOpenDireccion(!openDireccion)}
           >
-            <div className="flex w-full items-center justify-between pr-1">
-              <div className="flex items-center gap-2">
-                <Icon icon="mdi:map-marker" width={25} />
-                <span>Direcciones</span>
-              </div>
-              {openDireccion ? (
-                <Icon icon="mdi:keyboard-arrow-up" />
-              ) : (
-                <Icon icon="mdi:keyboard-arrow-down" />
-              )}
+            <div className="flex items-center gap-2">
+              <Icon icon="mdi:map-marker" width={25} /> Direcciones
             </div>
-          </NavLink>
+          </Button>
           {openDireccion && (
             <ul className="my-1 flex flex-col gap-1 pl-3">
               <li>
-                <NavLink
-                  to="/direcciones/tabla"
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
-                  }
+                <Button
+                  fullWidth
+                  onPress={() => navigate("/direcciones/tabla")}
+                  className={`flex items-center justify-between px-2 ${pathname.includes("/direcciones/tabla") ? "bg-white text-azulFuerte" : "bg-transparent text-white"}`}
+                  radius="sm"
                 >
-                  <Icon icon="mdi:map-marker" width={25} />
-                  <span>Direcciones</span>
-                </NavLink>
+                  <div className="flex items-center gap-2">
+                    <Icon icon="mdi:map-marker" width={25} /> Direcciones
+                  </div>
+                </Button>
               </li>
               <li>
-                <NavLink
-                  to="/direcciones/municipio"
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
-                  }
+                <Button
+                  fullWidth
+                  onPress={() => navigate("/direcciones/municipio")}
+                  className={`flex items-center justify-between px-2 ${pathname.includes("/direcciones/municipio") ? "bg-white text-azulFuerte" : "bg-transparent text-white"}`}
+                  radius="sm"
                 >
-                  <Icon icon="mdi:map-marker" width={25} />{" "}
-                  <span>Municipio</span>
-                </NavLink>
+                  <div className="flex items-center gap-2">
+                    <Icon icon="mdi:map-marker" width={25} /> Municipios
+                  </div>
+                </Button>
               </li>
               <li>
-                <NavLink
-                  to="/direcciones/departamento"
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
-                  }
+                <Button
+                  fullWidth
+                  onPress={() => navigate("/direcciones/departamento")}
+                  className={`flex items-center justify-between px-2 ${pathname.includes("/direcciones/departamento") ? "bg-white text-azulFuerte" : "bg-transparent text-white"}`}
+                  radius="sm"
                 >
-                  <Icon icon="mdi:map-marker" width={25} />
-                  <span>Departamento</span>
-                </NavLink>
+                  <div className="flex items-center gap-2">
+                    <Icon icon="mdi:map-marker" width={25} /> Departamentos
+                  </div>
+                </Button>
               </li>
             </ul>
           )}
@@ -202,46 +247,56 @@ export const Sidbar = () => {
 
         {/* Datos medicos */}
         <li>
-          <NavLink
-            to="/datos-medicos/tabla"
-            className="flex items-center gap-2 rounded-md py-1 pl-2 text-blanco "
+          <Button
+            fullWidth
+            endContent={
+              openDatosMedicos ? (
+                <Icon icon="mdi:keyboard-arrow-down" width={18} />
+              ) : (
+                <Icon icon="mdi:keyboard-arrow-up" width={18} />
+              )
+            }
+            onPress={() =>
+              pathname.includes("datos-medicos/tabla")
+                ? navigate("/datos-medicos/tabla")
+                : pathname.includes("datos-medicos/paciente")
+                  ? navigate("/datos-medicos/paciente")
+                  : navigate("/datos-medicos/tabla")
+            }
+            className={`flex items-center justify-between bg-transparent px-2 text-white`}
+            radius="sm"
             onClick={() => setOpenDatosMedicos(!openDatosMedicos)}
           >
-            <div className="flex w-full items-center justify-between pr-1">
-              <div className="flex items-center gap-2">
-                <Icon icon="mdi:file-document" width={25} />
-                <span>Datos Médicos</span>
-              </div>
-              {openDatosMedicos ? (
-                <Icon icon="mdi:keyboard-arrow-up" />
-              ) : (
-                <Icon icon="mdi:keyboard-arrow-down" />
-              )}
+            <div className="flex items-center gap-2">
+              <Icon icon="mdi:file-document" width={25} /> Datos Médicos
             </div>
-          </NavLink>
+          </Button>
+
           {openDatosMedicos && (
             <ul className="my-1 flex flex-col gap-1 pl-3">
               <li>
-                <NavLink
-                  to="/datos-medicos/tabla"
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
-                  }
+                <Button
+                  fullWidth
+                  onPress={() => navigate("/datos-medicos/tabla")}
+                  className={`flex items-center justify-between px-2 ${pathname.includes("/datos-medicos/tabla") ? "bg-white text-azulFuerte" : "bg-transparent text-white"}`}
+                  radius="sm"
                 >
-                  <Icon icon="mdi:file-document" width={25} />
-                  <span>Datos Médicos</span>
-                </NavLink>
+                  <div className="flex items-center gap-2">
+                    <Icon icon="mdi:file-document" width={25} /> Datos Médicos
+                  </div>
+                </Button>
               </li>
               <li>
-                <NavLink
-                  to="/datos-medicos/paciente"
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
-                  }
+                <Button
+                  fullWidth
+                  onPress={() => navigate("/datos-medicos/paciente")}
+                  className={`flex items-center justify-between px-2 ${pathname.includes("/datos-medicos/paciente") ? "bg-white text-azulFuerte" : "bg-transparent text-white"}`}
+                  radius="sm"
                 >
-                  <Icon icon="mdi:file-document" width={25} />{" "}
-                  <span>Pacientes</span>
-                </NavLink>
+                  <div className="flex items-center gap-2">
+                    <Icon icon="mdi:file-document" width={25} /> Pacientes
+                  </div>
+                </Button>
               </li>
             </ul>
           )}
@@ -249,46 +304,56 @@ export const Sidbar = () => {
 
         {/* Recetas medicas */}
         <li>
-          <NavLink
-            to="/recetas-medicas/tabla"
-            className="flex items-center gap-2 rounded-md py-1 pl-2 text-blanco "
+          <Button
+            fullWidth
+            endContent={
+              openRecetas ? (
+                <Icon icon="mdi:keyboard-arrow-down" width={18} />
+              ) : (
+                <Icon icon="mdi:keyboard-arrow-up" width={18} />
+              )
+            }
+            onPress={() =>
+              pathname.includes("recetas-medicas/tabla")
+                ? navigate("/recetas-medicas/tabla")
+                : pathname.includes("recetas-medicas/paciente")
+                  ? navigate("/recetas-medicas/paciente")
+                  : navigate("/recetas-medicas/tabla")
+            }
+            className={`flex items-center justify-between bg-transparent px-2 text-white`}
+            radius="sm"
             onClick={() => setOpenRecetas(!openRecetas)}
           >
-            <div className="flex w-full items-center justify-between pr-1">
-              <div className="flex items-center gap-2">
-                <Icon icon="mdi:file-document" width={25} />
-                <span>Recetas Médicas</span>
-              </div>
-              {openRecetas ? (
-                <Icon icon="mdi:keyboard-arrow-up" />
-              ) : (
-                <Icon icon="mdi:keyboard-arrow-down" />
-              )}
+            <div className="flex items-center gap-2">
+              <Icon icon="mdi:file-document" width={25} /> Recetas Médicas
             </div>
-          </NavLink>
+          </Button>
+
           {openRecetas && (
             <ul className="my-1 flex flex-col gap-1 pl-3">
               <li>
-                <NavLink
-                  to="/recetas-medicas/tabla"
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
-                  }
+                <Button
+                  fullWidth
+                  onPress={() => navigate("/recetas-medicas/tabla")}
+                  className={`flex items-center justify-between px-2 ${pathname.includes("/recetas-medicas/tabla") ? "bg-white text-azulFuerte" : "bg-transparent text-white"}`}
+                  radius="sm"
                 >
-                  <Icon icon="mdi:file-document" width={25} />
-                  <span>Recetas Médicas</span>
-                </NavLink>
+                  <div className="flex items-center gap-2">
+                    <Icon icon="mdi:file-document" width={25} /> Recetas Médicas
+                  </div>
+                </Button>
               </li>
               <li>
-                <NavLink
-                  to="/recetas-medicas/paciente"
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 rounded-md py-1 pl-2 text-azulFuerte ${isActive ? "bg-blanco" : "text-blanco"}`
-                  }
+                <Button
+                  fullWidth
+                  onPress={() => navigate("/recetas-medicas/paciente")}
+                  className={`flex items-center justify-between px-2 ${pathname.includes("/recetas-medicas/paciente") ? "bg-white text-azulFuerte" : "bg-transparent text-white"}`}
+                  radius="sm"
                 >
-                  <Icon icon="mdi:file-document" width={25} />{" "}
-                  <span>Pacientes</span>
-                </NavLink>
+                  <div className="flex items-center gap-2">
+                    <Icon icon="mdi:file-document" width={25} /> Pacientes
+                  </div>
+                </Button>
               </li>
             </ul>
           )}
