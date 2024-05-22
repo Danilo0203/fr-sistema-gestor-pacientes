@@ -43,19 +43,19 @@ export const Layout = memo(() => {
       try {
         await init();
         await initUsuarios();
-        await initCitas();
+        await initRoles();
         await initPacientes();
         await initGeneros();
         await initProfesion();
         await initDirecciones();
         await initMunicipios();
         await initDepto();
+        await initCitas();
         await initDatoMedicos();
         await initDatosMedicosPacientes();
         await initRecetas();
         await initRecetasPacientes();
         await initEstadoCivil();
-        await initRoles();
       } catch (error) {
         console.error("Error al cargar los datos: ", error);
       }

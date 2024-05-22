@@ -74,12 +74,12 @@ const routes = createBrowserRouter([
               {
                 path: "rol",
                 element: <TablaRoles />,
-                children: [
-                  {
-                    path: "editar/:id",
-                    element: <ModalEditarRoles />,
-                  },
-                ],
+                // children: [
+                //   {
+                //     path: "editar/:id",
+                //     element: <ModalEditarRoles />,
+                //   },
+                // ],
               },
             ],
           },
@@ -100,32 +100,32 @@ const routes = createBrowserRouter([
               {
                 path: "profesion",
                 element: <TablaProfesiones />,
-                children: [
-                  {
-                    path: "editar/:id",
-                    element: <ModalEditarProfesion />,
-                  },
-                ],
+                // children: [
+                //   {
+                //     path: "editar/:id",
+                //     element: <ModalEditarProfesion />,
+                //   },
+                // ],
               },
               {
                 path: "estado-civil",
                 element: <TablaEstadoCiviles />,
-                children: [
-                  {
-                    path: "editar/:id",
-                    element: <ModalEditarEstadoCivil />,
-                  },
-                ],
+                // children: [
+                //   {
+                //     path: "editar/:id",
+                //     element: <ModalEditarEstadoCivil />,
+                //   },
+                // ],
               },
               {
                 path: "genero",
                 element: <TablaGeneros />,
-                children: [
-                  {
-                    path: "editar/:id",
-                    element: <ModalEditarGenero />,
-                  },
-                ],
+                // children: [
+                //   {
+                //     path: "editar/:id",
+                //     element: <ModalEditarGenero />,
+                //   },
+                // ],
               },
             ],
           },
@@ -137,34 +137,34 @@ const routes = createBrowserRouter([
               {
                 path: "tabla",
                 element: <TablaDirecciones />,
-                children: [
-                  {
-                    path: "editar/:id",
-                    element: <ModalEditarDireccion />,
-                  },
-                ],
+                // children: [
+                //   {
+                //     path: "editar/:id",
+                //     element: <ModalEditarDireccion />,
+                //   },
+                // ],
               },
 
               {
                 path: "municipio",
                 element: <TablaMunicipios />,
-                children: [
-                  {
-                    path: "editar/:id",
-                    element: <ModalEditarMunicipio />,
-                  },
-                ],
+                // children: [
+                //   {
+                //     path: "editar/:id",
+                //     element: <ModalEditarMunicipio />,
+                //   },
+                // ],
               },
 
               {
                 path: "departamento",
                 element: <TablaDepartamentos />,
-                children: [
-                  {
-                    path: "editar/:id",
-                    element: <ModalEditarDepartamento />,
-                  },
-                ],
+                // children: [
+                //   {
+                //     path: "editar/:id",
+                //     element: <ModalEditarDepartamento />,
+                //   },
+                // ],
               },
             ],
           },
@@ -176,12 +176,12 @@ const routes = createBrowserRouter([
               {
                 path: "tabla",
                 element: <TablaDatosMedicos />,
-                children: [
-                  {
-                    path: "editar/:id",
-                    element: <ModalEditarDatoMedico />,
-                  },
-                ],
+                // children: [
+                //   {
+                //     path: "editar/:id",
+                //     element: <ModalEditarDatoMedico />,
+                //   },
+                // ],
               },
             ],
           },
@@ -193,12 +193,12 @@ const routes = createBrowserRouter([
               {
                 path: "tabla",
                 element: <TablaRecetas />,
-                children: [
-                  {
-                    path: "editar/:id",
-                    element: <ModalEditarReceta />,
-                  },
-                ],
+                // children: [
+                //   {
+                //     path: "editar/:id",
+                //     element: <ModalEditarReceta />,
+                //   },
+                // ],
               },
             ],
           },

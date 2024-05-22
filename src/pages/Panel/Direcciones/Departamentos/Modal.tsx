@@ -13,9 +13,9 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDepartamentoStore } from "../../../../store/direcciones/departamentos";
 import {
   updateDepartamento,
@@ -31,34 +31,31 @@ export const ModalEditarDepartamento = ({
 }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const departamentos = useDepartamentoStore((state) => state.data);
+  const [editDepto, setEditDepto] = useState(null);
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const params = useParams();
 
   const handleEdit = () => {
-    navigate(`/direcciones/departamento/editar/${idDepartamento}`);
-  };
-
-  const { id } = params;
-
-  const departamentoID: DepartamentoData = getUsuarioById(id, departamentos)[0];
-
-  useEffect(() => {
+    const [departamentoID] = getUsuarioById(idDepartamento, departamentos);
+    const datosDepartamento = {
+      id: idDepartamento,
+      nombre: departamentoID.nombre,
+    };
+    setEditDepto(datosDepartamento);
     setValue("nombre", departamentoID.nombre);
-  }, [departamentoID.nombre, setValue]);
+  };
 
   const handleClose = () => {
     navigate("/direcciones/departamento");
   };
 
   const actualizar = async (data: DepartamentoData) => {
-    await updateDepartamento(departamentoID.id, data);
+    await updateDepartamento(editDepto.id, data);
     updateTable();
   };
 
   const onSubmit = (data: DepartamentoData) => {
     actualizar(data);
-    navigate("/direcciones/departamento");
   };
 
   return (

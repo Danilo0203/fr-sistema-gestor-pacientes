@@ -15,7 +15,7 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMunicipioStore } from "../../../../store/direcciones/municipios";
@@ -35,41 +35,34 @@ export const ModalEditarMunicipio = ({
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const municipios = useMunicipioStore((state) => state.data);
   const departamentos = useDepartamentoStore((state) => state.data);
-  // const getDepartamentos = useDepartamentoStore((state) => state.execute);
-
+  const [editMunicipio, setEditMunicipio] = useState(null);
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const params = useParams();
-
-  // useEffect(() => {
-  //   getDepartamentos();
-  // }, [getDepartamentos]);
 
   const handleEdit = () => {
-    navigate(`/direcciones/municipio/editar/${idMunicipio}`);
-  };
-
-  const { id } = params;
-
-  const municipioID: MunicipioData = getUsuarioById(id, municipios)[0];
-
-  useEffect(() => {
-    setValue("nombre", municipioID.nombre);
+    const [municipioID] = getUsuarioById(idMunicipio, municipios);
+    const datosMunicipio = {
+      id: idMunicipio,
+      nombre: municipioID.nombre,
+      departamentoID: municipioID.departamentoID,
+      departamento: municipioID.departamento,
+    };
+    setEditMunicipio(datosMunicipio);
     setValue("departamento", municipioID.departamento);
-  }, [municipioID.nombre, municipioID.departamento, setValue]);
+    setValue("nombre", municipioID.nombre);
+  };
 
   const handleClose = () => {
     navigate("/direcciones/municipio");
   };
 
   const actualizar = async (data: MunicipioData) => {
-    await updateMunicipio(municipioID.id, data);
+    await updateMunicipio(editMunicipio.id, data);
     updateTable();
   };
 
   const onSubmit = (data: MunicipioData) => {
     actualizar(data);
-    navigate("/direcciones/municipio");
   };
 
   return (
@@ -121,7 +114,7 @@ export const ModalEditarMunicipio = ({
                           aria-label="Departamento"
                           items={departamentos}
                           placeholder="Seleccione un departamento"
-                          defaultSelectedKeys={[municipioID.departamentoID]}
+                          defaultSelectedKeys={[editMunicipio.departamentoID]}
                           size="lg"
                           {...register("departamento_id")}
                         >

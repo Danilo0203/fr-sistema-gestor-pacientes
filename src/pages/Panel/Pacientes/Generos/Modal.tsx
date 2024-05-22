@@ -13,9 +13,9 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useGeneroStore } from "../../../../store/pacientes/generos";
 import {
   updateGenero,
@@ -28,35 +28,31 @@ import { ModalProps, GeneroData } from "types/index";
 export const ModalEditarGenero = ({ idGenero, updateTable }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const generos = useGeneroStore((state) => state.data);
+  const [editGenero, setEditGenero] = useState(null);
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
 
-  const params = useParams();
-
   const handleEdit = () => {
-    navigate(`/pacientes/genero/editar/${idGenero}`);
-  };
-
-  const { id } = params;
-
-  const generoID: GeneroData = getUsuarioById(id, generos)[0];
-
-  useEffect(() => {
+    const [generoID] = getUsuarioById(idGenero, generos);
+    const datosGenero = {
+      id: idGenero,
+      nombre: generoID.nombre,
+    };
+    setEditGenero(datosGenero);
     setValue("nombre", generoID.nombre);
-  }, [generoID.nombre, setValue]);
+  };
 
   const handleClose = () => {
     navigate("/pacientes/genero");
   };
 
   const actualizar = async (data: GeneroData) => {
-    await updateGenero(generoID.id, data);
+    await updateGenero(editGenero.id, data);
     updateTable();
   };
 
   const onSubmit = (data: GeneroData) => {
     actualizar(data);
-    navigate("/pacientes/genero");
   };
 
   return (

@@ -15,9 +15,9 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useRecetasStore } from "../../../../store/recetas/recetas";
 import {
   updateRecetaMedica,
@@ -31,40 +31,34 @@ export const ModalEditarReceta = ({ idReceta, updateTable }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const recetas = useRecetasStore((state) => state.data);
   const usuarios = useUsuarioStore((state) => state.data);
-  const getUsuarios = useUsuarioStore((state) => state.execute);
+  const [editRecetas, setEditRecetas] = useState(null);
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const params = useParams();
-
-  useEffect(() => {
-    getUsuarios();
-  }, [getUsuarios]);
 
   const handleEdit = () => {
-    navigate(`/recetas-medicas/tabla/editar/${idReceta}`);
-  };
-
-  const { id } = params;
-
-  const recetaMedicaID: RecetasData = getUsuarioById(id, recetas)[0];
-
-  useEffect(() => {
-    setValue("fecha", recetaMedicaID.fecha);
+    const [recetaMedicaID] = getUsuarioById(idReceta, recetas);
+    const datosReceta = {
+      id: idReceta,
+      usuarioID: recetaMedicaID.usuarioID,
+      usuario: recetaMedicaID.usuario,
+      fecha: recetaMedicaID.fecha,
+    };
+    setEditRecetas(datosReceta);
     setValue("usuario", recetaMedicaID.usuario);
-  }, [recetaMedicaID.fecha, recetaMedicaID.usuario, setValue]);
+    setValue("fecha", recetaMedicaID.fecha);
+    console.log(editRecetas);
+  };
 
   const handleClose = () => {
     navigate("/recetas-medicas/tabla");
   };
-
   const actualizar = async (data: RecetasData) => {
-    await updateRecetaMedica(recetaMedicaID.id, data);
+    await updateRecetaMedica(editRecetas.id, data);
     updateTable();
   };
 
   const onSubmit = (data: RecetasData) => {
     actualizar(data);
-    navigate("/recetas-medicas/tabla");
   };
 
   return (
@@ -84,13 +78,9 @@ export const ModalEditarReceta = ({ idReceta, updateTable }: ModalProps) => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         isDismissable={false}
-        classNames={{ backdrop: "bg-black/10 blur-[1px]" }}
-        size="2xl"
+        placement="top-center"
       >
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mt-4 flex flex-col gap-8"
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
             {(onClose) => (
               <>
@@ -118,9 +108,10 @@ export const ModalEditarReceta = ({ idReceta, updateTable }: ModalProps) => {
                       <div className="flex w-1/2 flex-col gap-1">
                         <Label id="user_id">Usuario</Label>
                         <Select
+                          aria-label="Usuario"
                           items={usuarios}
                           placeholder="Seleccione un usuario"
-                          defaultSelectedKeys={[recetaMedicaID.usuarioID]}
+                          defaultSelectedKeys={[editRecetas.usuarioID]}
                           size="lg"
                           {...register("user_id")}
                         >

@@ -179,7 +179,7 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
                           />
                         </Input>
                         {
-                          <span className="text-sm italic text-red-600">
+                          <span className="text-xs font-medium italic text-red-600">
                             {errors.password_confirm?.message}
                           </span>
                         }
@@ -314,7 +314,6 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
     onClose();
     reset();
   };
-  console.log(errors);
   return (
     <>
       <Button
@@ -361,7 +360,7 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                         />
                       </Input>
                       {errors.usuario?.type === "required" && (
-                        <span className="text-sm italic text-red-600">
+                        <span className="text-xs font-medium italic text-red-600">
                           El usuario es requerido
                         </span>
                       )}
@@ -382,7 +381,7 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                         />
                       </Input>
                       {errors.nombre?.type === "required" && (
-                        <span className="text-sm italic text-red-600">
+                        <span className="text-xs font-medium italic text-red-600">
                           El nombre es requerido
                         </span>
                       )}
@@ -404,7 +403,7 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                       />
                     </Input>
                     {errors.email?.type === "required" && (
-                      <span className="text-sm italic text-red-600">
+                      <span className="text-xs font-medium italic text-red-600">
                         El correo es requerido
                       </span>
                     )}
@@ -418,8 +417,7 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                         {...register("password", {
                           minLength: {
                             value: 8,
-                            message:
-                              "La contraseña debe tener al menos 8 caracteres",
+                            message: "Debe contener al menos 8 caracteres",
                           },
                           required: {
                             value: true,
@@ -433,11 +431,11 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                           className="text-azulFuerte"
                         />
                       </Input>
-                      {errors.password?.type === "required" && (
-                        <span className="text-sm italic text-red-600">
+                      {
+                        <span className="text-xs font-medium italic text-red-600">
                           {errors.password?.message}
                         </span>
-                      )}
+                      }
                     </div>
                     <div className="flex flex-col gap-1">
                       <Label id="confirm_password">Confirmar Contraseña</Label>
@@ -465,7 +463,7 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                         />
                       </Input>
                       {
-                        <span className="text-sm italic text-red-600">
+                        <span className="text-xs font-medium italic text-red-600">
                           {errors.confirm_password?.message}
                         </span>
                       }
@@ -488,7 +486,7 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                       )}
                     </Select>
                     {errors.rol_id?.type === "required" && (
-                      <span className="text-sm italic text-red-600">
+                      <span className="text-xs font-medium italic text-red-600">
                         El rol es requerido
                       </span>
                     )}

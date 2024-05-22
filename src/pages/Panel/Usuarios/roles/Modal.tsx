@@ -13,47 +13,51 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+
 import { useForm } from "react-hook-form";
 import { useRolStore } from "../../../../store/usuarios/roles";
 
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, RolData } from "types/index";
 import { createRol, deleteRol, updateRol } from "helpers/api/usuarios/roles";
+import { useState } from "react";
 
 export const ModalEditarRoles = ({ idRol, updateTable }: ModalProps) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const roles = useRolStore((state) => state.data);
-  const { setValue, register, handleSubmit } = useForm();
-  const navigate = useNavigate();
-  const params = useParams();
+  const [editRol, setEditRol] = useState(null);
+  const {
+    setValue,
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const handleEdit = () => {
-    navigate(`/usuarios/rol/editar/${idRol}`);
+    const [rolID] = getUsuarioById(idRol, roles);
+    const datosRol = {
+      id: idRol,
+      nombre: rolID.nombre,
+      descripcion: rolID.descripcion,
+    };
+    setEditRol(datosRol);
+    setValue("descripcion", rolID.descripcion);
+    setValue("nombre", rolID.nombre);
   };
 
-  const { id } = params;
-
-  const rolID: RolData = getUsuarioById(id, roles)[0];
-
-  useEffect(() => {
-    setValue("nombre", rolID.nombre);
-    setValue("descripcion", rolID.descripcion);
-  }, [rolID.nombre, rolID.descripcion]);
-
   const handleClose = () => {
-    navigate("/usuarios/rol");
+    reset();
   };
 
   const actualizar = async (data: RolData) => {
-    await updateRol(rolID.id, data);
+    await updateRol(editRol.id, data);
     updateTable();
   };
 
   const onSubmit = (data: RolData) => {
     actualizar(data);
-    navigate("/usuarios/rol");
+    onClose();
   };
 
   return (
@@ -74,6 +78,7 @@ export const ModalEditarRoles = ({ idRol, updateTable }: ModalProps) => {
         onOpenChange={onOpenChange}
         isDismissable={false}
         size="2xl"
+        onClose={handleClose}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
@@ -87,20 +92,14 @@ export const ModalEditarRoles = ({ idRol, updateTable }: ModalProps) => {
                   <div className="flex flex-col gap-8">
                     <div className="flex flex-col gap-1">
                       <Label id="nombre">Rol</Label>
-                      <Input placeholder="Editar Rol" {...register("nombre")}>
-                        <Icon
-                          icon="mdi:account"
-                          width={20}
-                          className="text-azulFuerte"
-                        />
-                      </Input>
-                    </div>
-
-                    <div className="flex flex-col gap-1">
-                      <Label id="email">Descripción</Label>
                       <Input
-                        placeholder="Editar descripción"
-                        {...register("descripcion")}
+                        placeholder="Editar Rol"
+                        {...register("nombre", {
+                          required: {
+                            value: true,
+                            message: "Este campo es requerido",
+                          },
+                        })}
                       >
                         <Icon
                           icon="mdi:account"
@@ -108,6 +107,34 @@ export const ModalEditarRoles = ({ idRol, updateTable }: ModalProps) => {
                           className="text-azulFuerte"
                         />
                       </Input>
+                      {
+                        <span className="text-xs font-medium italic text-red-600">
+                          {errors.nombre?.message}
+                        </span>
+                      }
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <Label id="email">Descripción</Label>
+                      <Input
+                        placeholder="Editar descripción"
+                        {...register("descripcion", {
+                          required: {
+                            value: true,
+                            message: "Este campo es requerido",
+                          },
+                        })}
+                      >
+                        <Icon
+                          icon="mdi:account"
+                          width={20}
+                          className="text-azulFuerte"
+                        />
+                      </Input>
+                      {
+                        <span className="text-xs font-medium italic text-red-600">
+                          {errors.descripcion?.message}
+                        </span>
+                      }
                     </div>
                   </div>
                 </ModalBody>
@@ -120,7 +147,7 @@ export const ModalEditarRoles = ({ idRol, updateTable }: ModalProps) => {
                   >
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
+                  <Button color="primary" type="submit">
                     Editar
                   </Button>
                 </ModalFooter>
@@ -200,9 +227,14 @@ export const ModalEliminarRoles = ({ idRol, updateTable }: ModalProps) => {
 };
 
 export const ModalAgregarRoles = ({ updateTable }: ModalProps) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const agregarRol = async (data) => {
     await createRol(data);
@@ -210,6 +242,12 @@ export const ModalAgregarRoles = ({ updateTable }: ModalProps) => {
   };
   const onSubmit = (data) => {
     agregarRol(data);
+    onClose();
+    reset();
+  };
+  const handleClose = () => {
+    onClose();
+    reset();
   };
   return (
     <>
@@ -225,35 +263,72 @@ export const ModalAgregarRoles = ({ updateTable }: ModalProps) => {
         onOpenChange={onOpenChange}
         isDismissable={false}
         placement="top-center"
+        onClose={handleClose}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
-            {(onClose) => (
+            {() => (
               <>
                 <ModalHeader className="flex flex-col gap-1">
                   Agregar Rol
                 </ModalHeader>
                 <Divider />
-                <ModalBody className="mt-4">
-                  <Label>Rol</Label>
-                  <Input
-                    autoFocus
-                    placeholder="Ingrese el rol"
-                    type="text"
-                    {...register("nombre")}
-                  />
-                  <Label>Descripcion</Label>
-                  <Input
-                    placeholder="Ingrese la descripcion"
-                    type="text"
-                    {...register("descripcion")}
-                  />
+                <ModalBody className="mt-4 flex flex-col gap-8">
+                  <div className="flex flex-col gap-1">
+                    <Label>Rol</Label>
+                    <Input
+                      autoFocus
+                      placeholder="Ingrese el rol"
+                      type="text"
+                      {...register("nombre", {
+                        required: {
+                          value: true,
+                          message: "Este campo es requerido",
+                        },
+                      })}
+                    >
+                      <Icon
+                        icon="mdi:account"
+                        width={20}
+                        className="text-azulFuerte"
+                      />
+                    </Input>
+                    {
+                      <span className="text-xs font-medium italic text-red-600">
+                        {errors.nombre?.message}
+                      </span>
+                    }
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <Label>Descripcion</Label>
+                    <Input
+                      placeholder="Ingrese una descripción"
+                      type="text"
+                      {...register("descripcion", {
+                        required: {
+                          value: true,
+                          message: "Este campo es requerido",
+                        },
+                      })}
+                    >
+                      <Icon
+                        icon="mdi:card-text"
+                        width={20}
+                        className="text-azulFuerte"
+                      />
+                    </Input>
+                    {
+                      <span className="text-xs font-medium italic text-red-600">
+                        {errors.descripcion?.message}
+                      </span>
+                    }
+                  </div>
                 </ModalBody>
                 <ModalFooter>
-                  <Button color="danger" variant="flat" onPress={onClose}>
+                  <Button color="danger" variant="light" onPress={handleClose}>
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
+                  <Button color="primary" type="submit">
                     Agregar
                   </Button>
                 </ModalFooter>

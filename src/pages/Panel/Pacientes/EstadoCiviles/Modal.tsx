@@ -13,7 +13,7 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEstadoCivilStore } from "../../../../store/pacientes/estadoCivil";
@@ -31,34 +31,31 @@ export const ModalEditarEstadoCivil = ({
 }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const estadoCiviles = useEstadoCivilStore((state) => state.data);
+  const [editEstadoCivil, setEditEstadoCivil] = useState(null);
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const params = useParams();
 
   const handleEdit = () => {
-    navigate(`/pacientes/estado-civil/editar/${idEstadoCivil}`);
-  };
-
-  const { id } = params;
-
-  const estadoCivilID: EstadoCivilData = getUsuarioById(id, estadoCiviles)[0];
-
-  useEffect(() => {
+    const [estadoCivilID] = getUsuarioById(idEstadoCivil, estadoCiviles);
+    const datosEstadoCivil = {
+      id: idEstadoCivil,
+      nombre: estadoCivilID.nombre,
+    };
+    setEditEstadoCivil(datosEstadoCivil);
     setValue("nombre", estadoCivilID.nombre);
-  }, [estadoCivilID.nombre, setValue]);
+  };
 
   const handleClose = () => {
     navigate("/pacientes/estado-civil");
   };
 
   const actualizar = async (data: EstadoCivilData) => {
-    await updateEstadoCivil(estadoCivilID.id, data);
+    await updateEstadoCivil(editEstadoCivil.id, data);
     updateTable();
   };
 
   const onSubmit = (data: EstadoCivilData) => {
     actualizar(data);
-    navigate("/pacientes/estado-civil");
   };
 
   return (

@@ -56,7 +56,11 @@ export const TablaMunicipios = () => {
   const renderCell = useCallback(
     (municipio: Municipio, columnKey: Column) => {
       const cellValue = municipio[columnKey];
+      const id = municipios.findIndex((u) => u.id === municipio.id) + 1;
+
       switch (columnKey) {
+        case "id":
+          return <p>{id}</p>;
         case "nombre":
           return <p>{municipio.nombre}</p>;
         case "departamento":
