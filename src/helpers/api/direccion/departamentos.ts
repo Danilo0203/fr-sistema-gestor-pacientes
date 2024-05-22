@@ -1,4 +1,5 @@
 import api from "../../libs/axios";
+import { toast } from "sonner";
 
 // PETICIONES DE LOS DEPARTAMENTOS
 
@@ -26,9 +27,18 @@ export const getDepartamento = async (id: string) => {
 export const createDepartamento = async (req: unknown) => {
   try {
     const departamento = await api.post(`/departamentos`, req);
+
+    toast.success(
+      `Departamento: ${departamento.data.data.nombre}, registrado correctamente`,
+    );
     return departamento.data;
-  } catch (error) {
-    console.error("Error al crear el departamento: ", error);
+  } catch (error: any) {
+    if (error.response.data?.errors) {
+      if (error.response.data.errors?.nombre)
+        toast.warning(error.response.data.errors.nombre[0]);
+    } else {
+      toast.error("Error al crear el departamento");
+    }
   }
 };
 
@@ -36,9 +46,18 @@ export const createDepartamento = async (req: unknown) => {
 export const updateDepartamento = async (id: string, req: unknown) => {
   try {
     const departamento = await api.patch(`/departamentos/${id}`, req);
+
+    toast.success(
+      `Departamento: ${departamento.data.data.nombre}, actualizado correctamente`,
+    );
     return departamento.data;
-  } catch (error) {
-    console.error("Error al actualizar el departamento: ", error);
+  } catch (error: any) {
+    if (error.response.data?.errors) {
+      if (error.response.data.errors?.nombre)
+        toast.warning(error.response.data.errors.nombre[0]);
+    } else {
+      toast.error("Error al actualizar el departamento");
+    }
   }
 };
 
@@ -46,8 +65,16 @@ export const updateDepartamento = async (id: string, req: unknown) => {
 export const deleteDepartamento = async (id: string) => {
   try {
     const departamento = await api.delete(`/departamentos/${id}`);
+
+    toast.success(
+      `Departamento: ${departamento.data.data.nombre}, eliminado correctamente`,
+    );
     return departamento.data;
-  } catch (error) {
-    console.error("Error al eliminar el departamento: ", error);
+  } catch (error: any) {
+    if (error.response.data?.error)
+      toast.warning(
+        "No se puede eliminar el departamento, tiene registros asociados",
+      );
+    else toast.error("Error al eliminar el departamento");
   }
 };

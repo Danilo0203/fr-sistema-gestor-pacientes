@@ -1,4 +1,5 @@
 import api from "../../libs/axios";
+import { toast } from "sonner";
 
 // PETICIONES DE LOS DATOS MEDICOS
 
@@ -26,9 +27,18 @@ export const getDatoMedico = async (id: string) => {
 export const createDatoMedico = async (req: unknown) => {
   try {
     const datoMedico = await api.post(`/datos-medicos`, req);
+
+    toast.success(
+      `Dato médico: ${datoMedico.data.data.nombre}, registrado correctamente`,
+    );
     return datoMedico.data;
-  } catch (error) {
-    console.error("Error al crear el dato medico: ", error);
+  } catch (error: any) {
+    if (error.response.data?.errors) {
+      if (error.response.data.errors?.nombre)
+        toast.warning(error.response.data.errors.nombre[0]);
+    } else {
+      toast.error("Error al crear el dato médico");
+    }
   }
 };
 
@@ -36,9 +46,18 @@ export const createDatoMedico = async (req: unknown) => {
 export const updateDatoMedico = async (id: string, req: unknown) => {
   try {
     const datoMedico = await api.patch(`/datos-medicos/${id}`, req);
+
+    toast.success(
+      `Dato médico: ${datoMedico.data.data.nombre}, actualizado correctamente`,
+    );
     return datoMedico.data;
-  } catch (error) {
-    console.error("Error al actualizar el dato medico: ", error);
+  } catch (error: any) {
+    if (error.response.data?.errors) {
+      if (error.response.data.errors?.nombre)
+        toast.warning(error.response.data.errors.nombre[0]);
+    } else {
+      toast.error("Error al actualizar el dato médico");
+    }
   }
 };
 
@@ -46,8 +65,16 @@ export const updateDatoMedico = async (id: string, req: unknown) => {
 export const deleteDatoMedico = async (id: string) => {
   try {
     const datoMedico = await api.delete(`/datos-medicos/${id}`);
+
+    toast.success(
+      `Dato médico: ${datoMedico.data.data.nombre}, eliminado correctamente`,
+    );
     return datoMedico.data;
-  } catch (error) {
-    console.error("Error al eliminar el dato medico: ", error);
+  } catch (error: any) {
+    if (error.response.data?.error)
+      toast.warning(
+        "No se puede eliminar este dato médico, contiene información importante",
+      );
+    else toast.error("Error al eliminar el dato médico");
   }
 };

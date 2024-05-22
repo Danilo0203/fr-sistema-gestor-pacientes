@@ -1,5 +1,5 @@
-import { toast } from "sonner";
 import api from "../libs/axios";
+import { toast } from "sonner";
 
 // PETICIONES DE AUTENTICACIÓN
 
@@ -36,22 +36,29 @@ export const logout = async () => {
 export const registerUser = async (req: unknown) => {
   try {
     const register = await api.post("/auth/register", req);
-    toast.success(`Usuario registrado correctamente`);
+
+    toast.success(
+      `Usuario: ${register.data.data.nombre}, registrado correctamente`,
+    );
     return register.data;
-  } catch (error) {
+  } catch (error: any) {
     if (error.response.data?.errors) {
-      if (error.response.data.errors?.usuario) {
-        toast.error(error.response.data.errors.usuario[0]);
-      }
-      if (error.response.data.errors?.password) {
-        toast.error(error.response.data.errors.password[0]);
-      }
-      if (error.response.data.errors?.email) {
-        toast.error(error.response.data.errors.email[0]);
-      }
+      if (error.response.data.errors?.nombre)
+        toast.warning(error.response.data.errors.nombre[0]);
+
+      if (error.response.data.errors?.usuario)
+        toast.warning(error.response.data.errors.usuario[0]);
+
+      if (error.response.data.errors?.email)
+        toast.warning(error.response.data.errors.email[0]);
+
+      if (error.response.data.errors?.password)
+        toast.warning(error.response.data.errors.password[0]);
+
+      if (error.response.data.errors?.rol_id)
+        toast.warning(error.response.data.errors.rol_id[0]);
     } else {
       toast.error("Error al registrar usuario");
     }
-    console.error("Error al registrar usuario: ", error);
   }
 };

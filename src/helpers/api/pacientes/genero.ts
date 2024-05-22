@@ -1,4 +1,5 @@
 import api from "../../libs/axios";
+import { toast } from "sonner";
 
 // PETICIONES DE LOS GENEROS
 
@@ -26,9 +27,18 @@ export const getGenero = async (id: string) => {
 export const createGenero = async (req: unknown) => {
   try {
     const genero = await api.post(`/generos`, req);
+
+    toast.success(
+      `Género: ${genero.data.data.nombre}, registrado correctamente`,
+    );
     return genero.data;
-  } catch (error) {
-    console.error("Error al crear el genero: ", error);
+  } catch (error: any) {
+    if (error.response.data?.errors) {
+      if (error.response.data.errors?.nombre)
+        toast.warning(error.response.data.errors.nombre[0]);
+    } else {
+      toast.error("Error al crear el genero");
+    }
   }
 };
 
@@ -36,9 +46,18 @@ export const createGenero = async (req: unknown) => {
 export const updateGenero = async (id: string, req: unknown) => {
   try {
     const genero = await api.patch(`/generos/${id}`, req);
+
+    toast.success(
+      `Género: ${genero.data.data.nombre}, actualizado correctamente`,
+    );
     return genero.data;
-  } catch (error) {
-    console.error("Error al actualizar el genero: ", error);
+  } catch (error: any) {
+    if (error.response.data?.errors) {
+      if (error.response.data.errors?.nombre)
+        toast.warning(error.response.data.errors.nombre[0]);
+    } else {
+      toast.error("Error al actualizar el genero");
+    }
   }
 };
 
@@ -46,8 +65,16 @@ export const updateGenero = async (id: string, req: unknown) => {
 export const deleteGenero = async (id: string) => {
   try {
     const genero = await api.delete(`/generos/${id}`);
+
+    toast.success(
+      `Género: ${genero.data.data.nombre}, eliminado correctamente`,
+    );
     return genero.data;
-  } catch (error) {
-    console.error("Error al eliminar el genero: ", error);
+  } catch (error: any) {
+    if (error.response.data?.error)
+      toast.warning(
+        "No se puede eliminar el género, verifique que no tenga pacientes asociados",
+      );
+    else toast.error("Error al eliminar el género");
   }
 };

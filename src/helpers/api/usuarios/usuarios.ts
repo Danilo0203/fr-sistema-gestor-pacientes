@@ -61,27 +61,33 @@ export const updateUsuario = async (id, req) => {
     if (Object.keys(cambios).length > 0) {
       const usuarioActualizado = await api.patch(`/usuarios/${id}`, cambios);
 
-      toast.success(`Usuario actualizado correctamente`);
-
+      toast.success(
+        `Usuario: ${usuarioActualizado.data.data.usuario}, actualizado correctamente`,
+      );
       return usuarioActualizado.data.data;
     } else {
+      toast.info("No hay cambios para actualizar");
       return usuarioData; // o manejar según sea necesario
     }
-  } catch (error) {
-    if (
-      error.response.data.message.includes(
-        "The usuario has already been taken.",
-      )
-    ) {
-      toast.error(`Usuario ya existe`);
-    } else if (
-      error.response.data.message.includes("The email has already been taken.")
-    ) {
-      toast.error("El correo ya existe");
+  } catch (error: any) {
+    if (error.response.data?.errors) {
+      if (error.response.data.errors?.usuario)
+        toast.warning(error.response.data.errors.usuario[0]);
+
+      if (error.response.data.errors?.nombre)
+        toast.warning(error.response.data.errors.nombre[0]);
+
+      if (error.response.data.errors?.email)
+        toast.warning(error.response.data.errors.email[0]);
+
+      if (error.response.data.errors?.password)
+        toast.warning(error.response.data.errors.password[0]);
+
+      if (error.response.data.errors?.rol_id)
+        toast.warning(error.response.data.errors.rol_id[0]);
     } else {
-      toast.error("Error al registrar usuario");
+      toast.error("Error al actualizar el usuario");
     }
-    console.error("Error al actualizar el usuario: ", error);
   }
 };
 
@@ -89,8 +95,16 @@ export const updateUsuario = async (id, req) => {
 export const deleteUsuario = async (id: string) => {
   try {
     const usuario = await api.delete(`/usuarios/${id}`);
+
+    toast.success(
+      `Usuario: ${usuario.data.data.usuario}, eliminado correctamente`,
+    );
     return usuario.data;
-  } catch (error) {
-    console.error("Error al eliminar el usuario: ", error);
+  } catch (error: any) {
+    if (error.response.data?.error)
+      toast.warning(
+        "No se puede eliminar el usuario, tiene registros asociados",
+      );
+    else toast.error("Error al eliminar el usuario");
   }
 };

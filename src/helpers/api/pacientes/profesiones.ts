@@ -1,4 +1,5 @@
 import api from "../../libs/axios";
+import { toast } from "sonner";
 
 // PETICIONES DE LAS PROFESIONES
 
@@ -26,9 +27,18 @@ export const getProfesion = async (id: string) => {
 export const createProfesion = async (req: unknown) => {
   try {
     const profesion = await api.post(`/profesiones`, req);
+
+    toast.success(
+      `Profesión: ${profesion.data.data.nombre}, registrado correctamente`,
+    );
     return profesion.data;
-  } catch (error) {
-    console.error("Error al crear la profesion: ", error);
+  } catch (error: any) {
+    if (error.response.data?.errors) {
+      if (error.response.data.errors?.nombre)
+        toast.warning(error.response.data.errors.nombre[0]);
+    } else {
+      toast.error("Error al crear la profesión");
+    }
   }
 };
 
@@ -36,9 +46,18 @@ export const createProfesion = async (req: unknown) => {
 export const updateProfesion = async (id: string, req: unknown) => {
   try {
     const profesion = await api.patch(`/profesiones/${id}`, req);
+
+    toast.success(
+      `Profesión: ${profesion.data.data.nombre}, actualizado correctamente`,
+    );
     return profesion.data;
-  } catch (error) {
-    console.error("Error al actualizar la profesion: ", error);
+  } catch (error: any) {
+    if (error.response.data?.errors) {
+      if (error.response.data.errors?.nombre)
+        toast.warning(error.response.data.errors.nombre[0]);
+    } else {
+      toast.error("Error al actualizar la profesión");
+    }
   }
 };
 
@@ -46,8 +65,16 @@ export const updateProfesion = async (id: string, req: unknown) => {
 export const deleteProfesion = async (id: string) => {
   try {
     const profesion = await api.delete(`/profesiones/${id}`);
+
+    toast.success(
+      `Profesión: ${profesion.data.data.nombre}, eliminado correctamente`,
+    );
     return profesion.data;
-  } catch (error) {
-    console.error("Error al eliminar la profesion: ", error);
+  } catch (error: any) {
+    if (error.response.data?.error)
+      toast.warning(
+        "No se puede eliminar la profesión, verifique que no tenga pacientes asociados",
+      );
+    else toast.error("Error al eliminar la profesión");
   }
 };

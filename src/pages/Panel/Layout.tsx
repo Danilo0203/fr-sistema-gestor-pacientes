@@ -80,7 +80,13 @@ export const Layout = memo(() => {
   ]);
   return (
     <>
-      <Toaster richColors expand closeButton position="top-center" />
+      <Toaster
+        visibleToasts={8}
+        closeButton
+        expand
+        position="top-center"
+        richColors
+      />
       <section className="flex min-h-dvh">
         <div className="flex">
           <BarraNavegacion />

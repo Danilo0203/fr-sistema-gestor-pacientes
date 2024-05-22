@@ -1,4 +1,5 @@
 import api from "../../libs/axios";
+import { toast } from "sonner";
 
 // PETICIONES DE LOS ROLES
 
@@ -26,9 +27,19 @@ export const getRol = async (id: string) => {
 export const createRol = async (req: unknown) => {
   try {
     const rol = await api.post(`/roles`, req);
+
+    toast.success(`Rol: ${rol.data.data.nombre}, registrado correctamente`);
     return rol.data;
-  } catch (error) {
-    console.error("Error al crear el rol: ", error);
+  } catch (error: any) {
+    if (error.response.data?.errors) {
+      if (error.response.data.errors?.nombre)
+        toast.warning(error.response.data.errors.nombre[0]);
+
+      if (error.response.data.errors?.descripcion)
+        toast.warning(error.response.data.errors.descripcion[0]);
+    } else {
+      toast.error("Error al crear el rol");
+    }
   }
 };
 
@@ -49,12 +60,24 @@ export const updateRol = async (id, req) => {
     // Verificar si hay cambios antes de hacer la llamada a la API
     if (Object.keys(cambios).length > 0) {
       const rolActualizado = await api.patch(`/roles/${id}`, cambios);
+      toast.success(
+        `Rol: ${rolActualizado.data.data.nombre}, actualizado correctamente`,
+      );
       return rolActualizado.data.data;
     } else {
+      toast.info("No se realizaron cambios");
       return rolData; // o manejar según sea necesario
     }
-  } catch (error) {
-    console.error("Error al actualizar el rol: ", error);
+  } catch (error: any) {
+    if (error.response.data?.errors) {
+      if (error.response.data.errors?.nombre)
+        toast.warning(error.response.data.errors.nombre[0]);
+
+      if (error.response.data.errors?.descripcion)
+        toast.warning(error.response.data.errors.descripcion[0]);
+    } else {
+      toast.error("Error al actualizar el rol");
+    }
   }
 };
 
@@ -62,8 +85,12 @@ export const updateRol = async (id, req) => {
 export const deleteRol = async (id: string) => {
   try {
     const rol = await api.delete(`/roles/${id}`);
+
+    toast.success(`Rol: ${rol.data.data.nombre}, eliminado correctamente`);
     return rol.data;
-  } catch (error) {
-    console.error("Error al eliminar el rol: ", error);
+  } catch (error: any) {
+    if (error.response.data?.error)
+      toast.warning("No se puede eliminar el rol, tiene usuarios asignados");
+    else toast.error("Error al eliminar el rol");
   }
 };
