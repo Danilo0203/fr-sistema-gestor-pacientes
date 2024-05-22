@@ -13,9 +13,9 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useProfesionStore } from "../../../../store/pacientes/profesiones";
 import {
   updateProfesion,
@@ -33,32 +33,29 @@ export const ModalEditarProfesion = ({
   const profesiones = useProfesionStore((state) => state.data);
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const params = useParams();
+  const [profesionEdit, setProfesionEdit] = useState(null);
 
   const handleEdit = () => {
-    navigate(`/pacientes/profesion/editar/${idProfesion}`);
-  };
-
-  const { id } = params;
-
-  const profesionID: ProfesionData = getUsuarioById(id, profesiones)[0];
-
-  useEffect(() => {
+    const [profesionID] = getUsuarioById(idProfesion, profesiones);
+    const datosProfesion = {
+      id: idProfesion,
+      nombre: profesionID.nombre,
+    };
+    setProfesionEdit(datosProfesion);
     setValue("nombre", profesionID.nombre);
-  }, [profesionID.nombre, setValue]);
+  };
 
   const handleClose = () => {
     navigate("/pacientes/profesion");
   };
 
   const actualizar = async (data: ProfesionData) => {
-    await updateProfesion(profesionID.id, data);
+    await updateProfesion(profesionEdit.id, data);
     updateTable();
   };
 
   const onSubmit = (data: ProfesionData) => {
     actualizar(data);
-    navigate("/pacientes/profesion");
   };
 
   return (

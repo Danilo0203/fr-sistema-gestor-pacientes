@@ -52,7 +52,11 @@ export const TablaRecetas = () => {
   const renderCell = useCallback(
     (receta: Receta, columnKey: Column) => {
       const cellValue = receta[columnKey];
+      const id = recetas.findIndex((u) => u.id === receta.id) + 1;
+
       switch (columnKey) {
+        case "id":
+          return <p>{id}</p>;
         case "fecha":
           return <p>{receta.fecha}</p>;
         case "usuario":
@@ -83,13 +87,13 @@ export const TablaRecetas = () => {
         <div className="flex items-center justify-between">
           <div className="flex w-full flex-col gap-3">
             <Input
-              label="Buscar por receta médica:"
+              label="Buscar por usuario emitio receta:"
               isClearable
               classNames={{
                 base: "w-full sm:max-w-[44%]",
                 inputWrapper: "border-1",
               }}
-              placeholder="receta médica..."
+              placeholder="usuario que emitio receta..."
               size="md"
               value={filterValue}
               variant="bordered"

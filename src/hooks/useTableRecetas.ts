@@ -11,22 +11,17 @@ export const useTableRecetas = (recetas) => {
   const [filasPorPagina, setRowsPerPage] = useState(5);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "fecha",
-    direction: "ascending",
+    direction: "descending",
   });
 
   // Funcion para filtrar recetas por fecha
   const filtrarRecetasPorFecha = useMemo(() => {
     let filtrarRecetas = [...recetas];
     filtrarRecetas = filtrarRecetas.filter((receta) =>
-      receta.fecha.toLowerCase().includes(filterValue.toLowerCase()),
+      receta.usuario.toLowerCase().includes(filterValue.toLowerCase()),
     );
     return filtrarRecetas;
   }, [recetas, filterValue]);
-
-  // Funcion para obtener recetas
-  // useEffect(() => {
-  //   getRecetas();
-  // }, [getRecetas]);
 
   // Funcion para esperar la respuesta de la API
   useEffect(() => {

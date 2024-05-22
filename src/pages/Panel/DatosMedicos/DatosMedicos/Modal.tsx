@@ -13,7 +13,7 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDatosMedicosStore } from "../../../../store/datosMedicos/datosMedicos";
@@ -31,34 +31,31 @@ export const ModalEditarDatoMedico = ({
 }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const datosMedicos = useDatosMedicosStore((state) => state.data);
+  const [editDatosMedicos, setEditDatosMedicos] = useState(null);
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const params = useParams();
 
   const handleEdit = () => {
-    navigate(`/datos-medicos/tabla/editar/${idDatoMedico}`);
-  };
-
-  const { id } = params;
-
-  const datoMedicoID: DatosMedicosData = getUsuarioById(id, datosMedicos)[0];
-
-  useEffect(() => {
+    const [datoMedicoID] = getUsuarioById(idDatoMedico, datosMedicos);
+    const dataMedicos = {
+      id: idDatoMedico,
+      nombre: datoMedicoID.nombre,
+    };
+    setEditDatosMedicos(dataMedicos);
     setValue("nombre", datoMedicoID.nombre);
-  }, [datoMedicoID.nombre, setValue]);
+  };
 
   const handleClose = () => {
     navigate("/datos-medicos/tabla");
   };
 
   const actualizar = async (data: DatosMedicosData) => {
-    await updateDatoMedico(datoMedicoID.id, data);
+    await updateDatoMedico(editDatosMedicos.id, data);
     updateTable();
   };
 
   const onSubmit = (data: DatosMedicosData) => {
     actualizar(data);
-    navigate("/datos-medicos/tabla");
   };
 
   return (
@@ -78,13 +75,9 @@ export const ModalEditarDatoMedico = ({
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         isDismissable={false}
-        classNames={{ backdrop: "bg-black/10 blur-[1px]" }}
-        size="2xl"
+        placement="top-center"
       >
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mt-4 flex flex-col gap-8"
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
             {(onClose) => (
               <>
@@ -93,23 +86,14 @@ export const ModalEditarDatoMedico = ({
                 </ModalHeader>
                 <Divider />
                 <ModalBody>
-                  <div className="flex flex-col gap-8">
-                    <div className="flex gap-8">
-                      <div className="flex flex-col gap-1">
-                        <Label id="nombre">Nombre</Label>
-                        <Input
-                          placeholder="Editar nombre"
-                          {...register("nombre")}
-                        >
-                          <Icon
-                            icon="mdi:account"
-                            width={20}
-                            className="text-azulFuerte"
-                          />
-                        </Input>
-                      </div>
-                    </div>
-                  </div>
+                  <Label id="nombre">Nombre</Label>
+                  <Input placeholder="Editar nombre" {...register("nombre")}>
+                    <Icon
+                      icon="mdi:account"
+                      width={20}
+                      className="text-azulFuerte"
+                    />
+                  </Input>
                 </ModalBody>
                 <ModalFooter>
                   <Button

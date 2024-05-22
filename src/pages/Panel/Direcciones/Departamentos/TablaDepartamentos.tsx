@@ -54,8 +54,11 @@ export const TablaDepartamentos = () => {
   const renderCell = useCallback(
     (departamento: Departamento, columnKey: Column) => {
       const cellValue = departamento[columnKey];
+      const id = departamentos.findIndex((u) => u.id === departamento.id) + 1;
 
       switch (columnKey) {
+        case "id":
+          return <p>{id}</p>;
         case "departamento":
           return <p>{departamento.nombre}</p>;
         case "acciones":

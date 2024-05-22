@@ -43,13 +43,24 @@ export const ModalEditarPaciente = memo(
   ({ idPaciente, updateTable }: ModalProps) => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const [pacienteEdit, setPacienteEdit] = useState(null);
+    const [valueEstadoCivil, setValueEstadoCivil] = useState("");
     const pacientes = usePacienteStore((state) => state.data);
-    const direcciones = useDireccionStore((state) => state.data);
-    const profesiones = useProfesionStore((state) => state.data);
-    const estadoCivil = useEstadoCivilStore((state) => state.data);
-    const generos = useGeneroStore((state) => state.data);
-
-    const { setValue, register, handleSubmit } = useForm();
+    const dataDireccion = useDireccionStore((state) => state.data);
+    const dataProfesiones = useProfesionStore((state) => state.data);
+    const dataEstadoCivil = useEstadoCivilStore((state) => state.data);
+    const dataGeneros = useGeneroStore((state) => state.data);
+    const dataDepartamentos = useDepartamentoStore((state) => state.data);
+    const [deptoSelect, setDeptoSelect] = useState(
+      pacienteEdit?.deptoID || "16",
+    );
+    const dataMunicipios = useMunicipioStore((state) => state.data);
+    const {
+      setValue,
+      register,
+      handleSubmit,
+      reset,
+      formState: { errors },
+    } = useForm();
     const navigate = useNavigate();
 
     const handleEdit = () => {
@@ -67,17 +78,26 @@ export const ModalEditarPaciente = memo(
         direccionID: paciente.direccionID,
         generoID: paciente.generoID,
         profesionID: paciente.profesionID,
+        deptoID: paciente.deptoID,
       };
       setPacienteEdit(dataPaciente);
-      setValue("nombre", paciente.nombre);
+      console.log(paciente.nombre);
+      setValue("nombrePaciente", paciente.nombre);
       setValue("apellido", paciente.apellido);
       setValue("fecha_nacimiento", paciente.fecha_nacimiento);
       setValue("direccion", paciente.direccion);
       setValue("profesion", paciente.profesion);
       setValue("estadoCivil", paciente.estadoCivil);
-      setValue("genero", paciente.genero);
+      setValue("genero_id", paciente.genero);
+    };
+    const buscarMunicipiosPorDepto = (id: string) => {
+      const municipios = dataMunicipios.filter(
+        (muni) => muni.departamentoID == id,
+      );
+      return municipios;
     };
 
+    const municipiosPorDepto = buscarMunicipiosPorDepto(deptoSelect);
     const handleClose = () => {
       navigate("/pacientes/tabla");
     };
@@ -120,126 +140,252 @@ export const ModalEditarPaciente = memo(
                     Editar Paciente
                   </ModalHeader>
                   <Divider />
-                  <ModalBody>
-                    <div className="flex flex-col gap-8">
-                      <div className="flex gap-8">
-                        <div className="flex flex-1 flex-col gap-1">
-                          <Label id="nombre">Nombre</Label>
-                          <Input
-                            placeholder="Editar nombre"
-                            {...register("nombre")}
-                          >
-                            <Icon
-                              icon="mdi:account"
-                              width={20}
-                              className="text-azulFuerte"
-                            />
-                          </Input>
-                        </div>
-                        <div className="flex flex-1 flex-col gap-1">
-                          <Label id="apellido">Apellido</Label>
-                          <Input
-                            placeholder="Editar apellido"
-                            {...register("apellido")}
-                          >
-                            <Icon
-                              icon="mdi:account"
-                              width={20}
-                              className="text-azulFuerte"
-                            />
-                          </Input>
-                        </div>
+                  <ModalBody className="mt-4 flex flex-col gap-6">
+                    <div className="flex gap-8">
+                      <div className="flex flex-grow flex-col gap-1">
+                        <Label>Nombres</Label>
+                        <Input
+                          autoFocus
+                          placeholder="Ingrese el nombre"
+                          type="text"
+                          {...register("nombrePaciente", {
+                            required: {
+                              value: true,
+                              message: "Este campo es requerido",
+                            },
+                          })}
+                        >
+                          <Icon icon="mdi:user" />
+                        </Input>
+                        {
+                          <span className="text-xs font-medium italic text-red-600">
+                            {errors.nombrePaciente?.message}
+                          </span>
+                        }
                       </div>
+                      <div className="flex flex-grow flex-col gap-1">
+                        <Label>Apellidos</Label>
+                        <Input
+                          placeholder="Ingrese los apellidos"
+                          type="text"
+                          {...register("apellido", {
+                            required: {
+                              value: true,
+                              message: "Este campo es requerido",
+                            },
+                          })}
+                        >
+                          <Icon icon="mdi:user" />
+                        </Input>
+                        {
+                          <span className="text-xs font-medium italic text-red-600">
+                            {errors.apellido?.message}
+                          </span>
+                        }
+                      </div>
+                    </div>
 
-                      <div className="flex gap-8">
-                        <div className="flex w-1/2 flex-col gap-1">
-                          <Label id="fechaNacimiento">
-                            Fecha de Nacimiento
-                          </Label>
+                    <div className="flex gap-8">
+                      <div className="flex flex-grow flex-col gap-1">
+                        <Label>Genero</Label>
+                        <Autocomplete
+                          defaultItems={dataGeneros}
+                          placeholder="Seleccione un genero"
+                          variant="underlined"
+                          size="lg"
+                          aria-label="genero"
+                          {...register("genero_id", {
+                            required: {
+                              value: true,
+                              message: "Este campo es requerido",
+                            },
+                          })}
+                        >
+                          {(genero) => (
+                            <AutocompleteItem key={genero.id}>
+                              {genero.nombre}
+                            </AutocompleteItem>
+                          )}
+                        </Autocomplete>
+                        {
+                          <span className="text-xs font-medium italic text-red-600">
+                            {errors.genero_id?.message}
+                          </span>
+                        }
+                      </div>
+                      <div className="flex flex-grow flex-col gap-1">
+                        <Label>Estado Civil</Label>
+                        <Autocomplete
+                          defaultItems={dataEstadoCivil}
+                          placeholder="Seleccione un estado civil"
+                          variant="underlined"
+                          size="lg"
+                          allowsCustomValue={true}
+                          onInputChange={(value) => setValueEstadoCivil(value)}
+                          onSelectionChange={(key) => key}
+                          aria-label="estado civil"
+                          {...register("estado_civil_id", {
+                            required: {
+                              value: true,
+                              message: "Este campo es requerido",
+                            },
+                          })}
+                        >
+                          {(civil) => (
+                            <AutocompleteItem key={civil.id}>
+                              {civil.nombre}
+                            </AutocompleteItem>
+                          )}
+                        </Autocomplete>
+                        {
+                          <span className="text-xs font-medium italic text-red-600">
+                            {errors.estado_civil_id?.message}
+                          </span>
+                        }
+                      </div>
+                    </div>
+
+                    <div className="flex gap-8">
+                      <div className="flex flex-1 flex-col gap-1">
+                        <div className="flex flex-col gap-3">
+                          <Label>Fecha de Nacimiento</Label>
+
                           <Input
                             type="date"
                             placeholder="Editar fecha de nacimiento"
-                            {...register("fecha_nacimiento")}
-                          >
-                            {/* <Icon
-                              icon="mdi:calendar"
-                              width={20}
-                              className="text-azulFuerte"
-                            /> */}
-                          </Input>
+                            {...register("fecha_nacimiento", {
+                              required: {
+                                value: true,
+                                message: "Este campo es requerido",
+                              },
+                            })}
+                          ></Input>
                         </div>
-                        <div className="flex w-1/2 flex-col gap-1">
-                          <Label id="genero_id">Género</Label>
-                          <Select
-                            items={generos}
-                            placeholder="Seleccione un género"
-                            defaultSelectedKeys={[pacienteEdit.generoID]}
-                            size="lg"
-                            aria-label="genero"
-                            {...register("genero_id")}
-                          >
-                            {(genero) => (
-                              <SelectItem key={genero.id}>
-                                {genero.nombre}
-                              </SelectItem>
-                            )}
-                          </Select>
-                        </div>
+                        {
+                          <span className="text-xs font-medium italic text-red-600">
+                            {errors.fecha_nacimiento?.message}
+                          </span>
+                        }
                       </div>
-
-                      <div className="flex gap-8">
-                        <div className="flex w-1/2 flex-col gap-1">
-                          <Label id="profesion_id">Profesión</Label>
-                          <Select
-                            items={profesiones}
-                            placeholder="Seleccione una profesión"
-                            defaultSelectedKeys={[pacienteEdit.profesionID]}
-                            size="lg"
-                            aria-label="profesion"
-                            {...register("profesion_id")}
-                          >
-                            {(profesion) => (
-                              <SelectItem key={profesion.id}>
-                                {profesion.nombre}
-                              </SelectItem>
-                            )}
-                          </Select>
-                        </div>
-                        <div className="flex w-1/2 flex-col gap-1">
-                          <Label id="estado_civil_id">Estado Civil</Label>
-                          <Select
-                            items={estadoCivil}
-                            placeholder="Seleccione un estado civil"
-                            defaultSelectedKeys={[pacienteEdit.estadoCivilID]}
-                            size="lg"
-                            aria-label="estado civil"
-                            {...register("estado_civil_id")}
-                          >
-                            {(estadoCivil) => (
-                              <SelectItem key={estadoCivil.id}>
-                                {estadoCivil.nombre}
-                              </SelectItem>
-                            )}
-                          </Select>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col gap-1">
-                        <Label id="direccion_id">Dirección</Label>
-                        <Select
-                          items={direcciones}
-                          placeholder="Seleccione una dirección"
-                          defaultSelectedKeys={[pacienteEdit.direccionID]}
+                      <div className="flex flex-1 flex-col gap-1">
+                        <Label>Profesión</Label>
+                        <Autocomplete
+                          defaultItems={dataProfesiones}
+                          placeholder="Seleccione una profesión"
+                          variant="underlined"
                           size="lg"
-                          aria-label="direccion"
-                          {...register("direccion_id")}
+                          allowsCustomValue={true}
+                          onInputChange={(value) => setValueProfesion(value)}
+                          onSelectionChange={(key) => key}
+                          aria-label="profesion"
+                          {...register("profesion_id", {
+                            required: {
+                              value: true,
+                              message: "Este campo es requerido",
+                            },
+                          })}
                         >
-                          {(direccion) => (
-                            <SelectItem key={direccion.id}>
-                              {direccion.nombre}
-                            </SelectItem>
+                          {(profesion) => (
+                            <AutocompleteItem key={profesion.id}>
+                              {profesion.nombre}
+                            </AutocompleteItem>
                           )}
-                        </Select>
+                        </Autocomplete>
+                        {
+                          <span className="text-xs font-medium italic text-red-600">
+                            {errors.profesion_id?.message}
+                          </span>
+                        }
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <Label>Direccion</Label>
+                      <Autocomplete
+                        defaultItems={dataDireccion}
+                        placeholder="Seleccione una dirección"
+                        variant="underlined"
+                        size="lg"
+                        allowsCustomValue={true}
+                        onInputChange={(value) => setValueDireccion(value)}
+                        onSelectionChange={(key) => key}
+                        aria-label="direccion"
+                        {...register("nombreDireccion", {
+                          required: {
+                            value: true,
+                            message: "Este campo es requerido",
+                          },
+                        })}
+                      >
+                        {(direccion) => (
+                          <AutocompleteItem key={direccion.id}>
+                            {direccion.nombre}
+                          </AutocompleteItem>
+                        )}
+                      </Autocomplete>
+                      {
+                        <span className="text-xs font-medium italic text-red-600">
+                          {errors.nombreDireccion?.message}
+                        </span>
+                      }
+                    </div>
+
+                    <div className="flex gap-8">
+                      <div className="flex flex-grow flex-col gap-1">
+                        <Label>Departamento</Label>
+                        <Autocomplete
+                          defaultItems={dataDepartamentos}
+                          placeholder="Seleccione un departamento"
+                          variant="underlined"
+                          size="lg"
+                          selectedKey={deptoSelect}
+                          onSelectionChange={() => pacienteEdit.deptoID}
+                          aria-label="departamento"
+                          {...register("departamento_id", {
+                            required: {
+                              value: true,
+                              message: "Este campo es requerido",
+                            },
+                          })}
+                        >
+                          {(depto) => (
+                            <AutocompleteItem key={depto.id}>
+                              {depto.nombre}
+                            </AutocompleteItem>
+                          )}
+                        </Autocomplete>
+                        {
+                          <span className="text-xs font-medium italic text-red-600">
+                            {errors.departamento_id?.message}
+                          </span>
+                        }
+                      </div>
+                      <div className="flex flex-grow flex-col gap-1">
+                        <Label>Municipio</Label>
+                        <Autocomplete
+                          defaultItems={municipiosPorDepto}
+                          placeholder="Seleccione un municipio"
+                          variant="underlined"
+                          size="lg"
+                          aria-label="municipio"
+                          {...register("municipio_id", {
+                            required: {
+                              value: true,
+                              message: "Este campo es requerido",
+                            },
+                          })}
+                        >
+                          {(muni) => (
+                            <AutocompleteItem key={muni.id}>
+                              {muni.nombre}
+                            </AutocompleteItem>
+                          )}
+                        </Autocomplete>
+                        {
+                          <span className="text-xs font-medium italic text-red-600">
+                            {errors.municipio_id?.message}
+                          </span>
+                        }
                       </div>
                     </div>
                   </ModalBody>
@@ -340,7 +486,7 @@ export const ModalEliminarPaciente = ({
 };
 
 export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const dataDepartamentos = useDepartamentoStore((state) => state.data);
   const dataMunicipios = useMunicipioStore((state) => state.data);
   const dataGeneros = useGeneroStore((state) => state.data);
@@ -354,12 +500,15 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
   const [valueEstadoCivil, setValueEstadoCivil] = useState("");
   const [profesionSelect, setProfesionSelect] = useState("");
   const [valueProfesion, setValueProfesion] = useState("");
-
-  const formartDate = (date: string) => {
-    return format(date, "YYYY/DD/MM");
-  };
-
-  const { register, handleSubmit, reset } = useForm();
+  const updateProfesiones = useProfesionStore((state) => state.init);
+  const updateEstadoCivil = useEstadoCivilStore((state) => state.init);
+  const updateDireccion = useDireccionStore((state) => state.init);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const handleSelectionChange = (
     key,
@@ -382,16 +531,19 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
   const agregarDireccion = async (data) => {
     await createDireccion(data);
     updateTable();
+    updateDireccion();
   };
 
   const agregarEstadoCivil = async (data) => {
     await createEstadoCivil(data);
     updateTable();
+    updateEstadoCivil();
   };
 
   const agregarProfesion = async (data) => {
     await createProfesion(data);
     updateTable();
+    updateProfesiones();
   };
 
   const agregarPaciente = async (data) => {
@@ -467,6 +619,11 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
     };
 
     agregarPaciente(datosPaciente);
+    onClose();
+    reset();
+  };
+  const handleClose = () => {
+    onClose();
     reset();
   };
 
@@ -485,9 +642,10 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
         isDismissable={false}
         placement="top-center"
         size="3xl"
+        onClose={handleClose}
       >
         <ModalContent>
-          {(onClose) => (
+          {() => (
             <>
               <form onSubmit={handleSubmit(onSubmitDireccion)}>
                 <ModalHeader className="flex flex-col gap-1">
@@ -496,31 +654,51 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                 <Divider />
                 <ModalBody className="mt-4 flex flex-col gap-6">
                   <div className="flex gap-8">
-                    <div className="flex flex-grow flex-col">
+                    <div className="flex flex-grow flex-col gap-1">
                       <Label>Nombres</Label>
                       <Input
                         autoFocus
                         placeholder="Ingrese el nombre"
                         type="text"
-                        {...register("nombrePaciente")}
+                        {...register("nombrePaciente", {
+                          required: {
+                            value: true,
+                            message: "Este campo es requerido",
+                          },
+                        })}
                       >
                         <Icon icon="mdi:user" />
                       </Input>
+                      {
+                        <span className="text-xs font-medium italic text-red-600">
+                          {errors.nombrePaciente?.message}
+                        </span>
+                      }
                     </div>
-                    <div className="flex flex-grow flex-col">
+                    <div className="flex flex-grow flex-col gap-1">
                       <Label>Apellidos</Label>
                       <Input
                         placeholder="Ingrese los apellidos"
                         type="text"
-                        {...register("apellido")}
+                        {...register("apellido", {
+                          required: {
+                            value: true,
+                            message: "Este campo es requerido",
+                          },
+                        })}
                       >
                         <Icon icon="mdi:user" />
                       </Input>
+                      {
+                        <span className="text-xs font-medium italic text-red-600">
+                          {errors.apellido?.message}
+                        </span>
+                      }
                     </div>
                   </div>
 
                   <div className="flex gap-8">
-                    <div className="flex flex-grow flex-col">
+                    <div className="flex flex-grow flex-col gap-1">
                       <Label>Genero</Label>
                       <Autocomplete
                         defaultItems={dataGeneros}
@@ -528,7 +706,12 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                         variant="underlined"
                         size="lg"
                         aria-label="genero"
-                        {...register("genero_id")}
+                        {...register("genero_id", {
+                          required: {
+                            value: true,
+                            message: "Este campo es requerido",
+                          },
+                        })}
                       >
                         {(genero) => (
                           <AutocompleteItem key={genero.id}>
@@ -536,8 +719,13 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                           </AutocompleteItem>
                         )}
                       </Autocomplete>
+                      {
+                        <span className="text-xs font-medium italic text-red-600">
+                          {errors.genero_id?.message}
+                        </span>
+                      }
                     </div>
-                    <div className="flex flex-grow flex-col">
+                    <div className="flex flex-grow flex-col gap-1">
                       <Label>Estado Civil</Label>
                       <Autocomplete
                         defaultItems={dataEstadoCivil}
@@ -556,7 +744,12 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                           )
                         }
                         aria-label="estado civil"
-                        {...register("estado_civil_id")}
+                        {...register("estado_civil_id", {
+                          required: {
+                            value: true,
+                            message: "Este campo es requerido",
+                          },
+                        })}
                       >
                         {(civil) => (
                           <AutocompleteItem key={civil.id}>
@@ -564,20 +757,37 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                           </AutocompleteItem>
                         )}
                       </Autocomplete>
+                      {
+                        <span className="text-xs font-medium italic text-red-600">
+                          {errors.estado_civil_id?.message}
+                        </span>
+                      }
                     </div>
                   </div>
 
                   <div className="flex gap-8">
-                    <div className="flex flex-1 flex-col gap-3">
-                      <Label>Fecha de Nacimiento</Label>
+                    <div className="flex flex-1 flex-col gap-1">
+                      <div className="flex flex-col gap-3">
+                        <Label>Fecha de Nacimiento</Label>
 
-                      <Input
-                        type="date"
-                        placeholder="Editar fecha de nacimiento"
-                        {...register("fecha_nacimiento")}
-                      ></Input>
+                        <Input
+                          type="date"
+                          placeholder="Editar fecha de nacimiento"
+                          {...register("fecha_nacimiento", {
+                            required: {
+                              value: true,
+                              message: "Este campo es requerido",
+                            },
+                          })}
+                        ></Input>
+                      </div>
+                      {
+                        <span className="text-xs font-medium italic text-red-600">
+                          {errors.fecha_nacimiento?.message}
+                        </span>
+                      }
                     </div>
-                    <div className="flex flex-1 flex-col">
+                    <div className="flex flex-1 flex-col gap-1">
                       <Label>Profesión</Label>
                       <Autocomplete
                         defaultItems={dataProfesiones}
@@ -596,7 +806,12 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                           )
                         }
                         aria-label="profesion"
-                        {...register("profesion_id")}
+                        {...register("profesion_id", {
+                          required: {
+                            value: true,
+                            message: "Este campo es requerido",
+                          },
+                        })}
                       >
                         {(profesion) => (
                           <AutocompleteItem key={profesion.id}>
@@ -604,10 +819,15 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                           </AutocompleteItem>
                         )}
                       </Autocomplete>
+                      {
+                        <span className="text-xs font-medium italic text-red-600">
+                          {errors.profesion_id?.message}
+                        </span>
+                      }
                     </div>
                   </div>
 
-                  <div>
+                  <div className="flex flex-col gap-1">
                     <Label>Direccion</Label>
                     <Autocomplete
                       defaultItems={dataDireccion}
@@ -626,7 +846,12 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                         )
                       }
                       aria-label="direccion"
-                      {...register("nombreDireccion")}
+                      {...register("nombreDireccion", {
+                        required: {
+                          value: true,
+                          message: "Este campo es requerido",
+                        },
+                      })}
                     >
                       {(direccion) => (
                         <AutocompleteItem key={direccion.id}>
@@ -634,10 +859,15 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                         </AutocompleteItem>
                       )}
                     </Autocomplete>
+                    {
+                      <span className="text-xs font-medium italic text-red-600">
+                        {errors.nombreDireccion?.message}
+                      </span>
+                    }
                   </div>
 
                   <div className="flex gap-8">
-                    <div className="flex flex-grow flex-col">
+                    <div className="flex flex-grow flex-col gap-1">
                       <Label>Departamento</Label>
                       <Autocomplete
                         defaultItems={dataDepartamentos}
@@ -645,8 +875,14 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                         variant="underlined"
                         size="lg"
                         selectedKey={deptoSelect}
-                        onSelectionChange={setDeptoSelect}
+                        onSelectionChange={(key) => setDeptoSelect(key)}
                         aria-label="departamento"
+                        {...register("departamento_id", {
+                          required: {
+                            value: true,
+                            message: "Este campo es requerido",
+                          },
+                        })}
                       >
                         {(depto) => (
                           <AutocompleteItem key={depto.id}>
@@ -654,8 +890,13 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                           </AutocompleteItem>
                         )}
                       </Autocomplete>
+                      {
+                        <span className="text-xs font-medium italic text-red-600">
+                          {errors.departamento_id?.message}
+                        </span>
+                      }
                     </div>
-                    <div className="flex flex-grow flex-col">
+                    <div className="flex flex-grow flex-col gap-1">
                       <Label>Municipio</Label>
                       <Autocomplete
                         defaultItems={municipiosPorDepto}
@@ -663,7 +904,12 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                         variant="underlined"
                         size="lg"
                         aria-label="municipio"
-                        {...register("municipio_id")}
+                        {...register("municipio_id", {
+                          required: {
+                            value: true,
+                            message: "Este campo es requerido",
+                          },
+                        })}
                       >
                         {(muni) => (
                           <AutocompleteItem key={muni.id}>
@@ -671,14 +917,19 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                           </AutocompleteItem>
                         )}
                       </Autocomplete>
+                      {
+                        <span className="text-xs font-medium italic text-red-600">
+                          {errors.municipio_id?.message}
+                        </span>
+                      }
                     </div>
                   </div>
                 </ModalBody>
                 <ModalFooter>
-                  <Button color="danger" variant="light" onPress={onClose}>
+                  <Button color="danger" variant="light" onPress={handleClose}>
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
+                  <Button color="primary" type="submit">
                     Agregar
                   </Button>
                 </ModalFooter>

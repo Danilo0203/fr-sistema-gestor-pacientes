@@ -15,9 +15,9 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDireccionStore } from "../../../../store/direcciones/direcciones";
 import { useMunicipioStore } from "../../../../store/direcciones/municipios";
 import {
@@ -35,41 +35,35 @@ export const ModalEditarDireccion = ({
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const direcciones = useDireccionStore((state) => state.data);
   const municipios = useMunicipioStore((state) => state.data);
-  // const getMunicipios = useMunicipioStore((state) => state.execute);
+  const [editDirecciones, setEditDirecciones] = useState(null);
 
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
-  const params = useParams();
-
-  // useEffect(() => {
-  //   getMunicipios();
-  // }, [getMunicipios]);
 
   const handleEdit = () => {
-    navigate(`/direcciones/tabla/editar/${idDireccion}`);
-  };
-
-  const { id } = params;
-
-  const direccionID: DireccionData = getUsuarioById(id, direcciones)[0] ?? [];
-
-  useEffect(() => {
-    setValue("nombre", direccionID.nombre);
+    const [direccionID] = getUsuarioById(idDireccion, direcciones);
+    const datosDireccion = {
+      id: idDireccion,
+      nombre: direccionID.nombre,
+      municipioID: direccionID.municipioID,
+      municipio: direccionID.municipio,
+    };
+    setEditDirecciones(datosDireccion);
     setValue("municipio", direccionID.municipio);
-  }, [direccionID.nombre, direccionID.municipio, setValue]);
+    setValue("nombre", direccionID.nombre);
+  };
 
   const handleClose = () => {
     navigate("/direcciones/tabla");
   };
 
   const actualizar = async (data: DireccionData) => {
-    await updateDireccion(direccionID.id, data);
+    await updateDireccion(editDirecciones.id, data);
     updateTable();
   };
 
   const onSubmit = (data: DireccionData) => {
     actualizar(data);
-    navigate("/direcciones/tabla");
   };
 
   return (
@@ -121,7 +115,7 @@ export const ModalEditarDireccion = ({
                           aria-label="Municipio"
                           items={municipios}
                           placeholder="Seleccione un municipio"
-                          defaultSelectedKeys={[direccionID.municipioID]}
+                          defaultSelectedKeys={[editDirecciones.municipioID]}
                           size="lg"
                           {...register("municipio_id")}
                         >

@@ -54,8 +54,11 @@ export const TablaEstadoCiviles = () => {
   const renderCell = useCallback(
     (estadoCivil: EstadoCivil, columnKey: Column) => {
       const cellValue = estadoCivil[columnKey];
+      const id = estadoCiviles.findIndex((u) => u.id === estadoCivil.id) + 1;
 
       switch (columnKey) {
+        case "id":
+          return <p>{id}</p>;
         case "estadoCivil":
           return <p>{estadoCivil.nombre}</p>;
         case "acciones":
@@ -134,6 +137,7 @@ export const TablaEstadoCiviles = () => {
     onClear,
     filterValue,
     onSearchChange,
+    getEstadoCiviles,
   ]);
 
   return (
