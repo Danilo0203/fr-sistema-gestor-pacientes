@@ -26,6 +26,7 @@ import { TableUsuariosKeys, TableUsuariosProps } from "types/index";
 
 export const TablaUsuarios = () => {
   const usuarios = useUsuarioStore((state) => state.data);
+
   const {
     value,
     getUsuarios,
@@ -35,7 +36,7 @@ export const TablaUsuarios = () => {
     setSortDescriptor,
     filterValue,
     loadingState,
-    paginas,  
+    paginas,
     ordenarItems,
     onRowsPerPageChange,
     onSearchChange,

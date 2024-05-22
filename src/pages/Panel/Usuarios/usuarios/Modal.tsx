@@ -26,10 +26,17 @@ import { ModalProps, UserData } from "types/index";
 import { registerUser } from "helpers/api/auth";
 
 export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const usuarios = useUsuarioStore((state) => state.data);
   const roles = useRolStore((state) => state.data);
-  const { setValue, register, handleSubmit } = useForm();
+  const {
+    setValue,
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm();
   const navigate = useNavigate();
   const [usuarioEdit, setUsuarioEdit] = useState(null);
 
@@ -57,6 +64,8 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
   const onSubmit = (data: UserData) => {
     actualizar(data);
     navigate("/usuarios/tabla");
+    onClose();
+    reset({ password: "", password_confirm: "" });
   };
 
   return (
@@ -132,7 +141,10 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
                         <Label id="password">Contraseña</Label>
                         <Input
                           placeholder="Editar contraseña"
-                          {...register("password")}
+                          type="password"
+                          {...register("password", {
+                            required: false,
+                          })}
                         >
                           <Icon
                             icon="mdi:lock"
@@ -145,7 +157,20 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
                         <Label id="passwordConfirm">Confirmar Contraseña</Label>
                         <Input
                           placeholder="Editar contraseña"
-                          {...register("passwordConfirm")}
+                          type="password"
+                          {...register("password_confirm", {
+                            required: {
+                              value: false,
+                              message: "Confirmar la contraseña es requerido",
+                            },
+                            validate: (value) => {
+                              if (value === watch("password")) {
+                                return true;
+                              } else {
+                                return "Las contraseñas no coinciden";
+                              }
+                            },
+                          })}
                         >
                           <Icon
                             icon="mdi:lock"
@@ -153,6 +178,11 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
                             className="text-azulFuerte"
                           />
                         </Input>
+                        {
+                          <span className="text-sm italic text-red-600">
+                            {errors.password_confirm?.message}
+                          </span>
+                        }
                       </div>
                     </div>
                     <div className="flex flex-col gap-1">
@@ -181,7 +211,7 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
                   >
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
+                  <Button color="primary" type="submit">
                     Editar
                   </Button>
                 </ModalFooter>
@@ -266,17 +296,25 @@ export const ModalEliminarUsuarios = ({ idUser, updateTable }: ModalProps) => {
 };
 
 export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const roles = useRolStore((state) => state.data);
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    watch,
+  } = useForm();
   const añadirUsuario = async (data: UserData) => {
     await registerUser(data);
     updateTable();
   };
   const onSubmit = (data: UserData) => {
     añadirUsuario(data);
+    onClose();
     reset();
   };
+
   return (
     <>
       <Button
@@ -292,11 +330,14 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
         isDismissable={false}
         placement="top-center"
         size="2xl"
+        onClose={() => {
+          reset();
+        }}
       >
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <ModalContent>
-            {(onClose) => (
-              <>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <ModalHeader className="flex flex-col gap-1">
                   Agregar Usuario
                 </ModalHeader>
@@ -309,7 +350,9 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                         autoFocus
                         placeholder="Ingrese el usuario"
                         type="text"
-                        {...register("usuario")}
+                        {...register("usuario", {
+                          required: true,
+                        })}
                       >
                         <Icon
                           icon="mdi:account"
@@ -317,13 +360,20 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                           className="text-azulFuerte"
                         />
                       </Input>
+                      {errors.usuario?.type === "required" && (
+                        <span className="text-sm italic text-red-600">
+                          El usuario es requerido
+                        </span>
+                      )}
                     </div>
                     <div className="flex flex-col gap-1">
                       <Label>Nombre</Label>
                       <Input
                         placeholder="Ingrese el nombre"
                         type="text"
-                        {...register("nombre")}
+                        {...register("nombre", {
+                          required: true,
+                        })}
                       >
                         <Icon
                           icon="mdi:account"
@@ -331,6 +381,11 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                           className="text-azulFuerte"
                         />
                       </Input>
+                      {errors.nombre?.type === "required" && (
+                        <span className="text-sm italic text-red-600">
+                          El nombre es requerido
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="flex flex-col gap-1">
@@ -338,7 +393,9 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                     <Input
                       placeholder="Ingrese el correo"
                       type="email"
-                      {...register("email")}
+                      {...register("email", {
+                        required: true,
+                      })}
                     >
                       <Icon
                         icon="mdi:email"
@@ -346,6 +403,11 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                         className="text-azulFuerte"
                       />
                     </Input>
+                    {errors.email?.type === "required" && (
+                      <span className="text-sm italic text-red-600">
+                        El correo es requerido
+                      </span>
+                    )}
                   </div>
                   <div className="flex gap-8">
                     <div className="flex flex-col gap-1">
@@ -353,7 +415,9 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                       <Input
                         placeholder="Contraseña"
                         type="password"
-                        {...register("password")}
+                        {...register("password", {
+                          required: true,
+                        })}
                       >
                         <Icon
                           icon="mdi:lock"
@@ -361,16 +425,42 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                           className="text-azulFuerte"
                         />
                       </Input>
+                      {errors.password?.type === "required" && (
+                        <span className="text-sm italic text-red-600">
+                          La contraseña es requerida
+                        </span>
+                      )}
                     </div>
                     <div className="flex flex-col gap-1">
-                      <Label id="passwordConfirm">Confirmar Contraseña</Label>
-                      <Input placeholder="Confirmar contraseña" type="password">
+                      <Label id="confirm_password">Confirmar Contraseña</Label>
+                      <Input
+                        placeholder="Confirmar contraseña"
+                        type="password"
+                        {...register("confirm_password", {
+                          required: {
+                            value: true,
+                            message: "Confirmar la contraseña es requerido",
+                          },
+                          validate: (value) => {
+                            if (value === watch("password")) {
+                              return true;
+                            } else {
+                              return "Las contraseñas no coinciden";
+                            }
+                          },
+                        })}
+                      >
                         <Icon
                           icon="mdi:lock"
                           width={20}
                           className="text-azulFuerte"
                         />
                       </Input>
+                      {
+                        <span className="text-sm italic text-red-600">
+                          {errors.confirm_password?.message}
+                        </span>
+                      }
                     </div>
                   </div>
                   <div className="flex flex-col gap-1">
@@ -380,26 +470,41 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                       items={roles}
                       placeholder="Seleccione un rol"
                       size="lg"
-                      {...register("rol_id")}
+                      defaultSelectedKeys={["2"]}
+                      {...register("rol_id", {
+                        required: true,
+                      })}
                     >
                       {(rol) => (
                         <SelectItem key={rol.id}>{rol.nombre}</SelectItem>
                       )}
                     </Select>
+                    {errors.rol_id?.type === "required" && (
+                      <span className="text-sm italic text-red-600">
+                        El rol es requerido
+                      </span>
+                    )}
                   </div>
                 </ModalBody>
                 <ModalFooter>
-                  <Button color="danger" variant="light" onPress={onClose}>
+                  <Button
+                    color="danger"
+                    variant="light"
+                    onPress={() => {
+                      onClose();
+                      reset();
+                    }}
+                  >
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
+                  <Button color="primary" type="submit">
                     Agregar
                   </Button>
                 </ModalFooter>
-              </>
-            )}
-          </ModalContent>
-        </form>
+              </form>
+            </>
+          )}
+        </ModalContent>
       </Modal>
     </>
   );

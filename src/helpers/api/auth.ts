@@ -36,8 +36,22 @@ export const logout = async () => {
 export const registerUser = async (req: unknown) => {
   try {
     const register = await api.post("/auth/register", req);
+    toast.success(`Usuario registrado correctamente`);
     return register.data;
   } catch (error) {
+    if (error.response.data?.errors) {
+      if (error.response.data.errors?.usuario) {
+        toast.error(error.response.data.errors.usuario[0]);
+      }
+      if (error.response.data.errors?.password) {
+        toast.error(error.response.data.errors.password[0]);
+      }
+      if (error.response.data.errors?.email) {
+        toast.error(error.response.data.errors.email[0]);
+      }
+    } else {
+      toast.error("Error al registrar usuario");
+    }
     console.error("Error al registrar usuario: ", error);
   }
 };

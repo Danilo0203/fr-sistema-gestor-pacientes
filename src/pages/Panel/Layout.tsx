@@ -18,6 +18,7 @@ import { useRecetasStore } from "../../store/recetas/recetas";
 import { useRecetasPacienteStore } from "../../store/recetas/recetasPaciente";
 import { useEstadoCivilStore } from "../../store/pacientes/estadoCivil";
 import { usePacienteCitasStore } from "../../store/pacientes/pacientesCitas";
+import { Toaster } from "sonner";
 
 export const Layout = memo(() => {
   const init = useRolStore((state) => state.init);
@@ -79,6 +80,7 @@ export const Layout = memo(() => {
   ]);
   return (
     <>
+      <Toaster richColors expand closeButton position="top-center" />
       <section className="flex min-h-dvh">
         <div className="flex">
           <BarraNavegacion />
