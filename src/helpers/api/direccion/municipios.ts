@@ -48,14 +48,37 @@ export const createMunicipio = async (req: unknown) => {
 // Actualizar municipio
 export const updateMunicipio = async (id: string, req: unknown) => {
   try {
-    const municipio = await api.patch(`/municipios/${id}`, req);
+    // const municipio = await api.patch(`/municipios/${id}`, req);
+    const dataMunicipios = await api.get(`/municipios/${id}`);
+    const [municipios] = [dataMunicipios.data.data].map((municipio) => ({
+      id: municipio.id,
+      nombre: municipio.nombre,
+      departamento_id: municipio.departamento.id,
+    }));
+    // Crear objeto con solo los datos que cambiaron
+    const cambios = {};
+    Object.keys(req).forEach((key) => {
+      if (req[key] != municipios[key]) {
+        cambios[key] = req[key];
+      }
+    });
 
-    toast.success(
-      `Municipio: ${municipio.data.data.nombre}, actualizado correctamente`,
-    );
-    return municipio.data;
+    // Verificar si hay cambios antes de hacer la llamada a la API
+    if (Object.keys(cambios).length > 0) {
+      const municipioActualizado = await api.patch(
+        `/municipios/${id}`,
+        cambios,
+      );
+      toast.success(
+        `Municipio: ${municipioActualizado.data.data.nombre}, actualizado correctamente`,
+      );
+
+      return municipioActualizado.data.data;
+    } else {
+      return municipios;
+    }
   } catch (error: any) {
-    if (error.response.data?.errors) {
+    if (error.response?.data?.errors) {
       if (error.response.data.errors?.nombre)
         toast.warning(error.response.data.errors.nombre[0]);
 

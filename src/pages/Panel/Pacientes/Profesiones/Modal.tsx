@@ -15,7 +15,7 @@ import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+
 import { useProfesionStore } from "../../../../store/pacientes/profesiones";
 import {
   updateProfesion,
@@ -29,10 +29,16 @@ export const ModalEditarProfesion = ({
   idProfesion,
   updateTable,
 }: ModalProps) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const profesiones = useProfesionStore((state) => state.data);
-  const { setValue, register, handleSubmit } = useForm();
-  const navigate = useNavigate();
+  const {
+    setValue,
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
   const [profesionEdit, setProfesionEdit] = useState(null);
 
   const handleEdit = () => {
@@ -46,7 +52,8 @@ export const ModalEditarProfesion = ({
   };
 
   const handleClose = () => {
-    navigate("/pacientes/profesion");
+    onClose();
+    reset();
   };
 
   const actualizar = async (data: ProfesionData) => {
@@ -54,8 +61,10 @@ export const ModalEditarProfesion = ({
     updateTable();
   };
 
-  const onSubmit = (data: ProfesionData) => {
-    actualizar(data);
+  const onSubmit = async (data: ProfesionData) => {
+    await actualizar(data);
+    onClose();
+    reset();
   };
 
   return (
@@ -76,6 +85,7 @@ export const ModalEditarProfesion = ({
         onOpenChange={onOpenChange}
         isDismissable={false}
         placement="top-center"
+        onClose={handleClose}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
@@ -86,14 +96,29 @@ export const ModalEditarProfesion = ({
                 </ModalHeader>
                 <Divider />
                 <ModalBody>
-                  <Label id="nombre">Nombre</Label>
-                  <Input placeholder="Editar nombre" {...register("nombre")}>
-                    <Icon
-                      icon="mdi:account"
-                      width={20}
-                      className="text-azulFuerte"
-                    />
-                  </Input>
+                  <div className="flex flex-col gap-1">
+                    <Label id="nombre">Nombre</Label>
+                    <Input
+                      placeholder="Editar nombre"
+                      {...register("nombre", {
+                        required: {
+                          value: true,
+                          message: "Este campo es requerido",
+                        },
+                      })}
+                    >
+                      <Icon
+                        icon="mdi:account"
+                        width={20}
+                        className="text-azulFuerte"
+                      />
+                    </Input>
+                    {
+                      <span className="text-xs font-medium italic text-red-600">
+                        {errors.nombre?.message}
+                      </span>
+                    }
+                  </div>
                 </ModalBody>
                 <ModalFooter>
                   <Button
@@ -104,7 +129,7 @@ export const ModalEditarProfesion = ({
                   >
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
+                  <Button color="primary" type="submit">
                     Editar
                   </Button>
                 </ModalFooter>
@@ -121,16 +146,14 @@ export const ModalEliminarProfesion = ({
   idProfesion,
   updateTable,
 }: ModalProps) => {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const profesiones = useProfesionStore((state) => state.data);
+
   const handleDelete = async () => {
     await deleteProfesion(idProfesion);
     updateTable();
   };
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const profesionID: ProfesionData = getUsuarioById(
-    idProfesion,
-    profesiones,
-  )[0];
+  const [profesionID]: ProfesionData = getUsuarioById(idProfesion, profesiones);
 
   return (
     <>
@@ -190,16 +213,27 @@ export const ModalEliminarProfesion = ({
 };
 
 export const ModalAgregarProfesion = ({ updateTable }: ModalProps) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const agregarProfesion = async (data: UserData) => {
     await createProfesion(data);
     updateTable();
   };
-  const onSubmit = (data: UserData) => {
-    agregarProfesion(data);
+  const onSubmit = async (data: UserData) => {
+    await agregarProfesion(data);
+    onClose();
+    reset();
+  };
+  const handleClose = () => {
+    onClose();
+    reset();
   };
   return (
     <>
@@ -215,6 +249,7 @@ export const ModalAgregarProfesion = ({ updateTable }: ModalProps) => {
         onOpenChange={onOpenChange}
         isDismissable={false}
         placement="top-center"
+        onClose={handleClose}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
@@ -225,18 +260,30 @@ export const ModalAgregarProfesion = ({ updateTable }: ModalProps) => {
                 </ModalHeader>
                 <Divider />
                 <ModalBody className="mt-4">
-                  <Label>Profesión</Label>
-                  <Input
-                    placeholder="Ingrese la profesión"
-                    type="text"
-                    {...register("nombre")}
-                  />
+                  <div className="flex flex-col gap-1">
+                    <Label>Profesión</Label>
+                    <Input
+                      placeholder="Ingrese la profesión"
+                      type="text"
+                      {...register("nombre", {
+                        required: {
+                          value: true,
+                          message: "Este campo es requerido",
+                        },
+                      })}
+                    />
+                    {
+                      <span className="text-xs font-medium italic text-red-600">
+                        {errors.nombre?.message}
+                      </span>
+                    }
+                  </div>
                 </ModalBody>
                 <ModalFooter>
                   <Button color="danger" variant="light" onPress={onClose}>
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
+                  <Button color="primary" type="submit">
                     Agregar
                   </Button>
                 </ModalFooter>

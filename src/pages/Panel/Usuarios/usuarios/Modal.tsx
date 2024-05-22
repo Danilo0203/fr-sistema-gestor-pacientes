@@ -62,8 +62,8 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
   };
 
   const onSubmit = (data: UserData) => {
+    console.log(data);
     actualizar(data);
-    navigate("/usuarios/tabla");
     onClose();
     reset({ password: "", password_confirm: "" });
   };

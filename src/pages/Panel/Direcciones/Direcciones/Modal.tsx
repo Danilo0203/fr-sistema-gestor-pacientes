@@ -15,9 +15,8 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { useDireccionStore } from "../../../../store/direcciones/direcciones";
 import { useMunicipioStore } from "../../../../store/direcciones/municipios";
 import {
@@ -32,13 +31,24 @@ export const ModalEditarDireccion = ({
   idDireccion,
   updateTable,
 }: ModalProps) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const direcciones = useDireccionStore((state) => state.data);
   const municipios = useMunicipioStore((state) => state.data);
-  const [editDirecciones, setEditDirecciones] = useState(null);
+  const [editDirecciones, setEditDirecciones] = useState([]);
+  const {
+    setValue,
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
-  const { setValue, register, handleSubmit } = useForm();
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (editDirecciones) {
+      setValue("municipio_id", editDirecciones.municipio);
+      setValue("nombre", editDirecciones.nombre);
+    }
+  }, [editDirecciones, setValue]);
 
   const handleEdit = () => {
     const [direccionID] = getUsuarioById(idDireccion, direcciones);
@@ -49,21 +59,31 @@ export const ModalEditarDireccion = ({
       municipio: direccionID.municipio,
     };
     setEditDirecciones(datosDireccion);
-    setValue("municipio", direccionID.municipio);
-    setValue("nombre", direccionID.nombre);
   };
 
   const handleClose = () => {
-    navigate("/direcciones/tabla");
+    onClose();
+    reset();
   };
 
   const actualizar = async (data: DireccionData) => {
     await updateDireccion(editDirecciones.id, data);
     updateTable();
   };
+  // Funcion para buscar el nombre del municipio y devolver el id
+  const buscarMunicipio = (nombreMunicipio) => {
+    const municipio = municipios.find(
+      (municipio) => municipio.nombre === nombreMunicipio,
+    );
+    return municipio.id;
+  };
 
   const onSubmit = (data: DireccionData) => {
+    data.municipio_id = buscarMunicipio(data.municipio_id);
+    console.log(data);
     actualizar(data);
+    onClose();
+    reset();
   };
 
   return (
@@ -84,6 +104,7 @@ export const ModalEditarDireccion = ({
         onOpenChange={onOpenChange}
         isDismissable={false}
         size="2xl"
+        onClose={handleClose}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
@@ -100,7 +121,12 @@ export const ModalEditarDireccion = ({
                         <Label id="nombre">Nombre</Label>
                         <Input
                           placeholder="Editar nombre"
-                          {...register("nombre")}
+                          {...register("nombre", {
+                            required: {
+                              value: true,
+                              message: "El campo es requerido",
+                            },
+                          })}
                         >
                           <Icon
                             icon="mdi:account"
@@ -108,6 +134,11 @@ export const ModalEditarDireccion = ({
                             className="text-azulFuerte"
                           />
                         </Input>
+                        {
+                          <span className="text-xs font-medium italic text-red-600">
+                            {errors.nombre?.message}
+                          </span>
+                        }
                       </div>
                       <div className="flex w-1/2 flex-col gap-1">
                         <Label id="municipio_id">Municipio</Label>
@@ -115,16 +146,26 @@ export const ModalEditarDireccion = ({
                           aria-label="Municipio"
                           items={municipios}
                           placeholder="Seleccione un municipio"
-                          defaultSelectedKeys={[editDirecciones.municipioID]}
+                          defaultSelectedKeys={[editDirecciones.municipio]}
                           size="lg"
-                          {...register("municipio_id")}
+                          {...register("municipio_id", {
+                            required: {
+                              value: true,
+                              message: "El campo es requerido",
+                            },
+                          })}
                         >
                           {(municipio) => (
-                            <SelectItem key={municipio.id}>
+                            <SelectItem key={municipio.nombre}>
                               {municipio.nombre}
                             </SelectItem>
                           )}
                         </Select>
+                        {
+                          <span className="text-xs font-medium italic text-red-600">
+                            {errors.municipio_id?.message}
+                          </span>
+                        }
                       </div>
                     </div>
                   </div>
@@ -138,7 +179,7 @@ export const ModalEditarDireccion = ({
                   >
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
+                  <Button color="primary" type="submit">
                     Editar
                   </Button>
                 </ModalFooter>
@@ -224,9 +265,14 @@ export const ModalEliminarDireccion = ({
 };
 
 export const ModalAgregarDireccion = ({ updateTable }: ModalProps) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const dataMunicipios = useMunicipioStore((state) => state.data);
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const agregarDireccion = async (data: DireccionData) => {
     await createDireccion(data);
@@ -235,6 +281,12 @@ export const ModalAgregarDireccion = ({ updateTable }: ModalProps) => {
 
   const onSubmit = (data) => {
     agregarDireccion(data);
+    onClose();
+    reset();
+  };
+  const handleClose = () => {
+    onClose();
+    reset();
   };
 
   return (
@@ -251,6 +303,7 @@ export const ModalAgregarDireccion = ({ updateTable }: ModalProps) => {
         onOpenChange={onOpenChange}
         isDismissable={false}
         placement="top-center"
+        onClose={handleClose}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
@@ -261,34 +314,58 @@ export const ModalAgregarDireccion = ({ updateTable }: ModalProps) => {
                 </ModalHeader>
                 <Divider />
                 <ModalBody className="mt-4">
-                  <Label>Dirección</Label>
-                  <Input
-                    autoFocus
-                    placeholder="Ingrese la dirección"
-                    type="text"
-                    {...register("nombre")}
-                  />
-                  <Label>Municipio</Label>
-                  <Select
-                    aria-label="Municipio"
-                    items={dataMunicipios}
-                    placeholder="Seleccione un Municipio"
-                    variant="underlined"
-                    size="lg"
-                    {...register("municipio_id")}
-                  >
-                    {(municipio) => (
-                      <SelectItem key={municipio.id}>
-                        {municipio.nombre}
-                      </SelectItem>
-                    )}
-                  </Select>
+                  <div className="flex flex-col gap-1">
+                    <Label>Dirección</Label>
+                    <Input
+                      autoFocus
+                      placeholder="Ingrese la dirección"
+                      type="text"
+                      {...register("nombre", {
+                        required: {
+                          value: true,
+                          message: "El campo es requerido",
+                        },
+                      })}
+                    />
+                    {
+                      <span className="text-xs font-medium italic text-red-600">
+                        {errors.nombre?.message}
+                      </span>
+                    }
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <Label>Municipio</Label>
+                    <Select
+                      aria-label="Municipio"
+                      items={dataMunicipios}
+                      placeholder="Seleccione un Municipio"
+                      variant="underlined"
+                      size="lg"
+                      {...register("municipio_id", {
+                        required: {
+                          value: true,
+                          message: "El campo es requerido",
+                        },
+                      })}
+                    >
+                      {(municipio) => (
+                        <SelectItem key={municipio.id}>
+                          {municipio.nombre}
+                        </SelectItem>
+                      )}
+                    </Select>
+                    {
+                      <span className="text-xs font-medium italic text-red-600">
+                        {errors.municipio_id?.message}
+                      </span>
+                    }
+                  </div>
                 </ModalBody>
                 <ModalFooter>
-                  <Button color="danger" variant="flat" onPress={onClose}>
+                  <Button color="danger" variant="light" onPress={onClose}>
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
+                  <Button color="primary" type="submit">
                     Agregar
                   </Button>
                 </ModalFooter>

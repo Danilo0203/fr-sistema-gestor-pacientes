@@ -17,7 +17,6 @@ import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
 import { useMunicipioStore } from "../../../../store/direcciones/municipios";
 import { useDepartamentoStore } from "../../../../store/direcciones/departamentos";
 import {
@@ -32,12 +31,25 @@ export const ModalEditarMunicipio = ({
   idMunicipio,
   updateTable,
 }: ModalProps) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const municipios = useMunicipioStore((state) => state.data);
   const departamentos = useDepartamentoStore((state) => state.data);
-  const [editMunicipio, setEditMunicipio] = useState(null);
-  const { setValue, register, handleSubmit } = useForm();
-  const navigate = useNavigate();
+  const [editMunicipio, setEditMunicipio] = useState([]);
+
+  const {
+    setValue,
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  useEffect(() => {
+    if (editMunicipio) {
+      setValue("nombre", editMunicipio.nombre);
+      setValue("departamento_id", editMunicipio.departamento);
+    }
+  }, [editMunicipio, setValue]);
 
   const handleEdit = () => {
     const [municipioID] = getUsuarioById(idMunicipio, municipios);
@@ -48,12 +60,11 @@ export const ModalEditarMunicipio = ({
       departamento: municipioID.departamento,
     };
     setEditMunicipio(datosMunicipio);
-    setValue("departamento", municipioID.departamento);
-    setValue("nombre", municipioID.nombre);
   };
 
   const handleClose = () => {
-    navigate("/direcciones/municipio");
+    onClose();
+    reset();
   };
 
   const actualizar = async (data: MunicipioData) => {
@@ -61,8 +72,19 @@ export const ModalEditarMunicipio = ({
     updateTable();
   };
 
+  // Funcion para buscar el nombre del departamento y devolver el id
+  const getDepartamentoID = (nombre: string) => {
+    const [departamento] = departamentos.filter(
+      (departamento) => departamento.nombre === nombre,
+    );
+    return departamento.id;
+  };
+
   const onSubmit = (data: MunicipioData) => {
+    data.departamento_id = getDepartamentoID(data.departamento_id);
     actualizar(data);
+    onClose();
+    reset();
   };
 
   return (
@@ -83,6 +105,7 @@ export const ModalEditarMunicipio = ({
         onOpenChange={onOpenChange}
         isDismissable={false}
         size="2xl"
+        onClose={handleClose}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
@@ -95,18 +118,30 @@ export const ModalEditarMunicipio = ({
                 <ModalBody>
                   <div className="flex flex-col gap-8">
                     <div className="flex gap-8">
-                      <div className="flex w-1/2 flex-col gap-1">
-                        <Label id="nombre">Nombre</Label>
-                        <Input
-                          placeholder="Editar nombre"
-                          {...register("nombre")}
-                        >
-                          <Icon
-                            icon="mdi:account"
-                            width={20}
-                            className="text-azulFuerte"
-                          />
-                        </Input>
+                      <div className="flex flex-col gap-1">
+                        <div className="flex flex-col gap-4">
+                          <Label id="nombre">Nombre</Label>
+                          <Input
+                            placeholder="Editar nombre"
+                            {...register("nombre", {
+                              required: {
+                                value: true,
+                                message: "Este campo es requerido",
+                              },
+                            })}
+                          >
+                            <Icon
+                              icon="mdi:account"
+                              width={20}
+                              className="text-azulFuerte"
+                            />
+                          </Input>
+                        </div>
+                        {
+                          <span className="text-xs font-medium italic text-red-600">
+                            {errors.nombre?.message}
+                          </span>
+                        }
                       </div>
                       <div className="flex w-1/2 flex-col gap-1">
                         <Label id="departamento_id">Departamento</Label>
@@ -114,16 +149,27 @@ export const ModalEditarMunicipio = ({
                           aria-label="Departamento"
                           items={departamentos}
                           placeholder="Seleccione un departamento"
-                          defaultSelectedKeys={[editMunicipio.departamentoID]}
+                          defaultSelectedKeys={[editMunicipio.departamento]}
                           size="lg"
-                          {...register("departamento_id")}
+                          variant="underlined"
+                          {...register("departamento_id", {
+                            required: {
+                              value: true,
+                              message: "Este campo es requerido",
+                            },
+                          })}
                         >
                           {(departamento) => (
-                            <SelectItem key={departamento.id}>
+                            <SelectItem key={departamento.nombre}>
                               {departamento.nombre}
                             </SelectItem>
                           )}
                         </Select>
+                        {
+                          <span className="text-xs font-medium italic text-red-600">
+                            {errors.departamento_id?.message}
+                          </span>
+                        }
                       </div>
                     </div>
                   </div>
@@ -137,7 +183,7 @@ export const ModalEditarMunicipio = ({
                   >
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
+                  <Button color="primary" type="submit">
                     Editar
                   </Button>
                 </ModalFooter>

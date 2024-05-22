@@ -15,7 +15,7 @@ import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+
 import { useGeneroStore } from "../../../../store/pacientes/generos";
 import {
   updateGenero,
@@ -26,11 +26,16 @@ import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, GeneroData } from "types/index";
 
 export const ModalEditarGenero = ({ idGenero, updateTable }: ModalProps) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const generos = useGeneroStore((state) => state.data);
   const [editGenero, setEditGenero] = useState(null);
-  const { setValue, register, handleSubmit } = useForm();
-  const navigate = useNavigate();
+  const {
+    setValue,
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const handleEdit = () => {
     const [generoID] = getUsuarioById(idGenero, generos);
@@ -43,7 +48,8 @@ export const ModalEditarGenero = ({ idGenero, updateTable }: ModalProps) => {
   };
 
   const handleClose = () => {
-    navigate("/pacientes/genero");
+    onClose();
+    reset();
   };
 
   const actualizar = async (data: GeneroData) => {
@@ -53,6 +59,8 @@ export const ModalEditarGenero = ({ idGenero, updateTable }: ModalProps) => {
 
   const onSubmit = (data: GeneroData) => {
     actualizar(data);
+    onClose();
+    reset();
   };
 
   return (
@@ -72,8 +80,7 @@ export const ModalEditarGenero = ({ idGenero, updateTable }: ModalProps) => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         isDismissable={false}
-
-        // size="2xl"
+        onClose={handleClose}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
@@ -84,14 +91,30 @@ export const ModalEditarGenero = ({ idGenero, updateTable }: ModalProps) => {
                 </ModalHeader>
                 <Divider />
                 <ModalBody>
-                  <Label id="nombre">Nombre</Label>
-                  <Input placeholder="Editar género" {...register("nombre")}>
-                    <Icon
-                      icon="mdi:account"
-                      width={20}
-                      className="text-azulFuerte"
-                    />
-                  </Input>
+                  <div className="flex flex-col gap-1">
+                    <Label id="nombre">Nombre</Label>
+                    <Input
+                      placeholder="Editar género"
+                      {...register("nombre", {
+                        required: {
+                          value: true,
+                          message: "Este campo es requerido",
+                        },
+                      })}
+                    >
+                      <Icon
+                        icon="mdi:account"
+                        width={20}
+                        className="text-azulFuerte"
+                      />
+                    </Input>
+
+                    {
+                      <span className="text-xs font-medium italic text-red-600">
+                        {errors.nombre?.message}
+                      </span>
+                    }
+                  </div>
                 </ModalBody>
                 <ModalFooter>
                   <Button
@@ -102,7 +125,7 @@ export const ModalEditarGenero = ({ idGenero, updateTable }: ModalProps) => {
                   >
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
+                  <Button color="primary" type="submit">
                     Editar
                   </Button>
                 </ModalFooter>
@@ -182,9 +205,14 @@ export const ModalEliminarGenero = ({ idGenero, updateTable }: ModalProps) => {
 };
 
 export const ModalAgregarGenero = ({ updateTable }: ModalProps) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const agregarGenero = async (data: GeneroData) => {
     await createGenero(data);
@@ -192,6 +220,12 @@ export const ModalAgregarGenero = ({ updateTable }: ModalProps) => {
   };
   const onSubmit = (data) => {
     agregarGenero(data);
+    onClose();
+    reset();
+  };
+  const handleClose = () => {
+    onClose();
+    reset();
   };
   return (
     <>
@@ -207,6 +241,7 @@ export const ModalAgregarGenero = ({ updateTable }: ModalProps) => {
         onOpenChange={onOpenChange}
         isDismissable={false}
         placement="top-center"
+        onClose={handleClose}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
@@ -217,19 +252,31 @@ export const ModalAgregarGenero = ({ updateTable }: ModalProps) => {
                 </ModalHeader>
                 <Divider />
                 <ModalBody className="mt-4">
-                  <Label>Género</Label>
-                  <Input
-                    autoFocus
-                    placeholder="Ingrese el género"
-                    type="text"
-                    {...register("nombre")}
-                  />
+                  <div className="flex flex-col gap-1">
+                    <Label>Género</Label>
+                    <Input
+                      autoFocus
+                      placeholder="Ingrese el género"
+                      type="text"
+                      {...register("nombre", {
+                        required: {
+                          value: true,
+                          message: "Este campo es requerido",
+                        },
+                      })}
+                    />
+                    {
+                      <span className="text-xs font-medium italic text-red-600">
+                        {errors.nombre?.message}
+                      </span>
+                    }
+                  </div>
                 </ModalBody>
                 <ModalFooter>
                   <Button color="danger" variant="light" onPress={onClose}>
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
+                  <Button color="primary" type="submit">
                     Agregar
                   </Button>
                 </ModalFooter>

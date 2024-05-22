@@ -13,9 +13,9 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+
 import { useEstadoCivilStore } from "../../../../store/pacientes/estadoCivil";
 import {
   updateEstadoCivil,
@@ -29,11 +29,16 @@ export const ModalEditarEstadoCivil = ({
   idEstadoCivil,
   updateTable,
 }: ModalProps) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const estadoCiviles = useEstadoCivilStore((state) => state.data);
   const [editEstadoCivil, setEditEstadoCivil] = useState(null);
-  const { setValue, register, handleSubmit } = useForm();
-  const navigate = useNavigate();
+  const {
+    setValue,
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const handleEdit = () => {
     const [estadoCivilID] = getUsuarioById(idEstadoCivil, estadoCiviles);
@@ -46,7 +51,8 @@ export const ModalEditarEstadoCivil = ({
   };
 
   const handleClose = () => {
-    navigate("/pacientes/estado-civil");
+    onClose();
+    reset();
   };
 
   const actualizar = async (data: EstadoCivilData) => {
@@ -56,6 +62,8 @@ export const ModalEditarEstadoCivil = ({
 
   const onSubmit = (data: EstadoCivilData) => {
     actualizar(data);
+    onClose();
+    reset();
   };
 
   return (
@@ -71,7 +79,12 @@ export const ModalEditarEstadoCivil = ({
           </span>
         </Tooltip>
       </button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        onClose={handleClose}
+      >
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
             {(onClose) => (
@@ -81,14 +94,30 @@ export const ModalEditarEstadoCivil = ({
                 </ModalHeader>
                 <Divider />
                 <ModalBody>
-                  <Label id="nombre">Nombre</Label>
-                  <Input placeholder="Editar nombre" {...register("nombre")}>
-                    <Icon
-                      icon="mdi:account"
-                      width={20}
-                      className="text-azulFuerte"
-                    />
-                  </Input>
+                  <div className="flex flex-col gap-1">
+                    <Label id="nombre">Nombre</Label>
+                    <Input
+                      placeholder="Editar nombre"
+                      {...register("nombre", {
+                        required: {
+                          value: true,
+                          message: "Campo requerido",
+                        },
+                      })}
+                    >
+                      <Icon
+                        icon="mdi:account"
+                        width={20}
+                        className="text-azulFuerte"
+                      />
+                    </Input>
+
+                    {
+                      <span className="text-xs font-medium italic text-red-600">
+                        {errors.nombre?.message}
+                      </span>
+                    }
+                  </div>
                 </ModalBody>
                 <ModalFooter>
                   <Button
@@ -99,7 +128,7 @@ export const ModalEditarEstadoCivil = ({
                   >
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
+                  <Button color="primary" type="submit">
                     Editar
                   </Button>
                 </ModalFooter>
@@ -185,9 +214,14 @@ export const ModalEliminarEstadoCivil = ({
 };
 
 export const ModalAgregarEstadoCivil = ({ updateTable }: ModalProps) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const agregarEstadoCivil = async (data) => {
     await createEstadoCivil(data);
@@ -195,6 +229,12 @@ export const ModalAgregarEstadoCivil = ({ updateTable }: ModalProps) => {
   };
   const onSubmit = (data) => {
     agregarEstadoCivil(data);
+    onClose();
+    reset();
+  };
+  const handleClose = () => {
+    onClose();
+    reset();
   };
   return (
     <>
@@ -210,6 +250,7 @@ export const ModalAgregarEstadoCivil = ({ updateTable }: ModalProps) => {
         onOpenChange={onOpenChange}
         isDismissable={false}
         placement="top-center"
+        onClose={handleClose}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
@@ -220,19 +261,31 @@ export const ModalAgregarEstadoCivil = ({ updateTable }: ModalProps) => {
                 </ModalHeader>
                 <Divider />
                 <ModalBody className="mt-4">
-                  <Label>Estado Civil</Label>
-                  <Input
-                    autoFocus
-                    placeholder="Ingrese el estado civil"
-                    type="text"
-                    {...register("nombre")}
-                  />
+                  <div className="flex flex-col gap-1">
+                    <Label>Estado Civil</Label>
+                    <Input
+                      autoFocus
+                      placeholder="Ingrese el estado civil"
+                      type="text"
+                      {...register("nombre", {
+                        required: {
+                          value: true,
+                          message: "Campo requerido",
+                        },
+                      })}
+                    />
+                    {
+                      <span className="text-xs font-medium italic text-red-600">
+                        {errors.nombre?.message}
+                      </span>
+                    }
+                  </div>
                 </ModalBody>
                 <ModalFooter>
                   <Button color="danger" variant="light" onPress={onClose}>
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
+                  <Button color="primary" type="submit">
                     Agregar
                   </Button>
                 </ModalFooter>
