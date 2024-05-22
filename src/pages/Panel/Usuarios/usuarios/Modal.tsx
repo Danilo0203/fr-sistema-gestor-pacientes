@@ -314,7 +314,7 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
     onClose();
     reset();
   };
-
+  console.log(errors);
   return (
     <>
       <Button
@@ -416,7 +416,15 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                         placeholder="Contraseña"
                         type="password"
                         {...register("password", {
-                          required: true,
+                          minLength: {
+                            value: 8,
+                            message:
+                              "La contraseña debe tener al menos 8 caracteres",
+                          },
+                          required: {
+                            value: true,
+                            message: "La contraseña es requerida",
+                          },
                         })}
                       >
                         <Icon
@@ -427,7 +435,7 @@ export const ModalAgregarUsuarios = ({ updateTable }: ModalProps) => {
                       </Input>
                       {errors.password?.type === "required" && (
                         <span className="text-sm italic text-red-600">
-                          La contraseña es requerida
+                          {errors.password?.message}
                         </span>
                       )}
                     </div>
