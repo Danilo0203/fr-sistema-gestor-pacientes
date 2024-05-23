@@ -46,10 +46,9 @@ export const TablaUsuarios = () => {
   const renderCell = useCallback(
     (user: TableUsuariosProps, columnKey: TableUsuariosKeys) => {
       const cellValue = user[columnKey];
-      const id = usuarios.findIndex((u) => u.id === user.id) + 1;
       switch (columnKey) {
         case "id":
-          return <p>{id}</p>;
+          return <p>{user.index}</p>;
         case "usuario":
           return <p> {user.usuario} </p>;
         case "nombre":
@@ -73,7 +72,7 @@ export const TablaUsuarios = () => {
           return cellValue;
       }
     },
-    [getUsuarios, usuarios],
+    [getUsuarios],
   );
 
   const topContent = useMemo(() => {

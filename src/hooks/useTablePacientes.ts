@@ -59,6 +59,15 @@ export const useTablePacientes = (pacientes) => {
     });
   }, [sortDescriptor, items]);
 
+  // Calcular el indice de los items
+  const itemsConIndices = useMemo(() => {
+    const startIndex = (pagina - 1) * filasPorPagina;
+    return ordenarItems.map((item, index) => ({
+      ...item,
+      index: startIndex + index + 1,
+    }));
+  }, [ordenarItems, pagina, filasPorPagina]);
+
   // Tipo de dato Pacientes
   type Paciente = (typeof items)[number];
 
@@ -98,7 +107,7 @@ export const useTablePacientes = (pacientes) => {
     filterValue,
     loadingState,
     paginas,
-    ordenarItems,
+    ordenarItems: itemsConIndices,
     onRowsPerPageChange,
     onSearchChange,
     onClear,

@@ -54,11 +54,11 @@ export const TablaProfesiones = () => {
   const renderCell = useCallback(
     (profesion: Profesion, columnKey: Column) => {
       const cellValue = profesion[columnKey];
-      const id = profesiones.findIndex((u) => u.id === profesion.id) + 1;
+      
 
       switch (columnKey) {
         case "id":
-          return <p>{id}</p>;
+          return <p>{profesion.index}</p>;
         case "profesion":
           return <p>{profesion.nombre}</p>;
         case "acciones":

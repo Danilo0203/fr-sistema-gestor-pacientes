@@ -23,11 +23,6 @@ export const useTableMunicipios = (municipios) => {
     return filtrarMunicipios;
   }, [municipios, filterValue]);
 
-  // Funcion para obtener municipios
-  useEffect(() => {
-    getMunicipios();
-  }, [getMunicipios]);
-
   // Funcion para esperar la respuesta de la API
   useEffect(() => {
     const interval = setInterval(() => {
@@ -65,6 +60,15 @@ export const useTableMunicipios = (municipios) => {
       return 0;
     });
   }, [items, sortDescriptor]);
+
+  // Calcular el indice de los items
+  const itemsConIndices = useMemo(() => {
+    const startIndex = (pagina - 1) * filasPorPagina;
+    return ordenarItems.map((item, index) => ({
+      ...item,
+      index: startIndex + index + 1,
+    }));
+  }, [ordenarItems, pagina, filasPorPagina]);
 
   // Tipo de dato de los municipios
   type Municipio = {
@@ -109,7 +113,7 @@ export const useTableMunicipios = (municipios) => {
     filterValue,
     loadingState,
     paginas,
-    ordenarItems,
+    ordenarItems: itemsConIndices,
     onRowsPerPageChange,
     onSearchChange,
     onClear,

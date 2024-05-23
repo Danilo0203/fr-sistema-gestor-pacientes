@@ -72,8 +72,6 @@ export const TablaPacientes = () => {
       edad--;
     }
 
-    const id = pacientes.findIndex((u) => u.id === paciente.id) + 1;
-
     const cita = (id) => {
       const cita = statusCita.find((cita) => cita.pacienteID === id);
 
@@ -82,7 +80,7 @@ export const TablaPacientes = () => {
 
     switch (columnKey) {
       case "id":
-        return <p>{id}</p>;
+        return <p>{paciente.index}</p>;
       case "nombre":
         return <p>{paciente.nombre}</p>;
       case "apellido":

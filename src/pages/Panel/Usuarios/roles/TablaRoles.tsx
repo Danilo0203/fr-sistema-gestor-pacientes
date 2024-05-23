@@ -26,7 +26,6 @@ import { useRolStore } from "../../../../store/usuarios/roles";
 export const TablaRoles = () => {
   const dataRoles = useRolStore((state) => state.data);
 
-  // const roles = useRolStore((state) => state.data);
   const {
     value,
     getRoles,
@@ -54,28 +53,30 @@ export const TablaRoles = () => {
     sortable?: boolean;
   }
 
-  const renderCell = useCallback((rol: Rol, columnKey: Column) => {
-    const cellValue = rol[columnKey];
-    const id = dataRoles.findIndex((u) => u.id === rol.id) + 1;
-    switch (columnKey) {
-      case "id":
-        return <p> {id} </p>;
+  const renderCell = useCallback(
+    (rol: Rol, columnKey: Column) => {
+      const cellValue = rol[columnKey];
+      switch (columnKey) {
+        case "id":
+          return <p> {rol.index} </p>;
 
-      case "rol":
-        return <p> {rol.nombre} </p>;
-      case "descripcion":
-        return <p> {rol.descripcion} </p>;
-      case "acciones":
-        return (
-          <div className="relative flex items-center gap-3">
-            <ModalEditarRoles idRol={rol.id} updateTable={getRoles} />
-            <ModalEliminarRoles idRol={rol.id} updateTable={getRoles} />
-          </div>
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+        case "rol":
+          return <p> {rol.nombre} </p>;
+        case "descripcion":
+          return <p> {rol.descripcion} </p>;
+        case "acciones":
+          return (
+            <div className="relative flex items-center gap-3">
+              <ModalEditarRoles idRol={rol.id} updateTable={getRoles} />
+              <ModalEliminarRoles idRol={rol.id} updateTable={getRoles} />
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [dataRoles, getRoles],
+  );
 
   const topContent = useMemo(() => {
     return (

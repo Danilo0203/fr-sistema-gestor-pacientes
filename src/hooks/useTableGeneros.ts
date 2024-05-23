@@ -61,6 +61,15 @@ export const useTableGeneros = (generos) => {
     });
   }, [sortDescriptor, items]);
 
+  // Calcular el indice de los items
+  const itemsConIndices = useMemo(() => {
+    const startIndex = (pagina - 1) * filasPorPagina;
+    return ordenarItems.map((item, index) => ({
+      ...item,
+      index: startIndex + index + 1,
+    }));
+  }, [ordenarItems, pagina, filasPorPagina]);
+
   // Tipo de datos de genero
   type Genero = (typeof items)[number];
 
@@ -99,7 +108,7 @@ export const useTableGeneros = (generos) => {
     filterValue,
     loadingState,
     paginas,
-    ordenarItems,
+    ordenarItems: itemsConIndices,
     onRowsPerPageChange,
     onSearchChange,
     onClear,

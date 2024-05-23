@@ -23,11 +23,6 @@ export const useTableDepartamento = (departamentos) => {
     return filtrarDepartamentos;
   }, [departamentos, filterValue]);
 
-  // Funcion para obtener departamentos
-  useEffect(() => {
-    getDepartamentos();
-  }, [getDepartamentos]);
-
   // Funcion para esperar la respuesta de la API
   useEffect(() => {
     const interval = setInterval(() => {
@@ -62,6 +57,15 @@ export const useTableDepartamento = (departamentos) => {
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
   }, [sortDescriptor, items]);
+
+  // Calcular el indice de los items
+  const itemsConIndices = useMemo(() => {
+    const startIndex = (pagina - 1) * filasPorPagina;
+    return ordenarItems.map((item, index) => ({
+      ...item,
+      index: startIndex + index + 1,
+    }));
+  }, [ordenarItems, pagina, filasPorPagina]);
 
   // Tipo de dato de los departamentos
   type Departamento = (typeof items)[0];
@@ -101,7 +105,7 @@ export const useTableDepartamento = (departamentos) => {
     filterValue,
     loadingState,
     paginas,
-    ordenarItems,
+    ordenarItems: itemsConIndices,
     onRowsPerPageChange,
     onSearchChange,
     onClear,

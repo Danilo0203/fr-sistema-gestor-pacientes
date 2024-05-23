@@ -23,11 +23,6 @@ export const useTableDatosMedicos = (datosMedicos) => {
     return filtrarDatosMedicos;
   }, [datosMedicos, filterValue]);
 
-  // Funcion para obtener datos medicos
-  // useEffect(() => {
-  //   getDatosMedicos();
-  // }, [getDatosMedicos]);
-
   // Funcion para esperar la respuesta de la API
   useEffect(() => {
     const interval = setInterval(() => {
@@ -62,6 +57,15 @@ export const useTableDatosMedicos = (datosMedicos) => {
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
   }, [items, sortDescriptor]);
+
+  // Calcular el indice de los items
+  const itemsConIndices = useMemo(() => {
+    const startIndex = (pagina - 1) * filasPorPagina;
+    return ordenarItems.map((item, index) => ({
+      ...item,
+      index: startIndex + index + 1,
+    }));
+  }, [ordenarItems, pagina, filasPorPagina]);
 
   // Tipo de datos de datos medicos
   type DatosMedicos = (typeof items)[number];
@@ -101,7 +105,7 @@ export const useTableDatosMedicos = (datosMedicos) => {
     filterValue,
     loadingState,
     paginas,
-    ordenarItems,
+    ordenarItems: itemsConIndices,
     onRowsPerPageChange,
     onSearchChange,
     onClear,

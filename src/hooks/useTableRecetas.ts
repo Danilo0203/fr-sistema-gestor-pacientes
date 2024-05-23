@@ -56,6 +56,15 @@ export const useTableRecetas = (recetas) => {
     });
   }, [items, sortDescriptor]);
 
+  // Calcular el indice de los items
+  const itemsConIndices = useMemo(() => {
+    const startIndex = (pagina - 1) * filasPorPagina;
+    return ordenarItems.map((item, index) => ({
+      ...item,
+      index: startIndex + index + 1,
+    }));
+  }, [ordenarItems, pagina, filasPorPagina]);
+
   // Tipo de datos de recetas
   type Recetas = (typeof items)[number];
 
@@ -94,7 +103,7 @@ export const useTableRecetas = (recetas) => {
     filterValue,
     loadingState,
     paginas,
-    ordenarItems,
+    ordenarItems: itemsConIndices,
     onRowsPerPageChange,
     onSearchChange,
     onClear,

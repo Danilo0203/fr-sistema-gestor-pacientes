@@ -58,17 +58,18 @@ export const ModalEditarPaciente = memo(
 
     useEffect(() => {
       if (pacienteEdit) {
-        setValue("nombre", paciente.nombre);
-        setValue("apellido", paciente.apellido);
-        setValue("fecha_nacimiento", paciente.fecha_nacimiento);
-        setValue("profesion", paciente.profesion);
-        setValue("estadoCivil", paciente.estadoCivil);
+        setValue("nombre", pacienteEdit.nombre);
+        setValue("apellido", pacienteEdit.apellido);
+        setValue("fecha_nacimiento", pacienteEdit.fecha_nacimiento);
+        setValue("profesion_id", pacienteEdit.profesion);
+        setValue("estado_civil_id", pacienteEdit.estadoCivil);
+        setValue("genero_id", pacienteEdit.genero);
+        setValue("direccion_id", pacienteEdit.direccion);
       }
     }, [pacienteEdit, setValue]);
 
     const handleEdit = () => {
       const [paciente] = getUsuarioById(idPaciente, pacientes);
-
       const dataPaciente = {
         id: paciente.id,
         nombre: paciente.nombre,
@@ -97,7 +98,17 @@ export const ModalEditarPaciente = memo(
       updateTable();
     };
 
+    // Funcion para buscar el nombre del genero, direccion, profesion y estado civil  y devolver el id
+    const buscarPorId = (nombre: string, datos: string[]) => {
+      const item = datos.find((item) => item.nombre === nombre);
+      return item ? item.id : null;
+    };
+
     const onSubmit = async (data: PacienteData) => {
+      data.genero_id = buscarPorId(data.genero_id, dataGeneros);
+      data.estado_civil_id = buscarPorId(data.estado_civil_id, dataEstadoCivil);
+      data.profesion_id = buscarPorId(data.profesion_id, dataProfesiones);
+      data.direccion_id = buscarPorId(data.direccion_id, dataDireccion);
       await actualizar(data);
       onClose();
       reset();
@@ -186,7 +197,7 @@ export const ModalEditarPaciente = memo(
                           variant="underlined"
                           size="lg"
                           aria-label="genero"
-                          defaultSelectedKeys={[pacienteEdit?.generoID]}
+                          defaultSelectedKeys={[pacienteEdit?.genero]}
                           {...register("genero_id", {
                             required: {
                               value: true,
@@ -195,7 +206,7 @@ export const ModalEditarPaciente = memo(
                           })}
                         >
                           {(genero) => (
-                            <SelectItem key={genero.id}>
+                            <SelectItem key={genero.nombre}>
                               {genero.nombre}
                             </SelectItem>
                           )}
@@ -213,7 +224,7 @@ export const ModalEditarPaciente = memo(
                           placeholder="Seleccione un estado civil"
                           variant="underlined"
                           size="lg"
-                          defaultSelectedKeys={[pacienteEdit?.estadoCivilID]}
+                          defaultSelectedKeys={[pacienteEdit?.estadoCivil]}
                           aria-label="estado civil"
                           {...register("estado_civil_id", {
                             required: {
@@ -223,7 +234,7 @@ export const ModalEditarPaciente = memo(
                           })}
                         >
                           {(civil) => (
-                            <SelectItem key={civil.id}>
+                            <SelectItem key={civil.nombre}>
                               {civil.nombre}
                             </SelectItem>
                           )}
@@ -264,7 +275,7 @@ export const ModalEditarPaciente = memo(
                           placeholder="Seleccione una profesión"
                           variant="underlined"
                           size="lg"
-                          defaultSelectedKeys={[pacienteEdit?.profesionID]}
+                          defaultSelectedKeys={[pacienteEdit?.profesion]}
                           aria-label="profesion"
                           {...register("profesion_id", {
                             required: {
@@ -274,7 +285,7 @@ export const ModalEditarPaciente = memo(
                           })}
                         >
                           {(profesion) => (
-                            <SelectItem key={profesion.id}>
+                            <SelectItem key={profesion.nombre}>
                               {profesion.nombre}
                             </SelectItem>
                           )}
@@ -294,7 +305,7 @@ export const ModalEditarPaciente = memo(
                         placeholder="Seleccione una dirección"
                         variant="underlined"
                         size="lg"
-                        defaultSelectedKeys={[pacienteEdit?.direccionID]}
+                        defaultSelectedKeys={[pacienteEdit?.direccion]}
                         aria-label="direccion"
                         {...register("direccion_id", {
                           required: {
@@ -304,7 +315,7 @@ export const ModalEditarPaciente = memo(
                         })}
                       >
                         {(direccion) => (
-                          <SelectItem key={direccion.id}>
+                          <SelectItem key={direccion.nombre}>
                             {direccion.nombre}
                           </SelectItem>
                         )}

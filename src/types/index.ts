@@ -35,6 +35,7 @@ export interface TableUsuariosProps {
   nombre: string;
   rol: string;
   acciones: string;
+  index: number;
 }
 
 export type TableUsuariosKeys = keyof TableUsuariosProps;

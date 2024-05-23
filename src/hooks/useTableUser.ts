@@ -56,6 +56,14 @@ export const useTableUser = (usuarios) => {
     });
   }, [sortDescriptor, items]);
 
+  const itemsConIndices = useMemo(() => {
+    const startIndex = (pagina - 1) * filasPorPagina;
+    return ordenarItems.map((item, index) => ({
+      ...item,
+      index: startIndex + index + 1,
+    }));
+  }, [ordenarItems, pagina, filasPorPagina]);
+
   // Tipo de dato de los usuarios
   type User = (typeof items)[0];
 
@@ -94,7 +102,7 @@ export const useTableUser = (usuarios) => {
     filterValue,
     loadingState,
     paginas,
-    ordenarItems,
+    ordenarItems: itemsConIndices,
     onRowsPerPageChange,
     onSearchChange,
     onClear,

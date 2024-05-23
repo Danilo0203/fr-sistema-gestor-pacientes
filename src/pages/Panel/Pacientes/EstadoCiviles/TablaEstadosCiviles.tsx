@@ -58,7 +58,7 @@ export const TablaEstadoCiviles = () => {
 
       switch (columnKey) {
         case "id":
-          return <p>{id}</p>;
+          return <p>{estadoCivil.index}</p>;
         case "estadoCivil":
           return <p>{estadoCivil.nombre}</p>;
         case "acciones":

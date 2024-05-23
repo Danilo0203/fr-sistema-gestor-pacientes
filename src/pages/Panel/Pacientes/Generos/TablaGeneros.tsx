@@ -58,7 +58,7 @@ export const TablaGeneros = () => {
 
       switch (columnKey) {
         case "id":
-          return <p>{id}</p>;
+          return <p>{genero.index}</p>;
         case "genero":
           return <p>{genero.nombre}</p>;
         case "acciones":

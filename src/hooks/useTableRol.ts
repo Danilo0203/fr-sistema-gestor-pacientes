@@ -23,12 +23,6 @@ export const useTableRol = (roles) => {
     return filtrarUsuarios;
   }, [roles, filterValue]);
 
-  // Funcion para obtener roles
-  // useEffect(() => {
-  //   getRoles();
-    
-  // }, [getRoles]);
-
   // Funcion para esperar la respuesta de la API
   useEffect(() => {
     const interval = setInterval(() => {
@@ -61,6 +55,15 @@ export const useTableRol = (roles) => {
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
   }, [sortDescriptor, items]);
+
+  // Calcular el indice de los items
+  const itemsConIndices = useMemo(() => {
+    const startIndex = (pagina - 1) * filasPorPagina;
+    return ordenarItems.map((item, index) => ({
+      ...item,
+      index: startIndex + index + 1,
+    }));
+  }, [ordenarItems, pagina, filasPorPagina]);
 
   // Tipo de dato de los roles
   type User = (typeof items)[0];
@@ -100,7 +103,7 @@ export const useTableRol = (roles) => {
     filterValue,
     loadingState,
     paginas,
-    ordenarItems,
+    ordenarItems: itemsConIndices,
     onRowsPerPageChange,
     onSearchChange,
     onClear,

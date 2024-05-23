@@ -63,6 +63,15 @@ export const useTableEstadoCiviles = (estadoCiviles) => {
     });
   }, [items, sortDescriptor]);
 
+  // Calcular el indice de los items
+  const itemsConIndices = useMemo(() => {
+    const startIndex = (pagina - 1) * filasPorPagina;
+    return ordenarItems.map((item, index) => ({
+      ...item,
+      index: startIndex + index + 1,
+    }));
+  }, [ordenarItems, pagina, filasPorPagina]);
+
   // Tipo de datos de estado civil
   type EstadoCivil = (typeof items)[number];
 
@@ -101,7 +110,7 @@ export const useTableEstadoCiviles = (estadoCiviles) => {
     filterValue,
     loadingState,
     paginas,
-    ordenarItems,
+    ordenarItems: itemsConIndices,
     onRowsPerPageChange,
     onSearchChange,
     onClear,

@@ -52,11 +52,10 @@ export const TablaRecetas = () => {
   const renderCell = useCallback(
     (receta: Receta, columnKey: Column) => {
       const cellValue = receta[columnKey];
-      const id = recetas.findIndex((u) => u.id === receta.id) + 1;
-
+      
       switch (columnKey) {
         case "id":
-          return <p>{id}</p>;
+          return <p>{receta.index}</p>;
         case "fecha":
           return <p>{receta.fecha}</p>;
         case "usuario":

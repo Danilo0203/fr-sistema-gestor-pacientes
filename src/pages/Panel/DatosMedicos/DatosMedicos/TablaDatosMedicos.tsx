@@ -54,11 +54,11 @@ export const TablaDatosMedicos = () => {
   const renderCell = useCallback(
     (datoMedico: DatosMedicos, columnKey: Column) => {
       const cellValue = datoMedico[columnKey];
-      const id = datosMedicos.findIndex((u) => u.id === datoMedico.id) + 1;
+      
 
       switch (columnKey) {
         case "id":
-          return <p>{id}</p>;
+          return <p>{datoMedico.index}</p>;
         case "nombre":
           return <p>{datoMedico.nombre}</p>;
         case "acciones":
