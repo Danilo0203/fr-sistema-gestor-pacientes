@@ -95,13 +95,10 @@ export const updateUsuario = async (id, req) => {
 export const deleteUsuario = async (id: string) => {
   try {
     const usuario = await api.delete(`/usuarios/${id}`);
-
-    toast.success(
-      `Usuario: ${usuario.data.data.usuario}, eliminado correctamente`,
-    );
+    toast.success(usuario.data.message);
     return usuario.data;
   } catch (error: any) {
-    if (error.response.data?.error)
+    if (error.response?.data?.error)
       toast.warning(
         "No se puede eliminar el usuario, tiene registros asociados",
       );

@@ -85,8 +85,8 @@ export const updateRol = async (id, req) => {
 export const deleteRol = async (id: string) => {
   try {
     const rol = await api.delete(`/roles/${id}`);
-
-    toast.success(`Rol: ${rol.data.data.nombre}, eliminado correctamente`);
+    console.log(rol.data);
+    toast.success(rol.data.message);
     return rol.data;
   } catch (error: any) {
     if (error.response.data?.error)
