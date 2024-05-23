@@ -48,12 +48,32 @@ export const createDireccion = async (req: unknown) => {
 // Actualizar direccion
 export const updateDireccion = async (id: string, req: unknown) => {
   try {
-    const direccion = await api.patch(`/direcciones/${id}`, req);
+    const dataDirecciones = await api.get(`/direcciones/${id}`);
+    const [direcciones] = [dataDirecciones.data.data].map((direccion) => ({
+      id: direccion.id,
+      nombre: direccion.nombre,
+      municipio_id: direccion.municipio.id,
+    }));
 
+    // Crear objeto con solo los datos que cambiaron
+    const cambios = {};
+    Object.keys(req).forEach((key) => {
+      if (req[key] != direcciones[key]) {
+        cambios[key] = req[key];
+      }
+    });
+
+    // Verificar si hay cambios
+    if (Object.keys(cambios).length === 0) {
+      toast.info("No se realizaron cambios");
+      return;
+    }
+
+    const direccion = await api.patch(`/direcciones/${id}`, cambios);
     toast.success(
       `Dirección: ${direccion.data.data.nombre}, actualizada correctamente`,
     );
-    return direccion.data;
+    return direccion.data.data;
   } catch (error: any) {
     if (error.response.data?.errors) {
       if (error.response.data.errors?.nombre)
@@ -72,12 +92,10 @@ export const deleteDireccion = async (id: string) => {
   try {
     const direccion = await api.delete(`/direcciones/${id}`);
 
-    toast.success(
-      `Dirección: ${direccion.data.data.nombre}, eliminada correctamente`,
-    );
+    toast.success(direccion.data.message);
     return direccion.data;
   } catch (error: any) {
-    if (error.response.data?.error)
+    if (error.response?.data?.error)
       toast.warning(
         "No se puede eliminar la dirección, verifique que no tenga pacientes asociados",
       );

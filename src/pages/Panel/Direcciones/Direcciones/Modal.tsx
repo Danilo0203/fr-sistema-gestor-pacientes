@@ -80,7 +80,6 @@ export const ModalEditarDireccion = ({
 
   const onSubmit = (data: DireccionData) => {
     data.municipio_id = buscarMunicipio(data.municipio_id);
-    console.log(data);
     actualizar(data);
     onClose();
     reset();

@@ -46,28 +46,31 @@ export const createRol = async (req: unknown) => {
 // Actualizar rol
 export const updateRol = async (id, req) => {
   try {
-    const rol = await api.get(`/roles/${id}`, req);
-    const rolData = rol.data.data; // Asumiendo que los datos vienen en esta estructura
+    const dataRol = await api.get(`/roles/${id}`, req);
+    const [roles] = [dataRol.data.data].map((rol) => ({
+      id: rol.id,
+      nombre: rol.nombre,
+      descripcion: rol.descripcion,
+    }));
 
     // Crear objeto con solo los datos que cambiaron
     const cambios = {};
     Object.keys(req).forEach((key) => {
-      if (req[key] !== rolData[key]) {
+      if (req[key] != roles[key]) {
         cambios[key] = req[key];
       }
     });
 
-    // Verificar si hay cambios antes de hacer la llamada a la API
-    if (Object.keys(cambios).length > 0) {
-      const rolActualizado = await api.patch(`/roles/${id}`, cambios);
-      toast.success(
-        `Rol: ${rolActualizado.data.data.nombre}, actualizado correctamente`,
-      );
-      return rolActualizado.data.data;
-    } else {
+    // Verificar si hay cambios
+    if (Object.keys(cambios).length === 0) {
       toast.info("No se realizaron cambios");
-      return rolData; // o manejar según sea necesario
+      return;
     }
+
+    const rol = await api.patch(`/roles/${id}`, cambios);
+
+    toast.success(`Rol: ${rol.data.data.nombre}, actualizado correctamente`);
+    return rol.data;
   } catch (error: any) {
     if (error.response.data?.errors) {
       if (error.response.data.errors?.nombre)
@@ -85,7 +88,7 @@ export const updateRol = async (id, req) => {
 export const deleteRol = async (id: string) => {
   try {
     const rol = await api.delete(`/roles/${id}`);
-    console.log(rol.data);
+
     toast.success(rol.data.message);
     return rol.data;
   } catch (error: any) {

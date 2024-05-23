@@ -58,17 +58,17 @@ export const updateUsuario = async (id, req) => {
     });
 
     // Verificar si hay cambios antes de hacer la llamada a la API
-    if (Object.keys(cambios).length > 0) {
-      const usuarioActualizado = await api.patch(`/usuarios/${id}`, cambios);
-
-      toast.success(
-        `Usuario: ${usuarioActualizado.data.data.usuario}, actualizado correctamente`,
-      );
-      return usuarioActualizado.data.data;
-    } else {
-      toast.info("No hay cambios para actualizar");
-      return usuarioData; // o manejar según sea necesario
+    if (Object.keys(cambios).length === 0) {
+      toast.info("No se realizaron cambios");
+      return;
     }
+
+    const usuario = await api.patch(`/usuarios/${id}`, cambios);
+
+    toast.success(
+      `Usuario: ${usuario.data.data.usuario}, actualizado correctamente`,
+    );
+    return usuario.data;
   } catch (error: any) {
     if (error.response.data?.errors) {
       if (error.response.data.errors?.usuario)

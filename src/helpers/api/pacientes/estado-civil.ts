@@ -45,7 +45,27 @@ export const createEstadoCivil = async (req: unknown) => {
 // Actualizar estado civil
 export const updateEstadoCivil = async (id: string, req: unknown) => {
   try {
-    const estadoCivil = await api.patch(`/estado-civil/${id}`, req);
+    const dataEstadoCivil = await api.get(`/estado-civil/${id}`);
+    const [estadosCiviles] = [dataEstadoCivil.data.data].map((estadoCivil) => ({
+      id: estadoCivil.id,
+      nombre: estadoCivil.nombre,
+    }));
+
+    // Crear objeto con solo los datos que cambiaron
+    const cambios = {};
+    Object.keys(req).forEach((key) => {
+      if (req[key] != estadosCiviles[key]) {
+        cambios[key] = req[key];
+      }
+    });
+
+    // Verificar si hay cambios
+    if (Object.keys(cambios).length === 0) {
+      toast.info("No se realizaron cambios");
+      return;
+    }
+
+    const estadoCivil = await api.patch(`/estado-civil/${id}`, cambios);
 
     toast.success(
       `Estado civil: ${estadoCivil.data.data.nombre}, actualizado correctamente`,
@@ -66,12 +86,10 @@ export const deleteEstadoCivil = async (id: string) => {
   try {
     const estadoCivil = await api.delete(`/estado-civil/${id}`);
 
-    toast.success(
-      `Estado civil: ${estadoCivil.data.data.nombre}, eliminado correctamente`,
-    );
+    toast.success(estadoCivil.data.message);
     return estadoCivil.data;
   } catch (error: any) {
-    if (error.response.data?.error)
+    if (error.response?.data?.error)
       toast.warning(
         "No se puede eliminar el estado civil, verifique que no tenga pacientes asociados",
       );

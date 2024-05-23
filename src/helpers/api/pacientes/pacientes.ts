@@ -63,7 +63,33 @@ export const createPaciente = async (req: unknown) => {
 // Actualizar paciente
 export const updatePaciente = async (id: string, req: unknown) => {
   try {
-    const paciente = await api.patch(`/pacientes/${id}`, req);
+    const dataPaciente = await api.get(`/pacientes/${id}`);
+    const [pacientes] = [dataPaciente.data.data].map((paciente) => ({
+      id: paciente.id,
+      nombre: paciente.nombre,
+      apellido: paciente.apellido,
+      fecha_nacimiento: paciente.fecha_nacimiento,
+      genero_id: paciente.genero.id,
+      estado_civil_id: paciente.estado_civil.id,
+      profesion_id: paciente.profesion.id,
+      direccion_id: paciente.direccion.id,
+    }));
+
+    // Crear objeto con solo los datos que cambiaron
+    const cambios = {};
+    Object.keys(req).forEach((key) => {
+      if (req[key] != pacientes[key]) {
+        cambios[key] = req[key];
+      }
+    });
+
+    // Verificar si hay cambios
+    if (Object.keys(cambios).length === 0) {
+      toast.info("No se realizaron cambios");
+      return;
+    }
+
+    const paciente = await api.patch(`/pacientes/${id}`, cambios);
 
     toast.success(
       `Paciente: ${paciente.data.data.nombre}, actualizado correctamente`,
@@ -102,12 +128,10 @@ export const deletePaciente = async (id: string) => {
   try {
     const paciente = await api.delete(`/pacientes/${id}`);
 
-    toast.success(
-      `Paciente: ${paciente.data.data.nombre}, eliminado correctamente`,
-    );
+    toast.success(paciente.data.message);
     return paciente.data;
   } catch (error: any) {
-    if (error.response.data?.error)
+    if (error.response?.data?.error)
       toast.warning(
         "No se puede eliminar el paciente, verifique que no tenga registros asociados",
       );

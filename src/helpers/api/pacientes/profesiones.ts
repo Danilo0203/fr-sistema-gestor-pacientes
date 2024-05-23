@@ -45,7 +45,27 @@ export const createProfesion = async (req: unknown) => {
 // Actualizar profesion
 export const updateProfesion = async (id: string, req: unknown) => {
   try {
-    const profesion = await api.patch(`/profesiones/${id}`, req);
+    const dataProfesion = await api.get(`/profesiones/${id}`);
+    const [profesionData] = [dataProfesion.data.data].map((profesion) => ({
+      id: profesion.id,
+      nombre: profesion.nombre,
+    }));
+
+    // Crear objeto con solo los datos que cambiaron
+    const cambios = {};
+    Object.keys(req).forEach((key) => {
+      if (req[key] != profesionData[key]) {
+        cambios[key] = req[key];
+      }
+    });
+
+    // Verificar si hay cambios
+    if (Object.keys(cambios).length === 0) {
+      toast.info("No se realizaron cambios");
+      return;
+    }
+
+    const profesion = await api.patch(`/profesiones/${id}`, cambios);
 
     toast.success(
       `Profesión: ${profesion.data.data.nombre}, actualizado correctamente`,
@@ -66,12 +86,10 @@ export const deleteProfesion = async (id: string) => {
   try {
     const profesion = await api.delete(`/profesiones/${id}`);
 
-    toast.success(
-      `Profesión: ${profesion.data.data.nombre}, eliminado correctamente`,
-    );
+    toast.success(profesion.data.message);
     return profesion.data;
   } catch (error: any) {
-    if (error.response.data?.error)
+    if (error.response?.data?.error)
       toast.warning(
         "No se puede eliminar la profesión, verifique que no tenga pacientes asociados",
       );

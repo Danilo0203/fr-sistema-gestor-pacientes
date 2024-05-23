@@ -45,7 +45,27 @@ export const createGenero = async (req: unknown) => {
 // Actualizar genero
 export const updateGenero = async (id: string, req: unknown) => {
   try {
-    const genero = await api.patch(`/generos/${id}`, req);
+    const dataGenero = await api.get(`/generos/${id}`);
+    const [generos] = [dataGenero.data.data].map((genero) => ({
+      id: genero.id,
+      nombre: genero.nombre,
+    }));
+
+    // Crear objeto con solo los datos que cambiaron
+    const cambios = {};
+    Object.keys(req).forEach((key) => {
+      if (req[key] != generos[key]) {
+        cambios[key] = req[key];
+      }
+    });
+
+    // Verificar si hay cambios
+    if (Object.keys(cambios).length === 0) {
+      toast.info("No se realizaron cambios");
+      return;
+    }
+
+    const genero = await api.patch(`/generos/${id}`, cambios);
 
     toast.success(
       `Género: ${genero.data.data.nombre}, actualizado correctamente`,
@@ -66,12 +86,10 @@ export const deleteGenero = async (id: string) => {
   try {
     const genero = await api.delete(`/generos/${id}`);
 
-    toast.success(
-      `Género: ${genero.data.data.nombre}, eliminado correctamente`,
-    );
+    toast.success(genero.data.message);
     return genero.data;
   } catch (error: any) {
-    if (error.response.data?.error)
+    if (error.response?.data?.error)
       toast.warning(
         "No se puede eliminar el género, verifique que no tenga pacientes asociados",
       );

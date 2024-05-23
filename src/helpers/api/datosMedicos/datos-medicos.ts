@@ -45,7 +45,27 @@ export const createDatoMedico = async (req: unknown) => {
 // Actualizar dato medico
 export const updateDatoMedico = async (id: string, req: unknown) => {
   try {
-    const datoMedico = await api.patch(`/datos-medicos/${id}`, req);
+    const dataDatoMedico = await api.get(`/datos-medicos/${id}`);
+    const [datosMedicos] = [dataDatoMedico.data.data].map((datoMedico) => ({
+      id: datoMedico.id,
+      nombre: datoMedico.nombre,
+    }));
+
+    // Crear objeto con solo los datos que cambiaron
+    const cambios = {};
+    Object.keys(req).forEach((key) => {
+      if (req[key] != datosMedicos[key]) {
+        cambios[key] = req[key];
+      }
+    });
+
+    // Verificar si hay cambios
+    if (Object.keys(cambios).length === 0) {
+      toast.info("No se realizaron cambios");
+      return;
+    }
+
+    const datoMedico = await api.patch(`/datos-medicos/${id}`, cambios);
 
     toast.success(
       `Dato médico: ${datoMedico.data.data.nombre}, actualizado correctamente`,
@@ -66,12 +86,10 @@ export const deleteDatoMedico = async (id: string) => {
   try {
     const datoMedico = await api.delete(`/datos-medicos/${id}`);
 
-    toast.success(
-      `Dato médico: ${datoMedico.data.data.nombre}, eliminado correctamente`,
-    );
+    toast.success(datoMedico.data.message);
     return datoMedico.data;
   } catch (error: any) {
-    if (error.response.data?.error)
+    if (error.response?.data?.error)
       toast.warning(
         "No se puede eliminar este dato médico, contiene información importante",
       );

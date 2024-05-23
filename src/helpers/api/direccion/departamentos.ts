@@ -45,7 +45,29 @@ export const createDepartamento = async (req: unknown) => {
 // Actualizar departamento
 export const updateDepartamento = async (id: string, req: unknown) => {
   try {
-    const departamento = await api.patch(`/departamentos/${id}`, req);
+    const dataDepartamentos = await api.get(`/departamentos/${id}`);
+    const [departamentos] = [dataDepartamentos.data.data].map(
+      (departamento) => ({
+        id: departamento.id,
+        nombre: departamento.nombre,
+      }),
+    );
+
+    // Crear objeto con solo los datos que cambiaron
+    const cambios = {};
+    Object.keys(req).forEach((key) => {
+      if (req[key] != departamentos[key]) {
+        cambios[key] = req[key];
+      }
+    });
+
+    // Verificar si hay cambios
+    if (Object.keys(cambios).length === 0) {
+      toast.info("No se realizaron cambios");
+      return;
+    }
+
+    const departamento = await api.patch(`/departamentos/${id}`, cambios);
 
     toast.success(
       `Departamento: ${departamento.data.data.nombre}, actualizado correctamente`,
@@ -66,12 +88,10 @@ export const deleteDepartamento = async (id: string) => {
   try {
     const departamento = await api.delete(`/departamentos/${id}`);
 
-    toast.success(
-      `Departamento: ${departamento.data.data.nombre}, eliminado correctamente`,
-    );
+    toast.success(departamento.data.message);
     return departamento.data;
   } catch (error: any) {
-    if (error.response.data?.error)
+    if (error.response?.data?.error)
       toast.warning(
         "No se puede eliminar el departamento, tiene registros asociados",
       );
