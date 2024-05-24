@@ -37,6 +37,9 @@ export const ModalEditarDireccion = ({
   const municipios = useMunicipioStore((state) => state.data);
   const executePacientes = usePacienteStore((state) => state.execute);
   const [editDirecciones, setEditDirecciones] = useState([]);
+
+  console.log(direcciones);
+  
   const {
     setValue,
     register,
@@ -51,8 +54,9 @@ export const ModalEditarDireccion = ({
       setValue("nombre", editDirecciones.nombre);
     }
   }, [editDirecciones, setValue]);
-
+  
   const handleEdit = () => {
+    console.log(idDireccion);
     const [direccionID] = getUsuarioById(idDireccion, direcciones);
     const datosDireccion = {
       id: idDireccion,

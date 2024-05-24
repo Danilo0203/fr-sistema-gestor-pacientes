@@ -24,8 +24,7 @@ import { useDireccionStore } from "../../../../store/direcciones/direcciones";
 
 export const TablaDirecciones = () => {
   const direcciones = useDireccionStore((state) => state.data);
-  // const links = useDireccionStore((state) => state.pagination);
-  // console.log(links.first);
+
   const {
     value,
     getDirecciones,
@@ -37,7 +36,7 @@ export const TablaDirecciones = () => {
     loadingState,
     paginas,
     ordenarItems,
-    // onRowsPerPageChange,
+    onRowsPerPageChange,
     onSearchChange,
     onClear,
   } = useTableDirecciones(direcciones);
@@ -85,7 +84,7 @@ export const TablaDirecciones = () => {
           return cellValue;
       }
     },
-    [getDirecciones],
+    [getDirecciones, direcciones],
   );
 
   const topContent = useMemo(() => {
@@ -118,7 +117,7 @@ export const TablaDirecciones = () => {
 
           <div className="flex w-1/5 flex-col items-end justify-center gap-2">
             <ModalAgregarDireccion updateTable={getDirecciones} />
-            {/* <Select
+            <Select
               label="Filas por página"
               className="max-w-xs"
               onChange={onRowsPerPageChange}
@@ -133,18 +132,17 @@ export const TablaDirecciones = () => {
               <SelectItem key="15" value="15">
                 15
               </SelectItem>
-            </Select> */}
+            </Select>
           </div>
         </div>
       </div>
     );
   }, [
-    // onRowsPerPageChange,
+    onRowsPerPageChange,
     direcciones.length,
     onClear,
     filterValue,
     onSearchChange,
-    getDirecciones,
   ]);
 
   return (
