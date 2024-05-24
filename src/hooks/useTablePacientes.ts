@@ -2,11 +2,25 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { SortDescriptor } from "@nextui-org/react";
 import { usePacienteStore } from "../store/pacientes/pacientes";
 import { usePacienteCitasStore } from "../store/pacientes/pacientesCitas";
+import { useDireccionStore } from "../store/direcciones/direcciones";
+import { useGeneroStore } from "../store/pacientes/generos";
+import { useProfesionStore } from "../store/pacientes/profesiones";
+import { useEstadoCivilStore } from "../store/pacientes/estadoCivil";
+import { useDepartamentoStore } from "../store/direcciones/departamentos";
+import { useMunicipioStore } from "../store/direcciones/municipios";
 
 export const useTablePacientes = (pacientes) => {
+  const initPacientes = usePacienteStore((state) => state.init);
+  const initCitas = usePacienteCitasStore((state) => state.init);
+  const initDirecciones = useDireccionStore((state) => state.init);
+  const initGeneros = useGeneroStore((state) => state.init);
+  const initProfesiones = useProfesionStore((state) => state.init);
+  const initEstadoCivil = useEstadoCivilStore((state) => state.init);
+  const initDepto = useDepartamentoStore((state) => state.init);
+  const initMuni = useMunicipioStore((state) => state.init);
   const getPacientes = usePacienteStore((state) => state.execute);
-  const dataCitas = usePacienteCitasStore((state) => state.data);
   const getCitas = usePacienteCitasStore((state) => state.execute);
+  const dataCitas = usePacienteCitasStore((state) => state.data);
   const loading = usePacienteStore((state) => state.loading);
   const [value, setValue] = useState(0);
   const [pagina, setPagina] = useState(1);
@@ -16,6 +30,26 @@ export const useTablePacientes = (pacientes) => {
     column: "id",
     direction: "ascending",
   });
+
+  useEffect(() => {
+    initPacientes();
+    initCitas();
+    initDirecciones();
+    initGeneros();
+    initProfesiones();
+    initEstadoCivil();
+    initDepto();
+    initMuni();
+  }, [
+    initPacientes,
+    initCitas,
+    initDirecciones,
+    initGeneros,
+    initProfesiones,
+    initEstadoCivil,
+    initDepto,
+    initMuni,
+  ]);
 
   // Funcion para filtrar pacientes por nombre
   const filtrarPacientePorNombre = useMemo(() => {

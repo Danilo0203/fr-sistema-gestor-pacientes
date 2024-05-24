@@ -4,6 +4,7 @@ import { useEstadoCivilStore } from "../store/pacientes/estadoCivil";
 
 export const useTableEstadoCiviles = (estadoCiviles) => {
   const getEstadoCiviles = useEstadoCivilStore((state) => state.execute);
+  const initEstadoCiviles = useEstadoCivilStore((state) => state.init);
   const loading = useEstadoCivilStore((state) => state.loading);
   const [value, setValue] = useState(0);
   const [pagina, setPagina] = useState(1);
@@ -25,8 +26,8 @@ export const useTableEstadoCiviles = (estadoCiviles) => {
 
   // Funcion para obtener estado civiles
   useEffect(() => {
-    getEstadoCiviles();
-  }, [getEstadoCiviles]);
+    initEstadoCiviles();
+  }, [initEstadoCiviles]);
 
   // Funcion para esperar la respuesta de la API
   useEffect(() => {

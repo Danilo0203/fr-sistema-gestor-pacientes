@@ -3,7 +3,8 @@ import { useRolStore } from "../store/usuarios/roles";
 import { SortDescriptor } from "@nextui-org/react";
 
 export const useTableRol = (roles) => {
-  const getRoles = useRolStore((state) => state.execute);
+  const getRoles = useRolStore((state) => state.init);
+  const executeRoles = useRolStore((state) => state.execute);
   const loading = useRolStore((state) => state.loading);
   const [value, setValue] = useState(0);
   const [pagina, setPagina] = useState(1);
@@ -13,6 +14,11 @@ export const useTableRol = (roles) => {
     column: "id",
     direction: "ascending",
   });
+
+  // Funcion para obtener roles
+  useEffect(() => {
+    getRoles();
+  }, [getRoles]);
 
   // Funcion para filtrar roles por nombre
   const filtrarUsuarioPorNombre = useMemo(() => {
@@ -95,7 +101,7 @@ export const useTableRol = (roles) => {
 
   return {
     value,
-    getRoles,
+    getRoles: executeRoles,
     pagina,
     setPagina,
     sortDescriptor,

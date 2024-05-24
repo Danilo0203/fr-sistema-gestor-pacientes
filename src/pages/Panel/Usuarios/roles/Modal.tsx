@@ -21,9 +21,11 @@ import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, RolData } from "types/index";
 import { createRol, deleteRol, updateRol } from "helpers/api/usuarios/roles";
 import { useState } from "react";
+import { useUsuarioStore } from "../../../../store/usuarios";
 
 export const ModalEditarRoles = ({ idRol, updateTable }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const executeUser = useUsuarioStore((state) => state.execute);
   const roles = useRolStore((state) => state.data);
   const [editRol, setEditRol] = useState(null);
   const {
@@ -53,6 +55,7 @@ export const ModalEditarRoles = ({ idRol, updateTable }: ModalProps) => {
   const actualizar = async (data: RolData) => {
     await updateRol(editRol.id, data);
     updateTable();
+    executeUser();
   };
 
   const onSubmit = (data: RolData) => {

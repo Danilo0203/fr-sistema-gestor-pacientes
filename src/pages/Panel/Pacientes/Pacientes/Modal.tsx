@@ -438,9 +438,9 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
   const [valueEstadoCivil, setValueEstadoCivil] = useState("");
   const [profesionSelect, setProfesionSelect] = useState("");
   const [valueProfesion, setValueProfesion] = useState("");
-  const updateProfesiones = useProfesionStore((state) => state.init);
-  const updateEstadoCivil = useEstadoCivilStore((state) => state.init);
-  const updateDireccion = useDireccionStore((state) => state.init);
+  const updateProfesiones = useProfesionStore((state) => state.execute);
+  const updateEstadoCivil = useEstadoCivilStore((state) => state.execute);
+  const updateDireccion = useDireccionStore((state) => state.execute);
   const {
     register,
     handleSubmit,
@@ -448,45 +448,12 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
     formState: { errors },
   } = useForm();
 
-  const handleSelectionChange = (
-    key,
-    setSelectFunction,
-    value,
-    dataStore,
-    addFunction,
-  ) => {
-    setSelectFunction(key);
-
-    const selectedItem = dataStore.find((item) => item.id == key);
-    if (!selectedItem) {
-      const newItem = {
-        nombre: value,
-      };
-      addFunction(newItem);
-    }
-  };
-
-  const agregarDireccion = async (data) => {
-    await createDireccion(data);
-    updateTable();
-    updateDireccion();
-  };
-
-  const agregarEstadoCivil = async (data) => {
-    await createEstadoCivil(data);
-    updateTable();
-    updateEstadoCivil();
-  };
-
-  const agregarProfesion = async (data) => {
-    await createProfesion(data);
-    updateTable();
-    updateProfesiones();
-  };
-
   const agregarPaciente = async (data) => {
     await createPaciente(data);
     updateTable();
+    updateDireccion();
+    updateEstadoCivil();
+    updateProfesiones();
   };
 
   const buscarMunicipiosPorDepto = (id: string) => {
@@ -514,18 +481,22 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
       profesion_id,
       municipio_id,
     } = data;
-
+    console.log(data);
+    console.log(direccionSelect);
+    console.log(municipio_id);
     const idMunicipio = buscarPorId(municipio_id, dataMunicipios);
+    let idDireccion =
+      direccionSelect || buscarPorId(nombreDireccion, dataDireccion);
     let idEstadoCivil =
       estadoCivilSelect || buscarPorId(estado_civil_id, dataEstadoCivil);
     let idProfesion =
       profesionSelect || buscarPorId(profesion_id, dataProfesiones);
     const idGenero = buscarPorId(genero_id, dataGeneros);
-    let idDireccion = direccionSelect;
-
+    console.log(idMunicipio);
+    console.log(!idDireccion);
     if (!idDireccion) {
       const datosMunicipio = {
-        nombre: nombreDireccion,
+        nombre: valueDireccion,
         municipio_id: idMunicipio,
       };
 
@@ -556,10 +527,11 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
       municipio_id: idMunicipio,
     };
 
-    agregarPaciente(datosPaciente);
     onClose();
+    agregarPaciente(datosPaciente);
     reset();
   };
+
   const handleClose = () => {
     onClose();
     reset();
@@ -672,15 +644,15 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                         size="lg"
                         allowsCustomValue={true}
                         onInputChange={(value) => setValueEstadoCivil(value)}
-                        onSelectionChange={(key) =>
-                          handleSelectionChange(
-                            key,
-                            setEstadoCivilSelect,
-                            valueEstadoCivil,
-                            dataEstadoCivil,
-                            agregarEstadoCivil,
-                          )
-                        }
+                        onSelectionChange={(key) => setEstadoCivilSelect(key)}
+                        //   handleSelectionChange(
+                        //     key,
+                        //     setEstadoCivilSelect,
+                        //     valueEstadoCivil,
+                        //     dataEstadoCivil,
+                        //     agregarEstadoCivil,
+                        //   )
+                        // }
                         aria-label="estado civil"
                         {...register("estado_civil_id", {
                           required: {
@@ -734,15 +706,15 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                         size="lg"
                         allowsCustomValue={true}
                         onInputChange={(value) => setValueProfesion(value)}
-                        onSelectionChange={(key) =>
-                          handleSelectionChange(
-                            key,
-                            setProfesionSelect,
-                            valueProfesion,
-                            dataProfesiones,
-                            agregarProfesion,
-                          )
-                        }
+                        onSelectionChange={(key) => setProfesionSelect(key)}
+                        // handleSelectionChange(
+                        // key,
+                        // setProfesionSelect,
+                        // valueProfesion,
+                        // dataProfesiones,
+                        // agregarProfesion,
+                        // )
+                        // }
                         aria-label="profesion"
                         {...register("profesion_id", {
                           required: {
@@ -774,15 +746,15 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                       size="lg"
                       allowsCustomValue={true}
                       onInputChange={(value) => setValueDireccion(value)}
-                      onSelectionChange={(key) =>
-                        handleSelectionChange(
-                          key,
-                          setDireccionSelect,
-                          valueDireccion,
-                          dataDireccion,
-                          agregarDireccion,
-                        )
-                      }
+                      onSelectionChange={(key) => setDireccionSelect(key)}
+                      // handleSelectionChange(
+                      // key,
+                      // setDireccionSelect,
+                      // valueDireccion,
+                      // dataDireccion,
+                      // agregarDireccion,
+                      // )
+                      // }
                       aria-label="direccion"
                       {...register("nombreDireccion", {
                         required: {

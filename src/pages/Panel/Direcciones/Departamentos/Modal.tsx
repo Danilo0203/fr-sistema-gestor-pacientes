@@ -24,6 +24,8 @@ import {
 } from "helpers/api/direccion/departamentos";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, DepartamentoData } from "types/index";
+import { useMunicipioStore } from "../../../../store/direcciones/municipios";
+import { useDireccionStore } from "../../../../store/direcciones/direcciones";
 
 export const ModalEditarDepartamento = ({
   idDepartamento,
@@ -31,6 +33,9 @@ export const ModalEditarDepartamento = ({
 }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const departamentos = useDepartamentoStore((state) => state.data);
+  const executeMuni = useMunicipioStore((state) => state.execute);
+  const executeDirecciones = useDireccionStore((state) => state.execute);
+
   const [editDepto, setEditDepto] = useState(null);
   const { setValue, register, handleSubmit } = useForm();
   const navigate = useNavigate();
@@ -52,6 +57,8 @@ export const ModalEditarDepartamento = ({
   const actualizar = async (data: DepartamentoData) => {
     await updateDepartamento(editDepto.id, data);
     updateTable();
+    executeMuni();
+    executeDirecciones();
   };
 
   const onSubmit = (data: DepartamentoData) => {

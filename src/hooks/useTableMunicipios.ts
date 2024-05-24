@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMunicipioStore } from "../store/direcciones/municipios";
 import { SortDescriptor } from "@nextui-org/react";
+import { useDepartamentoStore } from "../store/direcciones/departamentos";
 
 export const useTableMunicipios = (municipios) => {
   const getMunicipios = useMunicipioStore((state) => state.execute);
+  const initMunicipios = useMunicipioStore((state) => state.init);
+  const initDeptos = useDepartamentoStore((state) => state.init);
   const loading = useMunicipioStore((state) => state.loading);
   const [value, setValue] = useState(0);
   const [pagina, setPagina] = useState(1);
@@ -13,6 +16,12 @@ export const useTableMunicipios = (municipios) => {
     column: "id",
     direction: "ascending",
   });
+
+  // Inicializar municipios
+  useEffect(() => {
+    initMunicipios();
+    initDeptos();
+  }, [initMunicipios, initDeptos]);
 
   // Funcion para filtrar municipios por nombre
   const filtrarMunicipioPorNombre = useMemo(() => {

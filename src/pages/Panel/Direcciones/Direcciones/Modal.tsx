@@ -26,6 +26,7 @@ import {
 } from "helpers/api/direccion/direcciones";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, DireccionData } from "types/index";
+import { usePacienteStore } from "../../../../store/pacientes/pacientes";
 
 export const ModalEditarDireccion = ({
   idDireccion,
@@ -34,6 +35,7 @@ export const ModalEditarDireccion = ({
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const direcciones = useDireccionStore((state) => state.data);
   const municipios = useMunicipioStore((state) => state.data);
+  const executePacientes = usePacienteStore((state) => state.execute);
   const [editDirecciones, setEditDirecciones] = useState([]);
   const {
     setValue,
@@ -69,6 +71,7 @@ export const ModalEditarDireccion = ({
   const actualizar = async (data: DireccionData) => {
     await updateDireccion(editDirecciones.id, data);
     updateTable();
+    executePacientes();
   };
   // Funcion para buscar el nombre del municipio y devolver el id
   const buscarMunicipio = (nombreMunicipio) => {
@@ -115,8 +118,8 @@ export const ModalEditarDireccion = ({
                 <Divider />
                 <ModalBody>
                   <div className="flex flex-col gap-8">
-                    <div className="flex gap-8">
-                      <div className="flex w-1/2 flex-col gap-1">
+                    <div className="flex flex-col gap-8">
+                      <div className="flex flex-col gap-1">
                         <Label id="nombre">Nombre</Label>
                         <Input
                           placeholder="Editar nombre"
@@ -139,7 +142,7 @@ export const ModalEditarDireccion = ({
                           </span>
                         }
                       </div>
-                      <div className="flex w-1/2 flex-col gap-1">
+                      <div className="flex flex-col gap-1">
                         <Label id="municipio_id">Municipio</Label>
                         <Select
                           aria-label="Municipio"

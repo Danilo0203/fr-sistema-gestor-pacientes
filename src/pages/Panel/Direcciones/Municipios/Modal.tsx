@@ -26,6 +26,8 @@ import {
 } from "helpers/api/direccion/municipios";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, MunicipioData } from "types/index";
+import { useDireccionStore } from "../../../../store/direcciones/direcciones";
+import { usePacienteStore } from "../../../../store/pacientes/pacientes";
 
 export const ModalEditarMunicipio = ({
   idMunicipio,
@@ -34,6 +36,8 @@ export const ModalEditarMunicipio = ({
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const municipios = useMunicipioStore((state) => state.data);
   const departamentos = useDepartamentoStore((state) => state.data);
+  const executeDirecciones = useDireccionStore((state) => state.execute);
+  const executePacientes = usePacienteStore((state) => state.execute);
   const [editMunicipio, setEditMunicipio] = useState([]);
 
   const {
@@ -70,6 +74,8 @@ export const ModalEditarMunicipio = ({
   const actualizar = async (data: MunicipioData) => {
     await updateMunicipio(editMunicipio.id, data);
     updateTable();
+    executeDirecciones();
+    executePacientes();
   };
 
   // Funcion para buscar el nombre del departamento y devolver el id

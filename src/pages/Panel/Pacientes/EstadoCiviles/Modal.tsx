@@ -24,6 +24,7 @@ import {
 } from "helpers/api/pacientes/estado-civil";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, EstadoCivilData } from "types/index";
+import { usePacienteStore } from "../../../../store/pacientes/pacientes";
 
 export const ModalEditarEstadoCivil = ({
   idEstadoCivil,
@@ -31,6 +32,7 @@ export const ModalEditarEstadoCivil = ({
 }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const estadoCiviles = useEstadoCivilStore((state) => state.data);
+  const executePacientes = usePacienteStore((state) => state.execute);
   const [editEstadoCivil, setEditEstadoCivil] = useState(null);
   const {
     setValue,
@@ -58,6 +60,7 @@ export const ModalEditarEstadoCivil = ({
   const actualizar = async (data: EstadoCivilData) => {
     await updateEstadoCivil(editEstadoCivil.id, data);
     updateTable();
+    executePacientes();
   };
 
   const onSubmit = (data: EstadoCivilData) => {

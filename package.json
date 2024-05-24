@@ -23,6 +23,7 @@
     "react-hook-form": "^7.51.3",
     "react-router-dom": "^6.23.0",
     "sonner": "^1.4.41",
+    "swr": "^2.2.5",
     "uuid": "^9.0.1",
     "zustand": "^4.5.2"
   },

@@ -24,10 +24,12 @@ import {
 } from "helpers/api/pacientes/genero";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, GeneroData } from "types/index";
+import { usePacienteStore } from "../../../../store/pacientes/pacientes";
 
 export const ModalEditarGenero = ({ idGenero, updateTable }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const generos = useGeneroStore((state) => state.data);
+  const executePacientes = usePacienteStore((state) => state.execute);
   const [editGenero, setEditGenero] = useState(null);
   const {
     setValue,
@@ -55,6 +57,7 @@ export const ModalEditarGenero = ({ idGenero, updateTable }: ModalProps) => {
   const actualizar = async (data: GeneroData) => {
     await updateGenero(editGenero.id, data);
     updateTable();
+    executePacientes();
   };
 
   const onSubmit = (data: GeneroData) => {

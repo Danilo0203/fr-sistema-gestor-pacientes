@@ -54,7 +54,6 @@ export const TablaEstadoCiviles = () => {
   const renderCell = useCallback(
     (estadoCivil: EstadoCivil, columnKey: Column) => {
       const cellValue = estadoCivil[columnKey];
-      const id = estadoCiviles.findIndex((u) => u.id === estadoCivil.id) + 1;
 
       switch (columnKey) {
         case "id":

@@ -24,6 +24,7 @@ import {
 } from "helpers/api/pacientes/profesiones";
 import { getUsuarioById } from "../../../../utils/getUsuarioById";
 import { ModalProps, ProfesionData } from "types/index";
+import { usePacienteStore } from "../../../../store/pacientes/pacientes";
 
 export const ModalEditarProfesion = ({
   idProfesion,
@@ -31,6 +32,7 @@ export const ModalEditarProfesion = ({
 }: ModalProps) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const profesiones = useProfesionStore((state) => state.data);
+  const executePacientes = usePacienteStore((state) => state.execute);
   const {
     setValue,
     register,
@@ -59,6 +61,7 @@ export const ModalEditarProfesion = ({
   const actualizar = async (data: ProfesionData) => {
     await updateProfesion(profesionEdit.id, data);
     updateTable();
+    executePacientes();
   };
 
   const onSubmit = async (data: ProfesionData) => {

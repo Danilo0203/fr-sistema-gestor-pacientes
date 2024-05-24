@@ -44,7 +44,8 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
     const [editUsuario] = getUsuarioById(idUser, usuarios);
     const dataUsuario = {
       id: editUsuario.id,
-      rol: editUsuario.rolID,
+      rolID: editUsuario.rolID,
+      rol: editUsuario.rol,
     };
     setUsuarioEdit(dataUsuario);
     setValue("usuario", editUsuario.usuario);
@@ -61,8 +62,14 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
     updateTable();
   };
 
+  // Funcion para buscar el nombre del rol y mandar el id
+  const searchRol = (rol: string) => {
+    const rolID = roles.find((r) => r.nombre === rol);
+    return rolID?.id;
+  };
+
   const onSubmit = (data: UserData) => {
-    console.log(data);
+    data.rol_id = searchRol(data.rol_id);
     actualizar(data);
     onClose();
     reset({ password: "", password_confirm: "" });
@@ -196,7 +203,7 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
                         {...register("rol_id")}
                       >
                         {(rol) => (
-                          <SelectItem key={rol.id}>{rol.nombre}</SelectItem>
+                          <SelectItem key={rol.nombre}>{rol.nombre}</SelectItem>
                         )}
                       </Select>
                     </div>

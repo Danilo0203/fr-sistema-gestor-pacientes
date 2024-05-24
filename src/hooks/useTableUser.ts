@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useUsuarioStore } from "../store/usuarios";
 import { SortDescriptor } from "@nextui-org/react";
+import { useRolStore } from "../store/usuarios/roles";
 
 export const useTableUser = (usuarios) => {
-  const getUsuarios = useUsuarioStore((state) => state.execute);
+  const executeUsuarios = useUsuarioStore((state) => state.execute);
+  const getRoles = useRolStore((state) => state.init);
   const loading = useUsuarioStore((state) => state.loading);
   const [value, setValue] = useState(0);
   const [pagina, setPagina] = useState(1);
@@ -13,6 +15,10 @@ export const useTableUser = (usuarios) => {
     column: "id",
     direction: "ascending",
   });
+
+  useEffect(() => {
+    getRoles();
+  }, [getRoles]);
 
   // Funcion para filtrar usuarios por nombre
   const filtrarUsuarioPorNombre = useMemo(() => {
@@ -94,7 +100,7 @@ export const useTableUser = (usuarios) => {
 
   return {
     value,
-    getUsuarios,
+    getUsuarios: executeUsuarios,
     pagina,
     setPagina,
     sortDescriptor,

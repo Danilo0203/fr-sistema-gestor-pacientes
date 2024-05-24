@@ -75,7 +75,7 @@ export const TablaRoles = () => {
           return cellValue;
       }
     },
-    [dataRoles, getRoles],
+    [getRoles],
   );
 
   const topContent = useMemo(() => {

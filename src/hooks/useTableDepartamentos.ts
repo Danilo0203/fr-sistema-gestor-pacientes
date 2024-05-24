@@ -4,6 +4,7 @@ import { SortDescriptor } from "@nextui-org/react";
 
 export const useTableDepartamento = (departamentos) => {
   const getDepartamentos = useDepartamentoStore((state) => state.execute);
+  const initDepartamentos = useDepartamentoStore((state) => state.init);
   const loading = useDepartamentoStore((state) => state.loading);
   const [value, setValue] = useState(0);
   const [pagina, setPagina] = useState(1);
@@ -13,6 +14,11 @@ export const useTableDepartamento = (departamentos) => {
     column: "id",
     direction: "ascending",
   });
+
+  // Inicializar departamentos
+  useEffect(() => {
+    initDepartamentos();
+  }, [initDepartamentos]);
 
   // Funcion para filtrar departamentos por nombre
   const filtrarDepartamentoPorNombre = useMemo(() => {

@@ -4,6 +4,7 @@ import { useProfesionStore } from "../store/pacientes/profesiones";
 
 export const useTableProfesiones = (profesiones) => {
   const getProfesiones = useProfesionStore((state) => state.execute);
+  const initProfesiones = useProfesionStore((state) => state.init);
   const loading = useProfesionStore((state) => state.loading);
   const [value, setValue] = useState(0);
   const [pagina, setPagina] = useState(1);
@@ -25,8 +26,8 @@ export const useTableProfesiones = (profesiones) => {
 
   // Funcion para obtener profesiones
   useEffect(() => {
-    getProfesiones();
-  }, [getProfesiones]);
+    initProfesiones();
+  }, [initProfesiones]);
 
   // Funcion para esperar la respuesta de la API
   useEffect(() => {
