@@ -14,7 +14,7 @@ api.interceptors.request.use((config) => {
 });
 // Configuración de reintentos exponenciales
 axiosRetry(api, {
-  retries: 3,
+  retries: 5,
   retryDelay: (retryCount) => {
     return axiosRetry.exponentialDelay(retryCount);
   },

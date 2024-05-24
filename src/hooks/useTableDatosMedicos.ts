@@ -4,6 +4,7 @@ import { useDatosMedicosStore } from "../store/datosMedicos/datosMedicos";
 
 export const useTableDatosMedicos = (datosMedicos) => {
   const getDatosMedicos = useDatosMedicosStore((state) => state.execute);
+  const initDatosMedicos = useDatosMedicosStore((state) => state.init);
   const loading = useDatosMedicosStore((state) => state.loading);
   const [value, setValue] = useState(0);
   const [pagina, setPagina] = useState(1);
@@ -13,6 +14,11 @@ export const useTableDatosMedicos = (datosMedicos) => {
     column: "id",
     direction: "ascending",
   });
+
+  // Inicializar datos medicos
+  useEffect(() => {
+    initDatosMedicos();
+  }, [initDatosMedicos]);
 
   // Funcion para filtrar datos medicos por nombre
   const filtrarDatosMedicosPorNombre = useMemo(() => {

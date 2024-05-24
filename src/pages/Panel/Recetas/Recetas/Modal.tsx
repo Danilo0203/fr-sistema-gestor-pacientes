@@ -15,7 +15,7 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Input } from "components/ui/Input";
 import { Label } from "components/ui/Label";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useRecetasStore } from "../../../../store/recetas/recetas";
@@ -28,15 +28,15 @@ import { ModalProps, RecetasData } from "types/index";
 import { useUsuarioStore } from "../../../../store/usuarios";
 
 export const ModalEditarReceta = ({ idReceta, updateTable }: ModalProps) => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const recetas = useRecetasStore((state) => state.data);
   const usuarios = useUsuarioStore((state) => state.data);
   const [editRecetas, setEditRecetas] = useState(null);
-  const { setValue, register, handleSubmit } = useForm();
-  const navigate = useNavigate();
+  const { setValue, register, handleSubmit, reset } = useForm();
 
   const handleEdit = () => {
     const [recetaMedicaID] = getUsuarioById(idReceta, recetas);
+
     const datosReceta = {
       id: idReceta,
       usuarioID: recetaMedicaID.usuarioID,
@@ -44,21 +44,31 @@ export const ModalEditarReceta = ({ idReceta, updateTable }: ModalProps) => {
       fecha: recetaMedicaID.fecha,
     };
     setEditRecetas(datosReceta);
-    setValue("usuario", recetaMedicaID.usuario);
+    setValue("usuario", recetaMedicaID.usuarioID);
     setValue("fecha", recetaMedicaID.fecha);
-    console.log(editRecetas);
   };
 
   const handleClose = () => {
-    navigate("/recetas-medicas/tabla");
+    onClose();
+    reset();
   };
   const actualizar = async (data: RecetasData) => {
     await updateRecetaMedica(editRecetas.id, data);
     updateTable();
   };
 
+  // Funcion para buscar el nombre del usuario y mandar el id
+  const userByID = (usuario: string) => {
+    console.log(usuario);
+    const user = usuarios.find((user) => user.nombre == usuario);
+    return user.id;
+  };
+
   const onSubmit = (data: RecetasData) => {
+    data.user_id = userByID(data.user_id);
     actualizar(data);
+    onClose();
+    reset();
   };
 
   return (
@@ -79,6 +89,7 @@ export const ModalEditarReceta = ({ idReceta, updateTable }: ModalProps) => {
         onOpenChange={onOpenChange}
         isDismissable={false}
         placement="top-center"
+        onClose={handleClose}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalContent>
@@ -90,8 +101,8 @@ export const ModalEditarReceta = ({ idReceta, updateTable }: ModalProps) => {
                 <Divider />
                 <ModalBody>
                   <div className="flex flex-col gap-8">
-                    <div className="flex gap-8">
-                      <div className="flex w-1/2 flex-col gap-1">
+                    <div className="flex flex-col gap-8 py-4">
+                      <div className="flex flex-col">
                         <Label id="fecha">Fecha de Emisión</Label>
                         <Input
                           type="date"
@@ -105,18 +116,19 @@ export const ModalEditarReceta = ({ idReceta, updateTable }: ModalProps) => {
                           />
                         </Input>
                       </div>
-                      <div className="flex w-1/2 flex-col gap-1">
+                      <div className="flex flex-col">
                         <Label id="user_id">Usuario</Label>
                         <Select
                           aria-label="Usuario"
+                          variant="underlined"
                           items={usuarios}
                           placeholder="Seleccione un usuario"
-                          defaultSelectedKeys={[editRecetas.usuarioID]}
+                          defaultSelectedKeys={[editRecetas.usuario]}
                           size="lg"
                           {...register("user_id")}
                         >
                           {(usuario) => (
-                            <SelectItem key={usuario.id}>
+                            <SelectItem key={usuario.nombre}>
                               {usuario.nombre}
                             </SelectItem>
                           )}
@@ -134,7 +146,7 @@ export const ModalEditarReceta = ({ idReceta, updateTable }: ModalProps) => {
                   >
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit" onPress={onClose}>
+                  <Button color="primary" type="submit">
                     Editar
                   </Button>
                 </ModalFooter>
@@ -184,9 +196,8 @@ export const ModalEliminarReceta = ({ idReceta, updateTable }: ModalProps) => {
               </ModalHeader>
               <ModalBody>
                 <div className="flex w-full flex-col items-center gap-2 py-4">
-                  <h2 className="text-xl font-medium">
-                    ¿Desea eliminar la Receta Médica No. {recetaMedicaID.id} ?
-                    con fecha:
+                  <h2 className="text-center text-xl font-medium">
+                    ¿Desea eliminar la Receta Médica? con fecha:
                   </h2>
                   <h3 className="text-2xl font-bold text-red-600">
                     {recetaMedicaID.fecha} ?

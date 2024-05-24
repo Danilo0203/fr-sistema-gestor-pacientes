@@ -147,6 +147,7 @@ export const ModalEditarUsuarios = ({ idUser, updateTable }: ModalProps) => {
                       <div className="flex flex-col gap-1">
                         <Label id="password">Contraseña</Label>
                         <Input
+                          autoComplete="off"
                           placeholder="Editar contraseña"
                           type="password"
                           {...register("password", {

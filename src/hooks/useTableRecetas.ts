@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SortDescriptor } from "@nextui-org/react";
 import { useRecetasStore } from "../store/recetas/recetas";
+import { useUsuarioStore } from "../store/usuarios";
 
 export const useTableRecetas = (recetas) => {
   const getRecetas = useRecetasStore((state) => state.execute);
+  const initRecetas = useRecetasStore((state) => state.init);
+  const initUsuarios = useUsuarioStore((state) => state.init);
   const loading = useRecetasStore((state) => state.loading);
   const [value, setValue] = useState(0);
   const [pagina, setPagina] = useState(1);
@@ -13,6 +16,12 @@ export const useTableRecetas = (recetas) => {
     column: "fecha",
     direction: "descending",
   });
+
+  // Inicializar recetas
+  useEffect(() => {
+    initRecetas();
+    initUsuarios();
+  }, [initRecetas, initUsuarios]);
 
   // Funcion para filtrar recetas por fecha
   const filtrarRecetasPorFecha = useMemo(() => {
