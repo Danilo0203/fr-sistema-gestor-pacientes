@@ -27,7 +27,7 @@ export const useTableRecepcion = (pacientes) => {
   const [value, setValue] = useState(0);
   const [pagina, setPagina] = useState(1);
   const [filterValue, setFilterValue] = useState("");
-  const [filasPorPagina, setRowsPerPage] = useState(20);
+  const [filasPorPagina, setRowsPerPage] = useState(5);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "id",
     direction: "ascending",

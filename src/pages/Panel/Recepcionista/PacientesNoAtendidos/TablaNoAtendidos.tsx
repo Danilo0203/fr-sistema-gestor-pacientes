@@ -7,6 +7,9 @@ import {
   TableCell,
   Pagination,
   CircularProgress,
+  Select,
+  SelectItem,
+  Input,
   Autocomplete,
   AutocompleteItem,
   Button,
@@ -14,15 +17,19 @@ import {
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useEffect, useMemo } from "react";
 import { columns } from "./dataTable/data";
-import { ModalAgregarPaciente } from "./Modal";
+import {
+  ModalAgregarPaciente,
+  ModalEditarPaciente,
+  ModalEliminarPaciente,
+} from "./Modal";
 import { useTableRecepcion } from "hooks/useTableRecepcion";
 import { usePacienteStore } from "../../../../store/pacientes/pacientes";
 import { BotonCitas } from "components/ui/Botones/BotonCitas";
 import { usePanelStore } from "../../../../store/panel/usePanelStore";
 
-export const TablaAtender = () => {
+export const TablaNoAtendidos = () => {
   const pacientes = usePacienteStore((state) => state.data);
-  const pacienteAtender = usePanelStore((state) => state.dataNoAtendidos);
+  const pacientesNoAtendidos = usePanelStore((state) => state.dataAtendidos);
 
   const getPanel = usePanelStore((state) => state.init);
   const dataPacientes = usePanelStore((state) => state.dataPacientes);
@@ -43,8 +50,11 @@ export const TablaAtender = () => {
     loadingState,
     paginas,
     ordenarItems,
+    onRowsPerPageChange,
+    onSearchChange,
+    onClear,
     statusCita,
-  } = useTableRecepcion(pacienteAtender);
+  } = useTableRecepcion(pacientesNoAtendidos);
 
   interface Paciente {
     id: string;
@@ -60,10 +70,6 @@ export const TablaAtender = () => {
     label: string;
     sortable?: boolean;
   }
-  const cita = (id) => {
-    const cita = statusCita.find((cita) => cita.pacienteID === id);
-    return cita?.atender == 1 ? "Activo" : "Inactivo";
-  };
 
   const renderCell = (paciente: Paciente, columnKey: Column) => {
     const cellValue = paciente[columnKey];
@@ -80,6 +86,7 @@ export const TablaAtender = () => {
 
     const cita = (id) => {
       const cita = statusCita.find((cita) => cita.pacienteID === id);
+
       return cita?.atender == 1 ? "Activo" : "Inactivo";
     };
 
@@ -108,14 +115,7 @@ export const TablaAtender = () => {
             updateCita={getCitas}
           />
         );
-      case "acciones":
-        return (
-          <div className="relative flex items-center gap-3">
-            <Button className="bg-azulFuerte text-white">
-              Actualizar datos medicos
-            </Button>
-          </div>
-        );
+
       default:
         return cellValue;
     }
@@ -124,52 +124,10 @@ export const TablaAtender = () => {
   const topContent = useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
-        <div className="flex  items-end justify-between gap-2">
-          <Autocomplete
-            defaultItems={dataPacientes}
-            aria-label="Tabla Pacientes Atender"
-            variant="underlined"
-            label="Buscar por paciente para atender:"
-            className="w-1/2"
-            size="lg"
-          >
-            {(item) => (
-              <AutocompleteItem key={item.id} textValue={item.nombre}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="flex flex-col">
-                      <span className="text-small">
-                        {item.nombre} {item.apellido}
-                      </span>
-                    </div>
-                  </div>
-                  <BotonCitas
-                    idPaciente={item.id}
-                    boton={cita(item.id)}
-                    updateTable={getPacientes}
-                    updateRecepcion={executePanel}
-                    updateCita={getCitas}
-                  />
-                </div>
-              </AutocompleteItem>
-            )}
-          </Autocomplete>
-
-          <ModalAgregarPaciente updateTable={getPacientes} />
-        </div>
-
-        <h2 className="text-2xl font-bold">Cola de pacientes</h2>
-
-        <div className="flex items-center justify-between">
-          <div className="flex w-full flex-col gap-3">
-            <span className="text-small">
-              Total de pacientes: {pacientes.length}
-            </span>
-          </div>
-        </div>
+        <h2 className="text-2xl font-bold">Pacientes Atendidos</h2>
       </div>
     );
-  }, [pacientes.length, getPacientes, dataPacientes]);
+  }, []);
 
   return (
     <Table
@@ -210,7 +168,7 @@ export const TablaAtender = () => {
         emptyContent={
           ordenarItems.length > 0
             ? `No se encontró el paciente: ${filterValue}`
-            : "No hay pacientes para atender"
+            : "No hay pacientes atendidos"
         }
         loadingContent={
           <CircularProgress

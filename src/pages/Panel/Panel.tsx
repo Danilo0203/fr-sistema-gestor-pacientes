@@ -3,6 +3,7 @@ import { PanelAdmin } from "./Administrador/PanelAdmin";
 import { PanelRecepcion } from "./Recepcionista/PanelRecepcion";
 import { TablaAtender } from "./Recepcionista/PacientesAtender/TablaAtender";
 import { TablaReceta } from "./Administrador/TablaReceta/TablaReceta";
+import { TablaNoAtendidos } from "./Recepcionista/PacientesNoAtendidos/TablaNoAtendidos";
 
 export const Panel = () => {
   const rol = useAuthStore(
@@ -21,6 +22,7 @@ export const Panel = () => {
       <>
         <PanelRecepcion>
           <TablaAtender />
+          <TablaNoAtendidos />
         </PanelRecepcion>
       </>
     );
