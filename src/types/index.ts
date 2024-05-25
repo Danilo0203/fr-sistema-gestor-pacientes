@@ -28,6 +28,20 @@ export type StoreProps = {
   init: () => void;
 };
 
+// Tipos para el panel del store
+export type PanelStoreProps = {
+  loading: boolean;
+  success: boolean;
+  error: boolean;
+  dataPacientes: string[];
+  dataAtendidos: string[];
+  dataNoAtendidos: string[];
+  errorData: string | null;
+  dataLoaded: boolean;
+  execute: () => void;
+  init: () => void;
+};
+
 // Tipos para los encabezados de las tablas
 export interface TableUsuariosProps {
   id: string;

@@ -10,26 +10,37 @@ import {
   Select,
   SelectItem,
   Input,
+  Autocomplete,
+  AutocompleteItem,
+  Button,
 } from "@nextui-org/react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { columns } from "./dataTable/data";
 import {
   ModalAgregarPaciente,
   ModalEditarPaciente,
   ModalEliminarPaciente,
 } from "./Modal";
-import { useTablePacientes } from "hooks/useTablePacientes";
+import { useTableRecepcion } from "hooks/useTableRecepcion";
 import { usePacienteStore } from "../../../../store/pacientes/pacientes";
 import { BotonCitas } from "components/ui/Botones/BotonCitas";
+import { usePanelStore } from "../../../../store/panel/usePanelStore";
 
-export const TablaPacientes = () => {
+export const TablaAtender = () => {
   const pacientes = usePacienteStore((state) => state.data);
+  const pacienteAtender = usePanelStore((state) => state.dataNoAtendidos);
+
+  const getPanel = usePanelStore((state) => state.init);
+  const dataPacientes = usePanelStore((state) => state.dataPacientes);
+  useEffect(() => {
+    getPanel();
+  }, [getPanel]);
 
   const {
     value,
     getPacientes,
-    getPanelRecepcion,
+    getPanel: executePanel,
     getCitas,
     pagina,
     setPagina,
@@ -43,7 +54,7 @@ export const TablaPacientes = () => {
     onSearchChange,
     onClear,
     statusCita,
-  } = useTablePacientes(pacientes);
+  } = useTableRecepcion(pacienteAtender);
 
   interface Paciente {
     id: string;
@@ -100,8 +111,8 @@ export const TablaPacientes = () => {
             idPaciente={paciente.id}
             boton={cita(paciente.id)}
             updateTable={getPacientes}
+            updateRecepcion={executePanel}
             updateCita={getCitas}
-            updateRecepcion={getPanelRecepcion}
           />
         );
       case "acciones":
@@ -125,6 +136,34 @@ export const TablaPacientes = () => {
   const topContent = useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
+        <Autocomplete
+          defaultItems={dataPacientes}
+          aria-label="Tabla Pacientes Atender"
+          variant="underlined"
+          label="Buscar por paciente para atender:"
+          className="w-1/2"
+        >
+          {(item) => (
+            <AutocompleteItem key={item.id}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="flex flex-col">
+                    <span className="text-small">{item.nombre}</span>
+                  </div>
+                </div>
+                <Button
+                  className="mr-0.5 border-small font-medium shadow-small"
+                  radius="full"
+                  size="sm"
+                  variant="bordered"
+                >
+                  Add
+                </Button>
+              </div>
+            </AutocompleteItem>
+          )}
+        </Autocomplete>
+
         <div className="flex items-center justify-between">
           <div className="flex w-full flex-col gap-3">
             <Input
@@ -179,6 +218,7 @@ export const TablaPacientes = () => {
     filterValue,
     onSearchChange,
     getPacientes,
+    dataPacientes,
   ]);
 
   return (

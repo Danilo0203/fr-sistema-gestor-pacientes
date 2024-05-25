@@ -6,15 +6,19 @@ export const BotonCitas = ({
   boton,
   updateTable,
   updateCita,
+  updateRecepcion,
 }: {
   idPaciente: string;
   updateTable: () => void;
   updateCita: () => void;
+  updateRecepcion: () => void;
+  boton: string;
 }) => {
   const handleCita = async () => {
     await getCitasPaciente(idPaciente);
     updateTable();
     updateCita();
+    updateRecepcion();
   };
 
   return (

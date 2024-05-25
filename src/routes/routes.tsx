@@ -25,6 +25,7 @@ import { DatosMedicos } from "pages/Panel/DatosMedicos/DatosMedicos";
 import { TablaDatosMedicos } from "pages/Panel/DatosMedicos/DatosMedicos/TablaDatosMedicos";
 import { Recetas } from "pages/Panel/Recetas/Recetas";
 import { TablaRecetas } from "pages/Panel/Recetas/Recetas/TablaRecetas";
+import { TablaAtender } from "pages/Panel/Recepcionista/PacientesAtender/TablaAtender";
 
 const routes = createBrowserRouter([
   {

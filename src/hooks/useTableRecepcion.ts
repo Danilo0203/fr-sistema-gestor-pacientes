@@ -10,7 +10,7 @@ import { useDepartamentoStore } from "../store/direcciones/departamentos";
 import { useMunicipioStore } from "../store/direcciones/municipios";
 import { usePanelStore } from "../store/panel/usePanelStore";
 
-export const useTablePacientes = (pacientes) => {
+export const useTableRecepcion = (pacientes) => {
   const initPacientes = usePacienteStore((state) => state.init);
   const initCitas = usePacienteCitasStore((state) => state.init);
   const initDirecciones = useDireccionStore((state) => state.init);
@@ -20,8 +20,8 @@ export const useTablePacientes = (pacientes) => {
   const initDepto = useDepartamentoStore((state) => state.init);
   const initMuni = useMunicipioStore((state) => state.init);
   const getPacientes = usePacienteStore((state) => state.execute);
+  const getPanel = usePanelStore((state) => state.execute);
   const getCitas = usePacienteCitasStore((state) => state.execute);
-  const getPanelRecepcion = usePanelStore((state) => state.execute);
   const dataCitas = usePacienteCitasStore((state) => state.data);
   const loading = usePacienteStore((state) => state.loading);
   const [value, setValue] = useState(0);
@@ -135,7 +135,7 @@ export const useTablePacientes = (pacientes) => {
   return {
     value,
     getPacientes,
-    getPanelRecepcion,
+    getPanel,
     getCitas,
     pagina,
     setPagina,
