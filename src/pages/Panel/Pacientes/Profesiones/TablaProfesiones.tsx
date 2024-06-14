@@ -21,8 +21,12 @@ import {
 } from "./Modal";
 import { useTableProfesiones } from "hooks/useTableProfesiones";
 import { useProfesionStore } from "../../../../store/pacientes/profesiones";
+import { useAuthStore } from "../../../../store/auth";
 
 export const TablaProfesiones = () => {
+  const rol = useAuthStore(
+    (state) => state.profile.rol.nombre,
+  ).toLocaleLowerCase();
   const profesiones = useProfesionStore((state) => state.data);
   const {
     value,
@@ -54,7 +58,6 @@ export const TablaProfesiones = () => {
   const renderCell = useCallback(
     (profesion: Profesion, columnKey: Column) => {
       const cellValue = profesion[columnKey];
-      
 
       switch (columnKey) {
         case "id":
@@ -63,12 +66,14 @@ export const TablaProfesiones = () => {
           return <p>{profesion.nombre}</p>;
         case "acciones":
           return (
-            <div className="relative flex items-center gap-3">
+            <div className="flex flex-row-reverse items-center justify-end gap-3">
+              {rol === "administrador" && (
+                <ModalEliminarProfesion
+                  idProfesion={profesion.id}
+                  updateTable={getProfesiones}
+                />
+              )}
               <ModalEditarProfesion
-                idProfesion={profesion.id}
-                updateTable={getProfesiones}
-              />
-              <ModalEliminarProfesion
                 idProfesion={profesion.id}
                 updateTable={getProfesiones}
               />
@@ -78,7 +83,7 @@ export const TablaProfesiones = () => {
           return cellValue;
       }
     },
-    [getProfesiones],
+    [getProfesiones, rol],
   );
 
   const topContent = useMemo(() => {

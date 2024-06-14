@@ -9,6 +9,7 @@ import { useEstadoCivilStore } from "../store/pacientes/estadoCivil";
 import { useDepartamentoStore } from "../store/direcciones/departamentos";
 import { useMunicipioStore } from "../store/direcciones/municipios";
 import { usePanelStore } from "../store/panel/usePanelStore";
+import { useDatosMedicosStore } from "../store/datosMedicos/datosMedicos";
 
 export const useTableRecepcion = (pacientes) => {
   const initPacientes = usePacienteStore((state) => state.init);
@@ -19,6 +20,7 @@ export const useTableRecepcion = (pacientes) => {
   const initEstadoCivil = useEstadoCivilStore((state) => state.init);
   const initDepto = useDepartamentoStore((state) => state.init);
   const initMuni = useMunicipioStore((state) => state.init);
+  const initDatosMedicos = useDatosMedicosStore((state) => state.init);
   const getPacientes = usePacienteStore((state) => state.execute);
   const getPanel = usePanelStore((state) => state.execute);
   const getCitas = usePacienteCitasStore((state) => state.execute);
@@ -42,6 +44,7 @@ export const useTableRecepcion = (pacientes) => {
     initEstadoCivil();
     initDepto();
     initMuni();
+    initDatosMedicos();
   }, [
     initPacientes,
     initCitas,
@@ -51,6 +54,7 @@ export const useTableRecepcion = (pacientes) => {
     initEstadoCivil,
     initDepto,
     initMuni,
+    initDatosMedicos,
   ]);
 
   // Funcion para filtrar pacientes por nombre

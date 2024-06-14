@@ -12,9 +12,9 @@ import {
   Button,
 } from "@nextui-org/react";
 
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { columns } from "./dataTable/data";
-import { ModalAgregarPaciente } from "./Modal";
+import { ActualizarDatosMedicos, ModalAgregarPaciente } from "./Modal";
 import { useTableRecepcion } from "hooks/useTableRecepcion";
 import { usePacienteStore } from "../../../../store/pacientes/pacientes";
 import { BotonCitas } from "components/ui/Botones/BotonCitas";
@@ -59,10 +59,13 @@ export const TablaAtender = () => {
     label: string;
     sortable?: boolean;
   }
-  const cita = (id: number) => {
-    const citas = statusCita.find((cita) => cita.pacienteID === id);
-    return citas?.atender === 1 ? "Activo" : "Inactivo";
-  };
+  const cita = useCallback(
+    (id: number) => {
+      const citas = statusCita.find((cita) => cita.pacienteID === id);
+      return citas?.atender === 1 ? "Activo" : "Inactivo";
+    },
+    [statusCita],
+  );
 
   const renderCell = (paciente: Paciente, columnKey: Column) => {
     const cellValue = paciente[columnKey];
@@ -105,9 +108,7 @@ export const TablaAtender = () => {
       case "acciones":
         return (
           <div className="relative flex items-center gap-3">
-            <Button className="bg-azulFuerte text-white">
-              Actualizar datos medicos
-            </Button>
+            <ActualizarDatosMedicos idPaciente={paciente.id} />
           </div>
         );
       default:
@@ -149,7 +150,10 @@ export const TablaAtender = () => {
             )}
           </Autocomplete>
 
-          <ModalAgregarPaciente updateTable={getPacientes} updateRecepcion={executePanel} />
+          <ModalAgregarPaciente
+            updateTable={getPacientes}
+            updateRecepcion={executePanel}
+          />
         </div>
 
         <h2 className="text-2xl font-bold">Cola de pacientes</h2>
@@ -163,13 +167,19 @@ export const TablaAtender = () => {
         </div>
       </div>
     );
-  }, [pacientes.length, getPacientes, dataPacientes, executePanel, getCitas]);
+  }, [
+    pacientes.length,
+    getPacientes,
+    dataPacientes,
+    executePanel,
+    getCitas,
+    cita,
+  ]);
 
   return (
     <Table
       aria-label="Tabla de pacientes"
       isStriped
-      // removeWrapper
       onSortChange={setSortDescriptor}
       sortDescriptor={sortDescriptor}
       topContent={topContent}

@@ -33,7 +33,7 @@ export const createDatoMedicoPaciente = async (req: unknown) => {
 };
 
 // Actualizar dato medico del paciente
-export const updateDatoMedicoPaciente = async (id: string, req: unknown) => {
+export const updateDatoMedicoPaciente = async (id: number, req: unknown) => {
   try {
     const datoMedico = await api.patch(`/datos-medicos-paciente/${id}`, req);
     return datoMedico.data;

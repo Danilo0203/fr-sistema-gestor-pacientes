@@ -22,10 +22,13 @@ import {
 import { useTablePacientes } from "hooks/useTablePacientes";
 import { usePacienteStore } from "../../../../store/pacientes/pacientes";
 import { BotonCitas } from "components/ui/Botones/BotonCitas";
+import { useAuthStore } from "../../../../store/auth";
 
 export const TablaPacientes = () => {
   const pacientes = usePacienteStore((state) => state.data);
-
+  const rol = useAuthStore(
+    (state) => state.profile.rol.nombre,
+  ).toLocaleLowerCase();
   const {
     value,
     getPanel,
@@ -107,15 +110,17 @@ export const TablaPacientes = () => {
         );
       case "acciones":
         return (
-          <div className="relative flex items-center gap-3">
+          <div className="flex flex-row-reverse items-center justify-end gap-3">
+            {rol === "administrador" && (
+              <ModalEliminarPaciente
+                idPaciente={paciente.id}
+                updateTable={getPacientes}
+                updateRecepcion={getPanel}
+              />
+            )}
             <ModalEditarPaciente
               idPaciente={paciente.id}
               updateTable={getPacientes}
-            />
-            <ModalEliminarPaciente
-              idPaciente={paciente.id}
-              updateTable={getPacientes}
-              updateRecepcion={getPanel}
             />
           </div>
         );

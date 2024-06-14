@@ -21,8 +21,12 @@ import {
 } from "./Modal";
 import { useTableEstadoCiviles } from "hooks/useTableEstadoCiviles";
 import { useEstadoCivilStore } from "../../../../store/pacientes/estadoCivil";
+import { useAuthStore } from "../../../../store/auth";
 
 export const TablaEstadoCiviles = () => {
+  const rol = useAuthStore(
+    (state) => state.profile.rol.nombre,
+  ).toLocaleLowerCase();
   const estadoCiviles = useEstadoCivilStore((state) => state.data);
   const {
     value,
@@ -62,12 +66,14 @@ export const TablaEstadoCiviles = () => {
           return <p>{estadoCivil.nombre}</p>;
         case "acciones":
           return (
-            <div className="relative flex items-center gap-3">
+            <div className="flex flex-row-reverse items-center justify-end gap-3">
+              {rol === "administrador" && (
+                <ModalEliminarEstadoCivil
+                  idEstadoCivil={estadoCivil.id}
+                  updateTable={getEstadoCiviles}
+                />
+              )}
               <ModalEditarEstadoCivil
-                idEstadoCivil={estadoCivil.id}
-                updateTable={getEstadoCiviles}
-              />
-              <ModalEliminarEstadoCivil
                 idEstadoCivil={estadoCivil.id}
                 updateTable={getEstadoCiviles}
               />
@@ -77,7 +83,7 @@ export const TablaEstadoCiviles = () => {
           return cellValue;
       }
     },
-    [getEstadoCiviles],
+    [getEstadoCiviles, rol],
   );
 
   const topContent = useMemo(() => {

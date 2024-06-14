@@ -22,7 +22,7 @@ export const Header = () => {
   const clearSesion = useAuthStore((state) => state.setClearToken);
   const profile = useAuthStore((state) => state.profile);
   const usuariosData = useUsuarioStore((state) => state.data);
-  // Funcion para obtener el nombre del usuario logueado
+
   const usuario = usuariosData.find((usuario) => usuario.id == profile.id);
 
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ export const Header = () => {
   };
 
   return (
-    <Navbar height={"4rem"} maxWidth="full">
+    <Navbar height={"4rem"} maxWidth="full" position="static">
       <NavbarBrand>
         <Breadcrumbs size="lg">
           <BreadcrumbItem onPress={() => navigate("/panel")}>

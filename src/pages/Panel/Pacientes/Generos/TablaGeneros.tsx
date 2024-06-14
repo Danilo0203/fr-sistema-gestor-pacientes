@@ -21,8 +21,12 @@ import {
 } from "./Modal";
 import { useTableGeneros } from "hooks/useTableGeneros";
 import { useGeneroStore } from "../../../../store/pacientes/generos";
+import { useAuthStore } from "../../../../store/auth";
 
 export const TablaGeneros = () => {
+  const rol = useAuthStore(
+    (state) => state.profile.rol.nombre,
+  ).toLocaleLowerCase();
   const generos = useGeneroStore((state) => state.data);
   const {
     value,
@@ -63,12 +67,14 @@ export const TablaGeneros = () => {
           return <p>{genero.nombre}</p>;
         case "acciones":
           return (
-            <div className="relative flex items-center gap-3">
+            <div className="flex flex-row-reverse items-center justify-end gap-3">
+              {rol === "administrador" && (
+                <ModalEliminarGenero
+                  idGenero={genero.id}
+                  updateTable={getGeneros}
+                />
+              )}
               <ModalEditarGenero
-                idGenero={genero.id}
-                updateTable={getGeneros}
-              />
-              <ModalEliminarGenero
                 idGenero={genero.id}
                 updateTable={getGeneros}
               />
@@ -78,7 +84,7 @@ export const TablaGeneros = () => {
           return cellValue;
       }
     },
-    [getGeneros, generos],
+    [getGeneros, generos, rol],
   );
 
   const topContent = useMemo(() => {
