@@ -115,7 +115,6 @@ export const TablaAtender = () => {
         return cellValue;
     }
   };
-
   const topContent = useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
@@ -138,6 +137,7 @@ export const TablaAtender = () => {
                       </span>
                     </div>
                   </div>
+
                   <BotonCitas
                     idPaciente={item.id}
                     boton={cita(item.id)}

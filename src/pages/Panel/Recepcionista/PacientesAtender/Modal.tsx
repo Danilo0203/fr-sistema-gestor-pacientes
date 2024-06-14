@@ -106,8 +106,7 @@ export const ModalAgregarPaciente = ({
     let idProfesion =
       profesionSelect || buscarPorId(profesion_id, dataProfesiones);
     const idGenero = buscarPorId(genero_id, dataGeneros);
-    console.log(idMunicipio);
-    console.log(!idDireccion);
+
     if (!idDireccion) {
       const datosMunicipio = {
         nombre: valueDireccion,
@@ -469,7 +468,7 @@ export const ModalAgregarPaciente = ({
 export const ActualizarDatosMedicos = ({
   idPaciente,
 }: {
-  idPaciente: number;
+  idPaciente: string;
 }) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const {

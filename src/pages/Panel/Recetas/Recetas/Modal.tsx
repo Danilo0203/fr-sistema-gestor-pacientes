@@ -59,7 +59,6 @@ export const ModalEditarReceta = ({ idReceta, updateTable }: ModalProps) => {
 
   // Funcion para buscar el nombre del usuario y mandar el id
   const userByID = (usuario: string) => {
-    console.log(usuario);
     const user = usuarios.find((user) => user.nombre == usuario);
     return user.id;
   };

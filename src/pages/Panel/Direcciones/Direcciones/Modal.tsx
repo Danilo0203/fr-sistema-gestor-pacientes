@@ -54,7 +54,7 @@ export const ModalEditarDireccion = ({
   }, [editDirecciones, setValue]);
 
   const handleEdit = () => {
-    console.log(idDireccion);
+    
     const [direccionID] = getUsuarioById(idDireccion, direcciones);
     const datosDireccion = {
       id: idDireccion,

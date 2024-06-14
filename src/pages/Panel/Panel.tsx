@@ -13,8 +13,10 @@ export const Panel = () => {
   if (rol === "administrador" || rol === "doctor") {
     return (
       <>
-        <PanelAdmin />
-        <TablaReceta />
+        <PanelAdmin>
+          <TablaReceta />
+          <TablaAtender />
+        </PanelAdmin>
       </>
     );
   } else {

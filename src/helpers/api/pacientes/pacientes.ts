@@ -147,7 +147,6 @@ export const getCitasPaciente = async (id: string) => {
     toast.success("Cita del paciente actualizada correctamente");
     return citasPaciente.data;
   } catch (error: any) {
-    console.log(error);
     if (error.response.data?.error)
       toast.warning("No se puede cambiar la cita del paciente");
     else toast.error("Error al cambiar la cita del paciente");

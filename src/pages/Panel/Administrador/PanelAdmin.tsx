@@ -1,8 +1,12 @@
-export const PanelAdmin = () => {
+import { format } from "@formkit/tempo";
+
+export const PanelAdmin = ({ children }) => {
+  const date = new Date();
+  const hoy = format(date, "DD/MM/YYYY");
   return (
     <div className="flex flex-grow flex-col gap-5 p-4">
-      <h2 className="text-2xl text-azulFuerte">Tabla</h2>
-      <h1>Panel Adminstrador</h1>
+      <time className="text-2xl text-azulFuerte">Fecha: {hoy} </time>
+      {children}
     </div>
   );
 };

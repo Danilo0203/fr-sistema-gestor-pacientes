@@ -481,9 +481,7 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
       profesion_id,
       municipio_id,
     } = data;
-    console.log(data);
-    console.log(direccionSelect);
-    console.log(municipio_id);
+
     const idMunicipio = buscarPorId(municipio_id, dataMunicipios);
     let idDireccion =
       direccionSelect || buscarPorId(nombreDireccion, dataDireccion);
@@ -492,8 +490,7 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
     let idProfesion =
       profesionSelect || buscarPorId(profesion_id, dataProfesiones);
     const idGenero = buscarPorId(genero_id, dataGeneros);
-    console.log(idMunicipio);
-    console.log(!idDireccion);
+
     if (!idDireccion) {
       const datosMunicipio = {
         nombre: valueDireccion,
