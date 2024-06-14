@@ -12,7 +12,7 @@ import { usePanelStore } from "../store/panel/usePanelStore";
 
 export const useTablePacientes = (pacientes) => {
   const initPacientes = usePacienteStore((state) => state.init);
-  const initCitas = usePacienteCitasStore((state) => state.init);
+  // const initCitas = usePacienteCitasStore((state) => state.init);
   const initDirecciones = useDireccionStore((state) => state.init);
   const initGeneros = useGeneroStore((state) => state.init);
   const initProfesiones = useProfesionStore((state) => state.init);
@@ -22,6 +22,7 @@ export const useTablePacientes = (pacientes) => {
   const getPacientes = usePacienteStore((state) => state.execute);
   const getCitas = usePacienteCitasStore((state) => state.execute);
   const getPanelRecepcion = usePanelStore((state) => state.execute);
+  const getPanel = usePanelStore((state) => state.execute);
   const dataCitas = usePacienteCitasStore((state) => state.data);
   const loading = usePacienteStore((state) => state.loading);
   const [value, setValue] = useState(0);
@@ -32,10 +33,9 @@ export const useTablePacientes = (pacientes) => {
     column: "id",
     direction: "ascending",
   });
-
   useEffect(() => {
     initPacientes();
-    initCitas();
+    getCitas();
     initDirecciones();
     initGeneros();
     initProfesiones();
@@ -44,7 +44,7 @@ export const useTablePacientes = (pacientes) => {
     initMuni();
   }, [
     initPacientes,
-    initCitas,
+    getCitas,
     initDirecciones,
     initGeneros,
     initProfesiones,
@@ -134,6 +134,7 @@ export const useTablePacientes = (pacientes) => {
 
   return {
     value,
+    getPanel,
     getPacientes,
     getPanelRecepcion,
     getCitas,

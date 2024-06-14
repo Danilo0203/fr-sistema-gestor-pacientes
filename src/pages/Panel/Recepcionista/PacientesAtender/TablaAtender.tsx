@@ -11,7 +11,7 @@ import {
   AutocompleteItem,
   Button,
 } from "@nextui-org/react";
-import { Icon } from "@iconify/react/dist/iconify.js";
+
 import { useEffect, useMemo } from "react";
 import { columns } from "./dataTable/data";
 import { ModalAgregarPaciente } from "./Modal";
@@ -23,7 +23,6 @@ import { usePanelStore } from "../../../../store/panel/usePanelStore";
 export const TablaAtender = () => {
   const pacientes = usePacienteStore((state) => state.data);
   const pacienteAtender = usePanelStore((state) => state.dataNoAtendidos);
-
   const getPanel = usePanelStore((state) => state.init);
   const dataPacientes = usePanelStore((state) => state.dataPacientes);
   useEffect(() => {
@@ -60,9 +59,9 @@ export const TablaAtender = () => {
     label: string;
     sortable?: boolean;
   }
-  const cita = (id) => {
-    const cita = statusCita.find((cita) => cita.pacienteID === id);
-    return cita?.atender == 1 ? "Activo" : "Inactivo";
+  const cita = (id: number) => {
+    const citas = statusCita.find((cita) => cita.pacienteID === id);
+    return citas?.atender === 1 ? "Activo" : "Inactivo";
   };
 
   const renderCell = (paciente: Paciente, columnKey: Column) => {
@@ -77,11 +76,6 @@ export const TablaAtender = () => {
     if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
       edad--;
     }
-
-    const cita = (id) => {
-      const cita = statusCita.find((cita) => cita.pacienteID === id);
-      return cita?.atender == 1 ? "Activo" : "Inactivo";
-    };
 
     switch (columnKey) {
       case "id":
@@ -155,7 +149,7 @@ export const TablaAtender = () => {
             )}
           </Autocomplete>
 
-          <ModalAgregarPaciente updateTable={getPacientes} />
+          <ModalAgregarPaciente updateTable={getPacientes} updateRecepcion={executePanel} />
         </div>
 
         <h2 className="text-2xl font-bold">Cola de pacientes</h2>
@@ -169,7 +163,7 @@ export const TablaAtender = () => {
         </div>
       </div>
     );
-  }, [pacientes.length, getPacientes, dataPacientes]);
+  }, [pacientes.length, getPacientes, dataPacientes, executePanel, getCitas]);
 
   return (
     <Table

@@ -7,32 +7,22 @@ import {
   TableCell,
   Pagination,
   CircularProgress,
-  Select,
-  SelectItem,
-  Input,
-  Autocomplete,
-  AutocompleteItem,
-  Button,
 } from "@nextui-org/react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useEffect, useMemo } from "react";
 import { columns } from "./dataTable/data";
-import {
-  ModalAgregarPaciente,
-  ModalEditarPaciente,
-  ModalEliminarPaciente,
-} from "./Modal";
+
 import { useTableRecepcion } from "hooks/useTableRecepcion";
-import { usePacienteStore } from "../../../../store/pacientes/pacientes";
+// import { usePacienteStore } from "../../../../store/pacientes/pacientes";
 import { BotonCitas } from "components/ui/Botones/BotonCitas";
 import { usePanelStore } from "../../../../store/panel/usePanelStore";
 
 export const TablaNoAtendidos = () => {
-  const pacientes = usePacienteStore((state) => state.data);
+  // const pacientes = usePacienteStore((state) => state.data);
   const pacientesNoAtendidos = usePanelStore((state) => state.dataAtendidos);
 
   const getPanel = usePanelStore((state) => state.init);
-  const dataPacientes = usePanelStore((state) => state.dataPacientes);
+  // const dataPacientes = usePanelStore((state) => state.dataPacientes);
   useEffect(() => {
     getPanel();
   }, [getPanel]);
@@ -50,9 +40,6 @@ export const TablaNoAtendidos = () => {
     loadingState,
     paginas,
     ordenarItems,
-    onRowsPerPageChange,
-    onSearchChange,
-    onClear,
     statusCita,
   } = useTableRecepcion(pacientesNoAtendidos);
 
@@ -96,15 +83,7 @@ export const TablaNoAtendidos = () => {
       case "nombre":
         return <p>{paciente.nombre}</p>;
       case "apellido":
-        return <p>{paciente.apellido}</p>;
-      case "fechaNacimiento":
-        return <p>{edad} años</p>;
-      case "direccion":
-        return (
-          <p>
-            {paciente.direccion}, {paciente.municipio}
-          </p>
-        );
+        return <p>{paciente.apellido}</p>;  
       case "citas":
         return (
           <BotonCitas

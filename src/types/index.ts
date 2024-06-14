@@ -332,4 +332,5 @@ export interface ModalProps {
   idDatoMedico?: string;
   idReceta?: string;
   updateTable?: () => void;
+  updateRecepcion?: () => void;
 }

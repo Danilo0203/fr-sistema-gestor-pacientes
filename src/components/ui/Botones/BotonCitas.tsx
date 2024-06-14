@@ -16,9 +16,11 @@ export const BotonCitas = ({
 }) => {
   const handleCita = async () => {
     await getCitasPaciente(idPaciente);
-    updateTable();
-    updateCita();
-    updateRecepcion();
+    setTimeout(() => {
+      updateTable();
+      updateCita();
+      updateRecepcion();
+    }, 1000);
   };
 
   return (

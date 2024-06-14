@@ -353,11 +353,13 @@ export const ModalEditarPaciente = memo(
 export const ModalEliminarPaciente = ({
   idPaciente,
   updateTable,
+  updateRecepcion,
 }: ModalProps) => {
   const pacientes = usePacienteStore((state) => state.data);
   const handleDelete = async () => {
     await deletePaciente(idPaciente);
     updateTable();
+    updateRecepcion();
   };
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const pacienteID: PacienteData = getUsuarioById(idPaciente, pacientes)[0];

@@ -28,6 +28,7 @@ export const TablaPacientes = () => {
 
   const {
     value,
+    getPanel,
     getPacientes,
     getPanelRecepcion,
     getCitas,
@@ -75,7 +76,6 @@ export const TablaPacientes = () => {
 
     const cita = (id) => {
       const cita = statusCita.find((cita) => cita.pacienteID === id);
-
       return cita?.atender == 1 ? "Activo" : "Inactivo";
     };
 
@@ -102,6 +102,7 @@ export const TablaPacientes = () => {
             updateTable={getPacientes}
             updateCita={getCitas}
             updateRecepcion={getPanelRecepcion}
+            statusCita={statusCita}
           />
         );
       case "acciones":
@@ -114,6 +115,7 @@ export const TablaPacientes = () => {
             <ModalEliminarPaciente
               idPaciente={paciente.id}
               updateTable={getPacientes}
+              updateRecepcion={getPanel}
             />
           </div>
         );

@@ -22,7 +22,7 @@ export const usePanelStore = create<PanelStoreProps>((set, get) => ({
     });
     try {
       const panelPacientes = await api.get("/panel");
-      // console.log(panelPacientes);
+
       set({
         ...initialState,
         success: true,

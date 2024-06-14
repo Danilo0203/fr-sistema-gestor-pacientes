@@ -423,7 +423,10 @@ export const ModalEliminarPaciente = ({
   );
 };
 
-export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
+export const ModalAgregarPaciente = ({
+  updateTable,
+  updateRecepcion,
+}: ModalProps) => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const dataDepartamentos = useDepartamentoStore((state) => state.data);
   const dataMunicipios = useMunicipioStore((state) => state.data);
@@ -451,6 +454,7 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
   const agregarPaciente = async (data) => {
     await createPaciente(data);
     updateTable();
+    updateRecepcion();
     updateDireccion();
     updateEstadoCivil();
     updateProfesiones();
