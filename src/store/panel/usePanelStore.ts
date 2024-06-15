@@ -17,7 +17,7 @@ export const usePanelStore = create<PanelStoreProps>((set, get) => ({
   ...initialState,
   execute: async () => {
     set((state) => {
-      if (state.dataLoaded) return state;
+      // if (state.dataLoaded) return state;
       return { ...state, loading: true };
     });
     try {
@@ -40,7 +40,7 @@ export const usePanelStore = create<PanelStoreProps>((set, get) => ({
   },
   init: async () => {
     const state = get();
-    if (!state.dataLoaded) {
+    if (!state.loading) {
       await state.execute();
     }
   },

@@ -54,7 +54,6 @@ export const TablaDatosMedicos = () => {
   const renderCell = useCallback(
     (datoMedico: DatosMedicos, columnKey: Column) => {
       const cellValue = datoMedico[columnKey];
-      
 
       switch (columnKey) {
         case "id":

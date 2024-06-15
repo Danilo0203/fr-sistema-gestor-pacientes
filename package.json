@@ -10,11 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.5",
     "@fontsource-variable/inter": "^5.0.18",
     "@formkit/tempo": "^0.1.1",
-    "@mui/material": "^5.15.15",
     "@nextui-org/react": "^2.3.6",
     "axios": "^1.6.8",
     "axios-retry": "^4.2.0",

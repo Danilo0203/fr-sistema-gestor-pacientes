@@ -34,6 +34,9 @@ import { useState } from "react";
 import { useDatosMedicosStore } from "../../../../store/datosMedicos/datosMedicos";
 import { createDatoMedicoPaciente } from "helpers/api/datosMedicos/datos-medicos-paciente";
 import { format } from "@formkit/tempo";
+import { useNavigate } from "react-router-dom";
+import { createRecetaMedica } from "helpers/api/recetaMedica/recetas-medicas";
+import { useCrearRecetaStore } from "../../../../store/recetas/recetas";
 
 export const ModalAgregarPaciente = ({
   updateTable,
@@ -583,6 +586,44 @@ export const ActualizarDatosMedicos = ({
           )}
         </ModalContent>
       </Modal>
+    </>
+  );
+};
+
+export const AtenderPaciente = ({
+  idPaciente,
+  userID,
+}: {
+  idPaciente: string;
+  userID: number;
+}) => {
+  const navigate = useNavigate();
+
+  const crearRecetaStore = useCrearRecetaStore((state) => state.execute);
+
+  const crearReceta = async () => {
+    const date = new Date();
+    const hoy = format(date, "YYYY-MM-DD", "en");
+    const data = {
+      fecha: hoy,
+      user_id: userID,
+    };
+    try {
+      await crearRecetaStore(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <>
+      <Button
+        className="bg-azulFuerte text-white"
+        onClick={() => navigate(`/panel/atender/${idPaciente}`)}
+        onPress={() => crearReceta()}
+      >
+        Atender Paciente
+      </Button>
     </>
   );
 };

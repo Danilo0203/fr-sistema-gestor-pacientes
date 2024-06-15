@@ -20,6 +20,7 @@ export const useDatosMedicosPacientesStore = create<StoreProps>((set, get) => ({
     });
     try {
       const datosMedicos = await api.get("/datos-medicos-paciente");
+
       set({
         ...initialState,
         success: true,
@@ -33,6 +34,7 @@ export const useDatosMedicosPacientesStore = create<StoreProps>((set, get) => ({
               paciente: datoMedico.paciente.nombre,
               pacienteID: datoMedico.paciente.id,
               valor: datoMedico.valor,
+              fechaCreacion: datoMedico.created_at,
             };
           },
         ),

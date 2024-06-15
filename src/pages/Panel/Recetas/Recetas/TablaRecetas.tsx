@@ -52,10 +52,10 @@ export const TablaRecetas = () => {
   const renderCell = useCallback(
     (receta: Receta, columnKey: Column) => {
       const cellValue = receta[columnKey];
-      
+
       switch (columnKey) {
         case "id":
-          return <p>{receta.index}</p>;
+          return <p>{receta.id}</p>;
         case "fecha":
           return <p>{receta.fecha}</p>;
         case "usuario":

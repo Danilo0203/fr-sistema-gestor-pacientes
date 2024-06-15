@@ -1,7 +1,7 @@
 export const columns = [
   {
     key: "id",
-    label: "#",
+    label: "No. Receta",
     sortable: true,
   },
   {

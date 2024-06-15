@@ -14,7 +14,9 @@ const initialState = {
 export const usePacienteCitasStore = create<StoreProps>((set, get) => ({
   ...initialState,
   execute: async () => {
-    set({ loading: true });
+    set((state) => {
+      return { ...state, loading: true };
+    });
     try {
       const citas = await api.get(`/citas/paciente`);
       set({
@@ -37,7 +39,7 @@ export const usePacienteCitasStore = create<StoreProps>((set, get) => ({
 
   init: async () => {
     const state = get();
-    if (!state.dataLoaded) {
+    if (!state.loading) {
       await state.execute();
     }
   },

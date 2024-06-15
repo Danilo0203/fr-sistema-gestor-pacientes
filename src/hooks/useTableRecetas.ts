@@ -112,7 +112,7 @@ export const useTableRecetas = (recetas) => {
     filterValue,
     loadingState,
     paginas,
-    ordenarItems: itemsConIndices,
+    ordenarItems,
     onRowsPerPageChange,
     onSearchChange,
     onClear,

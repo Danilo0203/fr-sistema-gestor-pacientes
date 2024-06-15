@@ -46,3 +46,55 @@ export const useRecetasStore = create<StoreProps>((set, get) => ({
     }
   },
 }));
+
+interface CreateRecetaMedica {
+  execute: (req: unknown) => Promise<void>;
+  loading: boolean;
+  loadingDelete: boolean;
+  success: boolean;
+  error: boolean;
+  errorData: string;
+  eliminarReceta: (id: string) => Promise<void>;
+}
+
+const initialStateCreateRecetaMedica = {
+  loading: false,
+  loadingDelete: false,
+  success: false,
+  error: false,
+  errorData: "",
+};
+
+export const useCrearRecetaStore = create<CreateRecetaMedica>((set, get) => ({
+  ...initialStateCreateRecetaMedica,
+  execute: async (req: unknown) => {
+    set({ ...initialStateCreateRecetaMedica, loading: true });
+    try {
+      await api.post("/recetas-medicas", req);
+      set({ ...initialStateCreateRecetaMedica, success: true });
+    } catch (err) {
+      console.error("Error al crear la receta: ", err);
+      const errorMessage = (err as Error)?.message || "Unknown error";
+      set({
+        ...initialStateCreateRecetaMedica,
+        error: true,
+        errorData: errorMessage,
+      });
+    }
+  },
+  eliminarReceta: async (id: string) => {
+    set({ ...initialStateCreateRecetaMedica, loadingDelete: true });
+    try {
+      await api.delete(`/recetas-medicas/${id}`);
+      set({ ...initialStateCreateRecetaMedica, success: true });
+    } catch (err) {
+      console.error("Error al eliminar la receta: ", err);
+      const errorMessage = (err as Error)?.message || "Unknown error";
+      set({
+        ...initialStateCreateRecetaMedica,
+        error: true,
+        errorData: errorMessage,
+      });
+    }
+  },
+}));

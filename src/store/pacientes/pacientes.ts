@@ -15,7 +15,7 @@ export const usePacienteStore = create<StoreProps>()((set, get) => ({
   ...initialState,
   execute: async () => {
     set((state) => {
-      if (state.dataLoaded) return state;
+      // if (state.dataLoaded) return state;
       return { ...state, loading: true };
     });
     try {

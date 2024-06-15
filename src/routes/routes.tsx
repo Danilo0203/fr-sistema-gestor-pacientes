@@ -25,6 +25,7 @@ import { DatosMedicos } from "pages/Panel/DatosMedicos/DatosMedicos";
 import { TablaDatosMedicos } from "pages/Panel/DatosMedicos/DatosMedicos/TablaDatosMedicos";
 import { Recetas } from "pages/Panel/Recetas/Recetas";
 import { TablaRecetas } from "pages/Panel/Recetas/Recetas/TablaRecetas";
+import { TablaReceta } from "pages/Panel/Administrador/TablaReceta/TablaReceta";
 // import { TablaAtender } from "pages/Panel/Recepcionista/PacientesAtender/TablaAtender";
 
 const routes = createBrowserRouter([
@@ -44,6 +45,12 @@ const routes = createBrowserRouter([
           {
             path: "panel",
             element: <Panel />,
+            children: [
+              {
+                path: "atender/:idPaciente",
+                element: <TablaReceta />,
+              },
+            ],
           },
 
           {

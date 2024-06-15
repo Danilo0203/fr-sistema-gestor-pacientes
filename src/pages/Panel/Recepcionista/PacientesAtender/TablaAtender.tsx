@@ -9,22 +9,36 @@ import {
   CircularProgress,
   Autocomplete,
   AutocompleteItem,
-  Button,
 } from "@nextui-org/react";
 
 import { useCallback, useEffect, useMemo } from "react";
 import { columns } from "./dataTable/data";
-import { ActualizarDatosMedicos, ModalAgregarPaciente } from "./Modal";
+import { ModalAgregarPaciente } from "./Modal";
 import { useTableRecepcion } from "hooks/useTableRecepcion";
 import { usePacienteStore } from "../../../../store/pacientes/pacientes";
 import { BotonCitas } from "components/ui/Botones/BotonCitas";
 import { usePanelStore } from "../../../../store/panel/usePanelStore";
+import { useAuthStore } from "../../../../store/auth";
 
-export const TablaAtender = () => {
+export const TablaAtender = ({ BotonAcciones }) => {
   const pacientes = usePacienteStore((state) => state.data);
   const pacienteAtender = usePanelStore((state) => state.dataNoAtendidos);
   const getPanel = usePanelStore((state) => state.init);
   const dataPacientes = usePanelStore((state) => state.dataPacientes);
+  const pacientesYaAtendidos = usePanelStore((state) => state.dataAtendidos);
+  const rol = useAuthStore(
+    (state) => state.profile.rol.nombre,
+  ).toLocaleLowerCase();
+
+  // Crea una funcion que compare el array de dataPacientes con el array de pacientesYaAtendidos
+  // y devuelve un array con los pacientes que no estan en el array de pacientesYaAtendidos
+  const pacientesNoAtendidos = dataPacientes.filter(
+    (paciente) =>
+      !pacientesYaAtendidos.some((atendido) => atendido.id === paciente.id),
+  );
+
+  const userID = useAuthStore((state) => state.profile.id);
+
   useEffect(() => {
     getPanel();
   }, [getPanel]);
@@ -70,16 +84,6 @@ export const TablaAtender = () => {
   const renderCell = (paciente: Paciente, columnKey: Column) => {
     const cellValue = paciente[columnKey];
 
-    // Mostrar la edad del paciente en lugar de la fecha de nacimiento
-    const fechaNacimiento = new Date(paciente.fecha_nacimiento);
-    const hoy = new Date();
-
-    let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
-    const mes = hoy.getMonth() - fechaNacimiento.getMonth();
-    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
-      edad--;
-    }
-
     switch (columnKey) {
       case "id":
         return <p>{paciente.index}</p>;
@@ -87,14 +91,6 @@ export const TablaAtender = () => {
         return <p>{paciente.nombre}</p>;
       case "apellido":
         return <p>{paciente.apellido}</p>;
-      case "fechaNacimiento":
-        return <p>{edad} años</p>;
-      case "direccion":
-        return (
-          <p>
-            {paciente.direccion}, {paciente.municipio}
-          </p>
-        );
       case "citas":
         return (
           <BotonCitas
@@ -108,7 +104,7 @@ export const TablaAtender = () => {
       case "acciones":
         return (
           <div className="relative flex items-center gap-3">
-            <ActualizarDatosMedicos idPaciente={paciente.id} />
+            <BotonAcciones idPaciente={paciente.id} userID={userID} />
           </div>
         );
       default:
@@ -120,7 +116,7 @@ export const TablaAtender = () => {
       <div className="flex flex-col gap-4">
         <div className="flex  items-end justify-between gap-2">
           <Autocomplete
-            defaultItems={dataPacientes}
+            defaultItems={pacientesNoAtendidos}
             aria-label="Tabla Pacientes Atender"
             variant="underlined"
             label="Buscar por paciente para atender:"
@@ -149,11 +145,12 @@ export const TablaAtender = () => {
               </AutocompleteItem>
             )}
           </Autocomplete>
-
-          <ModalAgregarPaciente
-            updateTable={getPacientes}
-            updateRecepcion={executePanel}
-          />
+          {rol !== "administrador" ? (
+            <ModalAgregarPaciente
+              updateTable={getPacientes}
+              updateRecepcion={executePanel}
+            />
+          ) : null}
         </div>
 
         <h2 className="text-2xl font-bold">Cola de pacientes</h2>
@@ -174,6 +171,7 @@ export const TablaAtender = () => {
     executePanel,
     getCitas,
     cita,
+    rol,
   ]);
 
   return (
