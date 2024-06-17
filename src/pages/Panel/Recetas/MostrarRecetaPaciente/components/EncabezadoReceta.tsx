@@ -1,30 +1,36 @@
-import { DateInput, Input, TimeInput } from "@nextui-org/react";
-import { parseDate, parseAbsoluteToLocal } from "@internationalized/date";
+import { DateInput, Input, Spinner, TimeInput } from "@nextui-org/react";
+import {
+  parseDate,
+  parseAbsoluteToLocal,
+  CalendarDate,
+} from "@internationalized/date";
+import { useCallback, useEffect, useState } from "react";
+import { useRecetasPacienteStore } from "../../../../../store/recetas/recetasPaciente";
 import { format } from "@formkit/tempo";
 import { usePacienteStore } from "../../../../../store/pacientes/pacientes";
+import { useUsuarioStore } from "../../../../../store/usuarios";
 import { useDatosMedicosPacientesStore } from "../../../../../store/datosMedicos/datosMedicosPaciente";
-import { useAuthStore } from "../../../../../store/auth";
-import { useCallback } from "react";
-import { useDatosMedicosStore } from "../../../../../store/datosMedicos/datosMedicos";
 
-export const EncabezadoReceta = ({ idPaciente, idReceta }) => {
-  const date = new Date();
-  const hoy = format(date, "YYYY-MM-DD");
-
-  const isoDate = date.toISOString();
-
+export const EncabezadoReceta = ({ idUsuario, idReceta }) => {
+  const [recetaPaciente, setRecetaPaciente] = useState([]);
   const dataPacientes = usePacienteStore((state) => state.data);
+  const dataReceta = useRecetasPacienteStore((state) => state.data);
+  const dataUsuarios = useUsuarioStore((state) => state.data);
+
+  useEffect(() => {
+    const receta = dataReceta.find((receta) => receta.recetaID == idReceta);
+    setRecetaPaciente(receta);
+  }, [dataReceta, idReceta]);
+  const usuario = dataUsuarios.find((usuario) => usuario.id == idUsuario);
+  const paciente = dataPacientes.find(
+    (paciente) => paciente.id == recetaPaciente.pacienteID,
+  );
+
+  const fechaReceta = format(recetaPaciente?.recetaFecha, "YYYY-MM-DD");
+
   const dataMedicosPacientes = useDatosMedicosPacientesStore(
     (state) => state.data,
   );
-  const usuario = useAuthStore((state) => state.profile);
-
-  const datosMedicos = useDatosMedicosStore((state) => state.data);
-
-  const nombreDatoMedico = datosMedicos.map((dato) => dato.nombre);
-  console.log(nombreDatoMedico);
-
-  // Funcion que me devuelva el dato del peso o altura segun el id del paciente
   const getPesoAltura = useCallback(
     (idPaciente: string) => {
       const datos = dataMedicosPacientes.filter(
@@ -38,8 +44,6 @@ export const EncabezadoReceta = ({ idPaciente, idReceta }) => {
       const datosOrdenados = datos.sort(
         (a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion),
       );
-      console.log(datosOrdenados);
-      // Funcion que me devuelva el dato medico mas reciente segun el array de nombreDatoMedico [peso, altura,  y mas datos medicos...]
 
       const pesoMasReciente = datosOrdenados.find(
         (dato) => dato.datoMedicoID === 4,
@@ -70,50 +74,11 @@ export const EncabezadoReceta = ({ idPaciente, idReceta }) => {
     [dataMedicosPacientes],
   );
 
-  const recetaPaciente = dataPacientes.find(
-    (paciente) => paciente.id == idPaciente,
-  );
+  const datosMedicosPaciente = getPesoAltura(recetaPaciente.pacienteID);
 
-  const edad =
-    date.getFullYear() - +recetaPaciente?.fecha_nacimiento.slice(0, 4);
-
-  const getDatosMedicosRecientes = useCallback(
-    (idPaciente) => {
-      const datos = dataMedicosPacientes.filter(
-        (dato) => dato.pacienteID == idPaciente,
-      );
-
-      if (datos.length === 0) {
-        return [];
-      }
-
-      const datosOrdenados = datos.sort(
-        (a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion),
-      );
-      console.log(datosOrdenados);
-      const datosRecientes = nombreDatoMedico
-        .map((nombre) => {
-          const datoReciente = datosOrdenados.find(
-            (dato) => dato.datoMedico === nombre,
-          );
-          console.log(datoReciente);
-          return datoReciente
-            ? {
-                id: datoReciente.datoMedicoID,
-                datoMedico: datoReciente.datoMedico,
-                fecha: datoReciente.fecha,
-                valor: datoReciente.valor,
-              }
-            : null;
-        })
-        .filter(Boolean);
-
-      return datosRecientes;
-    },
-    [dataMedicosPacientes, nombreDatoMedico],
-  );
-  const datosMedicosPaciente = getDatosMedicosRecientes(idPaciente);
-  console.log(datosMedicosPaciente);
+  if (recetaPaciente.length === 0 || !recetaPaciente) {
+    return <Spinner label={`Cargando Receta: ${idReceta}`} />;
+  }
 
   return (
     <>
@@ -125,7 +90,8 @@ export const EncabezadoReceta = ({ idPaciente, idReceta }) => {
             label="Fecha"
             variant="underlined"
             isReadOnly
-            defaultValue={parseDate(hoy)}
+            defaultValue={parseDate(fechaReceta)}
+            placeholderValue={new CalendarDate(1995, 11, 6)}
           />
           <TimeInput
             className="w-fit"
@@ -133,7 +99,7 @@ export const EncabezadoReceta = ({ idPaciente, idReceta }) => {
             granularity="second"
             label="Hora"
             variant="underlined"
-            value={parseAbsoluteToLocal(isoDate)}
+            value={parseAbsoluteToLocal(recetaPaciente?.createdAt)}
           />
         </div>
       </div>
@@ -144,7 +110,7 @@ export const EncabezadoReceta = ({ idPaciente, idReceta }) => {
             isReadOnly
             label="Nombre:"
             variant="underlined"
-            defaultValue={recetaPaciente?.nombre}
+            defaultValue={recetaPaciente?.pacienteNombre}
             className="max-w-xs"
           />
           <Input
@@ -152,7 +118,7 @@ export const EncabezadoReceta = ({ idPaciente, idReceta }) => {
             isReadOnly
             label="Apellido:"
             variant="underlined"
-            defaultValue={recetaPaciente?.apellido}
+            defaultValue={recetaPaciente?.pacienteApellido}
             className="max-w-xs"
           />
           <Input
@@ -160,7 +126,7 @@ export const EncabezadoReceta = ({ idPaciente, idReceta }) => {
             isReadOnly
             label="Originario:"
             variant="underlined"
-            defaultValue={recetaPaciente?.municipio}
+            defaultValue={paciente?.municipio}
             className="max-w-xs"
           />
           <Input
@@ -168,7 +134,7 @@ export const EncabezadoReceta = ({ idPaciente, idReceta }) => {
             isReadOnly
             label="Edad:"
             variant="underlined"
-            defaultValue={`${edad.toString()} años`}
+            defaultValue={`23 años`}
             className="max-w-xs"
           />
           <Input
@@ -176,7 +142,7 @@ export const EncabezadoReceta = ({ idPaciente, idReceta }) => {
             isReadOnly
             label="Genero:"
             variant="underlined"
-            defaultValue={recetaPaciente?.genero}
+            defaultValue={paciente?.genero}
             className="max-w-xs"
           />
         </div>
@@ -186,7 +152,7 @@ export const EncabezadoReceta = ({ idPaciente, idReceta }) => {
             isReadOnly
             label="Estado Civil:"
             variant="underlined"
-            defaultValue={recetaPaciente?.estadoCivil}
+            defaultValue={paciente?.estadoCivil}
             className="max-w-xs"
           />
           <Input
@@ -194,24 +160,33 @@ export const EncabezadoReceta = ({ idPaciente, idReceta }) => {
             isReadOnly
             label="Direccion:"
             variant="underlined"
-            defaultValue={recetaPaciente?.direccion}
+            defaultValue={paciente?.direccion}
             classNames={{
               mainWrapper: ["w-11/12", "max-w-xs"],
             }}
           />
         </div>
         <div className="flex gap-2">
-          {datosMedicosPaciente.map((dato) => (
+          {datosMedicosPaciente.peso && (
             <Input
-              key={dato.id}
               labelPlacement="outside-left"
               isReadOnly
-              label={dato.datoMedico}
+              label={datosMedicosPaciente.peso.datoMedico}
               variant="underlined"
-              defaultValue={`${dato.valor} ${dato.datoMedico === "Peso" ? "LBS" : "MTS"}`}
+              defaultValue={`${datosMedicosPaciente.peso.dato} LBS`}
               className="max-w-xs"
             />
-          ))}
+          )}
+          {datosMedicosPaciente.altura && (
+            <Input
+              labelPlacement="outside-left"
+              isReadOnly
+              label={datosMedicosPaciente.altura.datoMedico}
+              variant="underlined"
+              defaultValue={`${datosMedicosPaciente.altura.dato} MTS`}
+              className="max-w-xs"
+            />
+          )}
         </div>
         <div className="mt-3 flex gap-4">
           <Input

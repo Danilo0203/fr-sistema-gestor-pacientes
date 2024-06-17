@@ -24,6 +24,7 @@ import { useDatosMedicosStore } from "../../../../store/datosMedicos/datosMedico
 
 export const TablaDatosMedicos = () => {
   const datosMedicos = useDatosMedicosStore((state) => state.data);
+
   const {
     value,
     getDatosMedicos,

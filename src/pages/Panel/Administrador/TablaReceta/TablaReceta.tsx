@@ -12,6 +12,7 @@ import { createRecetaMedicaPaciente } from "helpers/api/recetaMedica/recetas-med
 import { getCitasPaciente } from "helpers/api/pacientes/pacientes";
 import { usePanelStore } from "../../../../store/panel/usePanelStore";
 import { usePacienteCitasStore } from "../../../../store/pacientes/pacientesCitas";
+import { useRecetasPacienteStore } from "../../../../store/recetas/recetasPaciente";
 
 export const TablaReceta = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ export const TablaReceta = () => {
   );
   const initRecetaMedica = useRecetasStore((state) => state.execute);
   const updateCitas = usePacienteCitasStore((state) => state.execute);
-
+  const updateRecetas = useRecetasPacienteStore((state) => state.execute);
   useEffect(() => {
     initRecetaMedica();
   }, [initRecetaMedica]);
@@ -47,6 +48,7 @@ export const TablaReceta = () => {
       paciente_id: idPaciente,
       receta_id: lastRecetaMedica.id,
     };
+    updateRecetas();
     createRecetaMedicaPaciente(data);
     navigate(-1);
     updateCitas();
@@ -66,7 +68,7 @@ export const TablaReceta = () => {
   if (loadingDeleteRecetaMedica) {
     return (
       <Spinner
-        label="Eliminado Receta Medica..."
+        label="Regresando al panel..."
         color="default"
         labelColor="foreground"
       />

@@ -26,6 +26,8 @@ import { TablaDatosMedicos } from "pages/Panel/DatosMedicos/DatosMedicos/TablaDa
 import { Recetas } from "pages/Panel/Recetas/Recetas";
 import { TablaRecetas } from "pages/Panel/Recetas/Recetas/TablaRecetas";
 import { TablaReceta } from "pages/Panel/Administrador/TablaReceta/TablaReceta";
+import { TablaRecetasPacientes } from "pages/Panel/Recetas/Recetas Pacientes/TablaRecetasPacientes";
+import { MostrarRecetaPaciente } from "pages/Panel/Recetas/MostrarRecetaPaciente/MostrarRecetaPaciente";
 // import { TablaAtender } from "pages/Panel/Recepcionista/PacientesAtender/TablaAtender";
 
 const routes = createBrowserRouter([
@@ -130,6 +132,16 @@ const routes = createBrowserRouter([
               {
                 path: "tabla",
                 element: <TablaRecetas />,
+              },
+              {
+                path: "paciente",
+                element: <TablaRecetasPacientes />,
+                children: [
+                  {
+                    path: ":idReceta/:idUsuario",
+                    element: <MostrarRecetaPaciente />,
+                  },
+                ],
               },
             ],
           },
