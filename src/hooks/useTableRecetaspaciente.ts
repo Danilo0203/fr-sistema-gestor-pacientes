@@ -2,18 +2,24 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { SortDescriptor } from "@nextui-org/react";
 import { useRecetasStore } from "../store/recetas/recetas";
 import { useUsuarioStore } from "../store/usuarios";
+import { usePacienteStore } from "../store/pacientes/pacientes";
+import { useRecetasPacienteStore } from "../store/recetas/recetasPaciente";
 
 export const useTableRecetaspaciente = (recetas) => {
   const getRecetas = useRecetasStore((state) => state.execute);
-  const initRecetas = useRecetasStore((state) => state.init);
+  const initRecetas = useRecetasStore((state) => state.execute);
+  const recetasPacientes = useRecetasPacienteStore((state) => state.execute);
+
   const initUsuarios = useUsuarioStore((state) => state.init);
+  const executePacientes = usePacienteStore((state) => state.execute);
+
   const loading = useRecetasStore((state) => state.loading);
   const [value, setValue] = useState(0);
   const [pagina, setPagina] = useState(1);
   const [filterValue, setFilterValue] = useState("");
-  const [filasPorPagina, setRowsPerPage] = useState(5);
+  const [filasPorPagina, setRowsPerPage] = useState(10);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: "fecha",
+    column: "id",
     direction: "descending",
   });
 
@@ -21,7 +27,9 @@ export const useTableRecetaspaciente = (recetas) => {
   useEffect(() => {
     initRecetas();
     initUsuarios();
-  }, [initRecetas, initUsuarios]);
+    executePacientes();
+    recetasPacientes();
+  }, [initRecetas, initUsuarios, executePacientes, recetasPacientes]);
 
   // Funcion para filtrar recetas por fecha
   const filtrarRecetasPorFecha = useMemo(() => {
@@ -31,6 +39,8 @@ export const useTableRecetaspaciente = (recetas) => {
     );
     return filtrarRecetas;
   }, [recetas, filterValue]);
+
+  console.log(filtrarRecetasPorFecha);
 
   // Funcion para esperar la respuesta de la API
   useEffect(() => {

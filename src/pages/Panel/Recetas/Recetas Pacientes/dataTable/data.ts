@@ -10,8 +10,13 @@ export const columns = [
     sortable: true,
   },
   {
-    key: "usuario",
-    label: "Usuario que la emitió",
+    key: "pacienteNombre",
+    label: "Paciente Nombre",
+    sortable: true,
+  },
+  {
+    key: "pacienteApellido",
+    label: "Apellido",
     sortable: true,
   },
   {

@@ -286,7 +286,7 @@ export const Sidbar = () => {
                   </div>
                 </Button>
               </li>
-              <li>
+              {/* <li>
                 <Button
                   fullWidth
                   onPress={() => navigate("/datos-medicos/paciente")}
@@ -297,7 +297,7 @@ export const Sidbar = () => {
                     <Icon icon="mdi:file-document" width={25} /> Pacientes
                   </div>
                 </Button>
-              </li>
+              </li> */}
             </ul>
           )}
         </li>

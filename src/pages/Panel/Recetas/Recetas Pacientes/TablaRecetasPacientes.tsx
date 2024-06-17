@@ -12,25 +12,17 @@ import {
   Input,
 } from "@nextui-org/react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { columns } from "./dataTable/data";
 
-import { useRecetasStore } from "../../../../store/recetas/recetas";
 import { BtnVerRecetaPaciente } from "./Modal";
 import { Outlet, useLocation } from "react-router-dom";
 import { useRecetasPacienteStore } from "../../../../store/recetas/recetasPaciente";
-import { usePacienteStore } from "../../../../store/pacientes/pacientes";
 import { useTableRecetaspaciente } from "hooks/useTableRecetaspaciente";
 
 export const TablaRecetasPacientes = () => {
   const { pathname } = useLocation();
 
-  const initReceta = useRecetasPacienteStore((state) => state.execute);
-  const executePacientes = usePacienteStore((state) => state.init);
-  useEffect(() => {
-    executePacientes();
-    initReceta();
-  }, [initReceta, executePacientes]);
   const recetasPacientes = useRecetasPacienteStore((state) => state.data);
 
   const {
@@ -47,12 +39,22 @@ export const TablaRecetasPacientes = () => {
     onSearchChange,
     onClear,
   } = useTableRecetaspaciente(recetasPacientes);
+  const inputRef = useRef(null);
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [filterValue]);
 
   interface Receta {
     id: string;
     fecha: string;
     usuario: string;
     usuarioID: string;
+    pacienteNombre: string;
+    pacienteApellido: string;
+    recetaID: string;
+    recetaFecha: string;
   }
 
   interface Column {
@@ -69,12 +71,10 @@ export const TablaRecetasPacientes = () => {
         return <p>{receta.recetaID}</p>;
       case "fecha":
         return <p>{receta.recetaFecha}</p>;
-      case "usuario":
-        return (
-          <p>
-            {receta.pacienteNombre} {receta.pacienteApellido}{" "}
-          </p>
-        );
+      case "pacienteNombre":
+        return <p>{receta.pacienteNombre}</p>;
+      case "pacienteApellido":
+        return <p>{receta.pacienteApellido}</p>;
       case "acciones":
         return (
           <div className="flex items-center justify-center gap-3">
@@ -95,7 +95,7 @@ export const TablaRecetasPacientes = () => {
         <div className="flex items-center justify-between">
           <div className="flex w-full flex-col gap-3">
             <Input
-              label="Buscar por nombre de paciente:"
+              label="Buscar por nombre del paciente:"
               isClearable
               classNames={{
                 base: "w-full sm:max-w-[44%]",
@@ -106,6 +106,7 @@ export const TablaRecetasPacientes = () => {
               value={filterValue}
               variant="bordered"
               onClear={onClear}
+              ref={inputRef}
               key="outside"
               labelPlacement="outside"
               onValueChange={onSearchChange}

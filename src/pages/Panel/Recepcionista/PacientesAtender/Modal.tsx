@@ -35,7 +35,7 @@ import { useDatosMedicosStore } from "../../../../store/datosMedicos/datosMedico
 import { createDatoMedicoPaciente } from "helpers/api/datosMedicos/datos-medicos-paciente";
 import { format } from "@formkit/tempo";
 import { useNavigate } from "react-router-dom";
-import { createRecetaMedica } from "helpers/api/recetaMedica/recetas-medicas";
+
 import { useCrearRecetaStore } from "../../../../store/recetas/recetas";
 
 export const ModalAgregarPaciente = ({

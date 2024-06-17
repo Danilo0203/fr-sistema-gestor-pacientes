@@ -22,53 +22,6 @@ export const EncabezadoReceta = ({ idPaciente, idReceta }) => {
   const datosMedicos = useDatosMedicosStore((state) => state.data);
 
   const nombreDatoMedico = datosMedicos.map((dato) => dato.nombre);
-  console.log(nombreDatoMedico);
-
-  // Funcion que me devuelva el dato del peso o altura segun el id del paciente
-  const getPesoAltura = useCallback(
-    (idPaciente: string) => {
-      const datos = dataMedicosPacientes.filter(
-        (dato) => dato.pacienteID == idPaciente,
-      );
-
-      if (datos.length === 0) {
-        return { peso: null, altura: null };
-      }
-
-      const datosOrdenados = datos.sort(
-        (a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion),
-      );
-      console.log(datosOrdenados);
-      // Funcion que me devuelva el dato medico mas reciente segun el array de nombreDatoMedico [peso, altura,  y mas datos medicos...]
-
-      const pesoMasReciente = datosOrdenados.find(
-        (dato) => dato.datoMedicoID === 4,
-      ); // Suponiendo que '2' es el ID para peso
-      const alturaMasReciente = datosOrdenados.find(
-        (dato) => dato.datoMedicoID === 2,
-      ); // Suponiendo que '4' es el ID para altura
-
-      return {
-        peso: pesoMasReciente
-          ? {
-              id: pesoMasReciente.datoMedicoID,
-              datoMedico: "Peso",
-              fecha: pesoMasReciente.fecha,
-              dato: pesoMasReciente.valor,
-            }
-          : null,
-        altura: alturaMasReciente
-          ? {
-              id: alturaMasReciente.datoMedicoID,
-              datoMedico: "Altura",
-              fecha: alturaMasReciente.fecha,
-              dato: alturaMasReciente.valor,
-            }
-          : null,
-      };
-    },
-    [dataMedicosPacientes],
-  );
 
   const recetaPaciente = dataPacientes.find(
     (paciente) => paciente.id == idPaciente,
@@ -90,13 +43,13 @@ export const EncabezadoReceta = ({ idPaciente, idReceta }) => {
       const datosOrdenados = datos.sort(
         (a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion),
       );
-      console.log(datosOrdenados);
+
       const datosRecientes = nombreDatoMedico
         .map((nombre) => {
           const datoReciente = datosOrdenados.find(
             (dato) => dato.datoMedico === nombre,
           );
-          console.log(datoReciente);
+
           return datoReciente
             ? {
                 id: datoReciente.datoMedicoID,
@@ -113,7 +66,6 @@ export const EncabezadoReceta = ({ idPaciente, idReceta }) => {
     [dataMedicosPacientes, nombreDatoMedico],
   );
   const datosMedicosPaciente = getDatosMedicosRecientes(idPaciente);
-  console.log(datosMedicosPaciente);
 
   return (
     <>

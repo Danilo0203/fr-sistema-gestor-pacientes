@@ -156,6 +156,12 @@ export const ModalEditarPaciente = memo(
                               value: true,
                               message: "Este campo es requerido",
                             },
+                            validate: (value) => {
+                              return (
+                                !/[^a-zA-Z\s]/.test(value) ||
+                                "No se permiten numeros"
+                              );
+                            },
                           })}
                         >
                           <Icon icon="mdi:user" />
@@ -175,6 +181,12 @@ export const ModalEditarPaciente = memo(
                             required: {
                               value: true,
                               message: "Este campo es requerido",
+                            },
+                            validate: (value) => {
+                              return (
+                                !/[^a-zA-Z\s]/.test(value) ||
+                                "No se permiten numeros"
+                              );
                             },
                           })}
                         >
@@ -574,6 +586,13 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                             value: true,
                             message: "Este campo es requerido",
                           },
+                          // validar que no ingrese numeros solo letras y espacios
+                          validate: (value) => {
+                            return (
+                              !/[^a-zA-Z\s]/.test(value) ||
+                              "No se permiten numeros"
+                            );
+                          },
                         })}
                       >
                         <Icon icon="mdi:user" />
@@ -593,6 +612,12 @@ export const ModalAgregarPaciente = ({ updateTable }: ModalProps) => {
                           required: {
                             value: true,
                             message: "Este campo es requerido",
+                          },
+                          validate: (value) => {
+                            return (
+                              !/[^a-zA-Z\s]/.test(value) ||
+                              "No se permiten numeros"
+                            );
                           },
                         })}
                       >
