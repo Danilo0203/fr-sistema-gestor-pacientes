@@ -46,10 +46,12 @@ export const EncabezadoReceta = ({ idUsuario, idReceta }) => {
       if (datos.length === 0) {
         return [];
       }
-      const datosOrdenados = datos.sort(
-        (a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion),
+
+      const datosOrdenados = datos.filter(
+        (a) =>
+          new Date(a.fechaCreacion).getHours() ===
+          new Date(recetaPaciente?.createdAt).getHours(),
       );
-      console.log(nombreDatoMedico);
 
       const datosRecientes = nombreDatoMedico
         .map((nombre) => {
@@ -67,17 +69,15 @@ export const EncabezadoReceta = ({ idUsuario, idReceta }) => {
             : null;
         })
         .filter(Boolean);
-      console.log(datosRecientes);
+
       return datosRecientes;
     },
-    [dataMedicosPacientes, nombreDatoMedico],
+    [dataMedicosPacientes, nombreDatoMedico, recetaPaciente?.createdAt],
   );
 
   const datosMedicosPaciente = getDatosMedicosRecientes(
     recetaPaciente.pacienteID,
   );
-  console.log(recetaPaciente);
-  console.log(datosMedicosPaciente);
 
   if (recetaPaciente.length === 0 || !recetaPaciente) {
     return <Spinner label={`Cargando Receta: ${idReceta}`} />;
